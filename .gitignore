@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.py[cod]
+.matplotlib-cache/
+supplementary-materials/*.aux
+supplementary-materials/*.fdb_latexmk
+supplementary-materials/*.fls
+supplementary-materials/*.log
+supplementary-materials/*.out
+supplementary-materials/*.toc
+

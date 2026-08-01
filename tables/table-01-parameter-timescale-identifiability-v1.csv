@@ -1,0 +1,17 @@
+paper_symbol,code_name,source,units,role,sensitivity_path,treatment,identifiability
+\(\Delta\),aggregation_scale,"Eqs. (8), (9), (11)",time; dimensionless after scaling,return aggregation horizon,direct horizontal scale,swept in F1-F6,observed/design variable
+\(\rho_\infty\),rho_inf,"Eqs. (8), (9), (11)",dimensionless correlation,long-scale vertical level,multiplicative vertical scale,fixed to one in base figures,conditional on plateau coverage
+\(\lambda_{12}\),clock_rate,Eq. (8); App. A,time\(^{-1}\),pooled refresh/overlap rate,\(F(\lambda_{12}\Delta)\),unit scale; sensitivity in F2,conditional; independently measurable in v2
+\(\kappa=\kappa_1+\kappa_2\),response_rate,Eq. (9); App. B,time\(^{-1}\),spread relaxation rate,\(F(\kappa\Delta)\),swept in F1-F2; derived in F4-F5,conditional on clock rate and short scales
+\(\alpha_c\),alpha_clock,"App. C, Eq. (C.18)",dimensionless,fractional clock order,short power \(\Delta^{\alpha_c}\),swept in F3,not separate from alpha_response at short scale
+\(\alpha_r\),alpha_response,"App. C, Eq. (C.18)",dimensionless,fractional response order,short power \(\Delta^{\alpha_r}\),swept in F3,not separate from alpha_clock at short scale
+"\(\tau_c,\tau_r\)",clock_characteristic_time; response_characteristic_time,v1 nondimensionalisation,time,fractional scale convention,\((\Delta/\tau)^\alpha\),fixed to one in F3,confounded with fractional rate convention
+\(\gamma_{jk}\),coupling_strength,Eq. (6); App. B,model-dependent,pair-trader coupling strength,\(\kappa_j\propto\gamma_{jk}\),one-at-a-time sweep in F4,not separate from source/front quantities
+\(\lambda_j\) (source),source_amplitude,Eq. (5); App. B,source amplitude,decaying-Gaussian amplitude,\(M_j^+\propto a_j\),one-at-a-time sweep in F4,not separate from coupling strength
+\(\mu_j\),source_width,Eq. (5); App. B,price\(^{-2}\),Gaussian source-shape scale,\(M_j^+\propto\mu_j^{-1/2}\),one-at-a-time sweep in F4,not separate from amplitude/front slope
+\(|\mathcal L_j|\),front_slope_abs,Eq. (B.9); Eq. (B.13),density per price,frozen reaction-front slope,\(\kappa_j\propto|\mathcal L_j|^{-1}\),one-at-a-time sweep in F4,not identifiable as thickness from Epps alone
+\(\varepsilon\),epsilon,Eq. (6); App. D,price\(^2\) for \(yz/\varepsilon\),continuum selector regularisation,centred moment invariant; representation path,swept in F5,not a reaction-front thickness parameter
+\(\Delta x\),lattice_spacing,App. D,price,numerical lattice resolution,discrete moment error to effective response,swept in F5,known numerical control
+\(z_{jk}\),directed_spread,Eq. (6); App. B,price,directed book-price spread,selector argument \(yz/\varepsilon\),fixed to 0.2 in F5,"state variable, not inferred parameter"
+--,alignment_offset_cells,v1 numerical diagnostic,lattice cells,source-selector centring error,parity breaking to effective response,0 and 0.5 in F5,known numerical control
+--,domain_halfwidth,v1 numerical diagnostic,price,finite integration/lattice domain,tail truncation to effective response,full and truncated in F5,known numerical control

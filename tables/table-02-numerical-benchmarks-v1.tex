@@ -1,0 +1,28 @@
+% Standalone table fragment. Required packages: booktabs, tabularx, array, float.
+\begin{table}[H]
+\centering
+\scriptsize
+\caption{\textbf{Numerical benchmarks, convergence tests and acceptance status.} Each row records a claim-relevant diagnostic, its analytic or independent reference result, declared tolerance, observed value or error, and acceptance status. Checks cover the ordinary kernel and derivative, fractional $\alpha=1$ recovery and independent reference values, the decaying-Gaussian first moment, centred-selector invariance, finite-grid refinement, invalid inputs, and the analytic/simulation overlay contract. The table supports numerical reliability and reproducible execution within the tested environment; it is not a mathematical proof of the model, an empirical validation, or evidence for excluded legacy-simulation claims.}
+\label{tab:numerical-benchmarks}
+\renewcommand{\arraystretch}{1.02}
+\begin{tabularx}{\linewidth}{@{}p{0.9cm}p{3.6cm}X p{3.0cm}X p{1.8cm}@{}}
+\toprule
+ID & Diagnostic & Expected result & Tolerance & Observed result & Status \\
+\midrule
+D01 & Ordinary zero and small-argument limit & F(0)=0 and the declared small-x series is recovered & abs error <= 1.0e-12 & F(0)=0.000e+00; series error at 1e-6=0.000e+00 & Verified \\
+D02 & Ordinary bounds and monotonicity & 0 <= F(x) < 1 and non-decreasing for x >= 0 & violation <= 1.0e-12 & range=[0.00000500, 0.99000000]; min increment=1.641e-07 & Verified \\
+D03 & Ordinary analytic derivative & Analytic derivative agrees with centred finite differences & max error <= 2.0e-07 & max error=2.084e-10 & Verified \\
+D04 & Ordinary elasticity limits & S\_F -> 1 at short scale and S\_F -> 0 at long scale & combined limit error <= 2.0e-05 & S(1e-8)=0.999999996667; S(1e5)=1.000e-05 & Verified \\
+D05 & Fractional alpha-one recovery & F\_alpha with alpha=1 equals the ordinary kernel & max error <= 2.0e-13 & max error=0.000e+00 & Verified \\
+D06 & Fractional independent reference values & Release evaluator matches adaptive-quadrature references & max error <= 2.0e-09 & six-point max error=1.571e-13 & Verified \\
+D07 & Fractional bounds and monotonicity & Release curves remain in [0,1] and non-decreasing & violation <= 2.0e-09 & maximum violation=0.000e+00 & Verified \\
+D08 & Decaying-Gaussian first moment & Numerical full-domain selected moment equals analytic half-line moment & relative error <= 2.0e-06 & analytic=-0.443113462726; numerical=-0.443113462726 & Verified \\
+D09 & Centred-selector continuum invariance & Symmetric first moment is independent of selector width & relative error <= 2.0e-06 & max relative error over three epsilon values=2.220e-16 & Verified \\
+D10 & Centred finite-grid convergence & Moment error decreases from a deliberately coarse lattice under refinement & finest error <= 2.0e-05 & errors=1.935e-01,1.939e-03,1.635e-06,1.110e-15 & Verified \\
+D11 & Boundary baseline response normalisation & Two-book baseline total response rate equals one & abs error <= 1.0e-12 & kappa\_total=1.000000000000 & Verified \\
+D12 & Combined-factor construction & Combined curve equals diagnosed component product and remains bounded & violation <= 1.0e-12 & range=[0.00000025, 0.98010000] & Verified \\
+D13 & Invalid-input handling & Four invalid parameter cases fail clearly & all four raise ValueError & caught=4/4 & Verified \\
+D14 & v2 analytic/simulation overlay contract & Required scientific and provenance roles are declared & all ten roles present & declared roles=10/10 & Verified \\
+\bottomrule
+\end{tabularx}
+\end{table}

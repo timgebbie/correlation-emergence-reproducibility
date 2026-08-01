@@ -1,0 +1,19 @@
+Correlation emergence v1.0.0 — source integrity record
+Date: 2026-08-01
+
+707f4a6aee671acf1ab333758a2934edf4692014248696333ba9a78743b4f1a1  58058  source-v0/CATG-RD2Epps2-v2-arXiv.tex
+93a71de424f36a7cfbbbc302802b17900831316cd405901b455c85d657f8155d  13225  source-v0/CoupledOB.bib
+a74c899cc9dc1da83c7b284d9b771b3ee034a78eaa22720e3ab1c779b10eedbb   3820  source-v0/widetext.sty
+
+Source convention:
+- source-v0 files are byte-identical to the uploaded intake and are read-only;
+- source-v0 is not edited by the computational software;
+- computational notation changes must be recorded in provenance and implemented outside source-v0;
+- the local TeX filename contains “v2”, while the public arXiv record is currently arXiv:2606.14182v1; both identifiers are retained without silent normalisation.
+
+Static source checks:
+- 31 bibliography entries and 31 cited keys;
+- no missing, unused, or duplicate bibliography keys detected;
+- no duplicate labels or unresolved internal references detected by static key comparison;
+- no external scientific figure files referenced;
+- source compilation requires `elsarticle.cls`. The public arXiv PDF/HTML confirms a compiled v1 record.

@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the associated paper and this software bundle."
+title: "Correlation emergence and the Epps effect: reproducibility software"
+type: software
+version: "1.0.0"
+date-released: 2026-08-01
+authors:
+  - family-names: Angstmann
+    given-names: Chris
+  - family-names: Gebbie
+    given-names: Tim
+license: MIT
+preferred-citation:
+  type: article
+  title: "Correlation emergence and the Epps effect in two coupled limit order books"
+  authors:
+    - family-names: Angstmann
+      given-names: Chris
+    - family-names: Gebbie
+      given-names: Tim
+  year: 2026
+  url: "https://arxiv.org/abs/2606.14182"

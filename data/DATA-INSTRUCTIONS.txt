@@ -1,0 +1,9 @@
+No empirical or external data are required for v1.0.0.
+
+All scientific curves are deterministic evaluations of equations in the frozen
+target paper and the documented finite-grid diagnostic.
+Machine-readable generated data are written to outputs/.
+
+Future v2.0.0 simulation curves must use the semantic fields in
+outputs/epps-overlay-v1.csv and record numerical resolution, alignment, domain,
+uncertainty, parameter profile, and software version.

@@ -1,0 +1,71 @@
+{
+  "project": {
+    "version": "1.0.0",
+    "status": "public reproducibility release",
+    "paper_arxiv": "2606.14182",
+    "random_seed": null
+  },
+  "aggregation_grid": {
+    "minimum": 0.001,
+    "maximum": 100.0,
+    "points": 301,
+    "scale": "logarithmic",
+    "unit": "clock characteristic time"
+  },
+  "ordinary": {
+    "clock_rate": 1.0,
+    "coupling_rate_ratios": [0.25, 1.0, 4.0],
+    "rho_inf": 1.0,
+    "small_argument_switch": 0.001
+  },
+  "calendar_bridge": {
+    "minimum_seconds": 0.0,
+    "maximum_seconds": 400.0,
+    "points": 801,
+    "clock_rate_per_second": 0.1,
+    "response_to_clock_rate_ratio": 0.25,
+    "rho_inf": 1.0,
+    "inset_maximum_lag_seconds": 200.0,
+    "inset_points": 301,
+    "status": "illustrative reference convention; not calibrated"
+  },
+  "fractional": {
+    "clock_characteristic_time": 1.0,
+    "response_characteristic_time": 1.0,
+    "order_pairs": [[1.0, 1.0], [0.8, 0.8], [0.6, 1.0], [0.6, 0.6]],
+    "series_switch": 0.25,
+    "quadrature_order_per_segment": 96,
+    "quadrature_log_limit": 48.0
+  },
+  "boundary": {
+    "clock_rate": 1.0,
+    "books": 2,
+    "coupling_strength": 1.1283791670955126,
+    "source_amplitude": 1.0,
+    "source_width": 1.0,
+    "front_slope_abs": 1.0,
+    "perturbation_factors": [0.5, 1.0, 2.0]
+  },
+  "discrete_representation": {
+    "directed_spread": 0.2,
+    "lattice_spacings": [0.5, 0.25, 0.125, 0.0625],
+    "selector_resolution_ratios": [0.5, 1.0, 2.0, 4.0, 8.0],
+    "full_domain_halfwidth": 6.0,
+    "truncated_domain_halfwidth": 1.5,
+    "alignment_offsets_in_cells": [0.0, 0.5]
+  },
+  "diagnostics": {
+    "ordinary_absolute_tolerance": 1e-12,
+    "fractional_reference_tolerance": 2e-9,
+    "alpha_one_tolerance": 2e-13,
+    "moment_relative_tolerance": 2e-6,
+    "centered_grid_convergence_tolerance": 2e-5,
+    "csv_latex_numeric_tolerance": 5e-10
+  },
+  "figures": {
+    "width_inches": 10.8,
+    "height_inches": 4.9,
+    "dpi": 180,
+    "pdf_metadata_date": null
+  }
+}

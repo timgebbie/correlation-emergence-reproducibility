@@ -1,0 +1,17 @@
+check_id,sensitivity_check,expected,observed,status,interpretation
+S01,Ordinary component product at kappa/lambda=0.25,combined equals clock times response,maximum product error=0.000e+00,Verified,Confirms the implemented leading-order separable construction.
+S02,Ordinary component product at kappa/lambda=1,combined equals clock times response,maximum product error=0.000e+00,Verified,Confirms the implemented leading-order separable construction.
+S03,Ordinary component product at kappa/lambda=4,combined equals clock times response,maximum product error=0.000e+00,Verified,Confirms the implemented leading-order separable construction.
+S04,Aggregation-scale rate sensitivity,short-scale elasticity near one and plateau elasticity near zero,S(0.001)=0.999667; S(100)=0.010101,Verified,Rate information is concentrated before the long-scale plateau.
+S05,"Fractional short-scale exponent for (0.8, 0.8)",log-log slope approaches alpha_c+alpha_r=1.6,fitted slope=1.592159,Verified,Supports the leading-power sensitivity and equal-sum confounding argument.
+S06,"Fractional short-scale exponent for (0.6, 1.0)",log-log slope approaches alpha_c+alpha_r=1.6,fitted slope=1.587231,Verified,Supports the leading-power sensitivity and equal-sum confounding argument.
+S07,"Fractional short-scale exponent for (0.6, 0.6)",log-log slope approaches alpha_c+alpha_r=1.2,fitted slope=1.176871,Verified,Supports the leading-power sensitivity and equal-sum confounding argument.
+S08,Equal-sum fractional-order confounding,equal alpha sums give nearly equal fitted short-scale powers,slope difference=0.004929,Verified,Short-scale combined curvature alone cannot separate both fractional orders.
+S09,Boundary-rate elasticity for coupling_strength,elasticity=1,fitted elasticity=1.000000000000,Verified,"Confirms conditional propagation into the response rate, not separate identifiability."
+S10,Boundary-rate elasticity for source_amplitude,elasticity=1,fitted elasticity=1.000000000000,Verified,"Confirms conditional propagation into the response rate, not separate identifiability."
+S11,Boundary-rate elasticity for source_width,elasticity=-0.5,fitted elasticity=-0.500000000000,Verified,"Confirms conditional propagation into the response rate, not separate identifiability."
+S12,Boundary-rate elasticity for front_slope_abs,elasticity=-1,fitted elasticity=-1.000000000000,Verified,"Confirms conditional propagation into the response rate, not separate identifiability."
+S13,Centred full-domain selector invariance,moment ratio remains one across selector and release-grid profiles,maximum absolute deviation=1.221e-15,Verified,Confirms the parity control in the discrete implementation.
+S14,Off-grid selector sensitivity,half-cell displacement produces a bounded non-zero representation error,"error range=[1.515e-09,1.032e-01]",Verified,Shows that alignment can distort the effective response while the continuum moment is unchanged.
+S15,Finite-domain truncation sensitivity,truncation lowers the represented moment without changing the continuum formula,"moment-ratio range=[0.804144,0.902396]",Verified,Separates a finite-domain artefact from structural front thickness.
+S16,Future v2 overlay schema,all required analytic/simulation semantic fields are present,missing fields=[],Verified,Allows future simulation curves and uncertainty to be overlaid without changing v1 meanings.

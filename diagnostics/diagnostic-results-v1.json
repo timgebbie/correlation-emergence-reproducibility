@@ -1,0 +1,156 @@
+[
+  {
+    "diagnostic": "Ordinary zero and small-argument limit",
+    "diagnostic_id": "D01",
+    "does_not_prove": "Validity of the modelling approximation",
+    "expected_result": "F(0)=0 and the declared small-x series is recovered",
+    "maximum_error": 0.0,
+    "observed_result": "F(0)=0.000e+00; series error at 1e-6=0.000e+00",
+    "status": "Verified",
+    "supports": "Stable evaluation at the origin",
+    "tolerance": "abs error <= 1.0e-12"
+  },
+  {
+    "diagnostic": "Ordinary bounds and monotonicity",
+    "diagnostic_id": "D02",
+    "does_not_prove": "Empirical validity of the Epps envelope",
+    "expected_result": "0 <= F(x) < 1 and non-decreasing for x >= 0",
+    "maximum_error": 0.0,
+    "observed_result": "range=[0.00000500, 0.99000000]; min increment=1.641e-07",
+    "status": "Verified",
+    "supports": "Qualitative ordinary-kernel behaviour",
+    "tolerance": "violation <= 1.0e-12"
+  },
+  {
+    "diagnostic": "Ordinary analytic derivative",
+    "diagnostic_id": "D03",
+    "does_not_prove": "Global parameter identifiability",
+    "expected_result": "Analytic derivative agrees with centred finite differences",
+    "maximum_error": 2.0837831460340794e-10,
+    "observed_result": "max error=2.084e-10",
+    "status": "Verified",
+    "supports": "Rate-sensitivity calculation",
+    "tolerance": "max error <= 2.0e-07"
+  },
+  {
+    "diagnostic": "Ordinary elasticity limits",
+    "diagnostic_id": "D04",
+    "does_not_prove": "An estimator's finite-sample information content",
+    "expected_result": "S_F -> 1 at short scale and S_F -> 0 at long scale",
+    "maximum_error": 1.000010000100001e-05,
+    "observed_result": "S(1e-8)=0.999999996667; S(1e5)=1.000e-05",
+    "status": "Verified",
+    "supports": "Aggregation-scale sensitivity interpretation",
+    "tolerance": "combined limit error <= 2.0e-05"
+  },
+  {
+    "diagnostic": "Fractional alpha-one recovery",
+    "diagnostic_id": "D05",
+    "does_not_prove": "Accuracy for all complex Mittag-Leffler arguments",
+    "expected_result": "F_alpha with alpha=1 equals the ordinary kernel",
+    "maximum_error": 0.0,
+    "observed_result": "max error=0.000e+00",
+    "status": "Verified",
+    "supports": "Correct ordinary endpoint of the fractional evaluator",
+    "tolerance": "max error <= 2.0e-13"
+  },
+  {
+    "diagnostic": "Fractional independent reference values",
+    "diagnostic_id": "D06",
+    "does_not_prove": "A general-purpose Mittag-Leffler implementation",
+    "expected_result": "Release evaluator matches adaptive-quadrature references",
+    "maximum_error": 1.5709655798445965e-13,
+    "observed_result": "six-point max error=1.571e-13",
+    "status": "Verified",
+    "supports": "Accuracy on the planned non-negative real-axis profiles",
+    "tolerance": "max error <= 2.0e-09"
+  },
+  {
+    "diagnostic": "Fractional bounds and monotonicity",
+    "diagnostic_id": "D07",
+    "does_not_prove": "Fractional-clock empirical validity",
+    "expected_result": "Release curves remain in [0,1] and non-decreasing",
+    "maximum_error": 0.0,
+    "observed_result": "maximum violation=0.000e+00",
+    "status": "Verified",
+    "supports": "Qualitative stability over the plotting grid",
+    "tolerance": "violation <= 2.0e-09"
+  },
+  {
+    "diagnostic": "Decaying-Gaussian first moment",
+    "diagnostic_id": "D08",
+    "does_not_prove": "Equivalence to the legacy positive-exponential source",
+    "expected_result": "Numerical full-domain selected moment equals analytic half-line moment",
+    "maximum_error": 0.0,
+    "observed_result": "analytic=-0.443113462726; numerical=-0.443113462726",
+    "status": "Verified",
+    "supports": "The active analytic moment implementation",
+    "tolerance": "relative error <= 2.0e-06"
+  },
+  {
+    "diagnostic": "Centred-selector continuum invariance",
+    "diagnostic_id": "D09",
+    "does_not_prove": "Invariance for asymmetric kernels or domains",
+    "expected_result": "Symmetric first moment is independent of selector width",
+    "maximum_error": 2.220446049250313e-16,
+    "observed_result": "max relative error over three epsilon values=2.220e-16",
+    "status": "Verified",
+    "supports": "Parity control for the finite-grid experiment",
+    "tolerance": "relative error <= 2.0e-06"
+  },
+  {
+    "diagnostic": "Centred finite-grid convergence",
+    "diagnostic_id": "D10",
+    "does_not_prove": "Convergence of the future legacy simulator",
+    "expected_result": "Moment error decreases from a deliberately coarse lattice under refinement",
+    "maximum_error": 1.1102230246251565e-15,
+    "observed_result": "errors=1.935e-01,1.939e-03,1.635e-06,1.110e-15",
+    "status": "Verified",
+    "supports": "Numerical representation convergence",
+    "tolerance": "finest error <= 2.0e-05"
+  },
+  {
+    "diagnostic": "Boundary baseline response normalisation",
+    "diagnostic_id": "D11",
+    "does_not_prove": "A calibrated physical response rate",
+    "expected_result": "Two-book baseline total response rate equals one",
+    "maximum_error": 1.1102230246251565e-16,
+    "observed_result": "kappa_total=1.000000000000",
+    "status": "Verified",
+    "supports": "Transparent Figure 4 nondimensionalisation",
+    "tolerance": "abs error <= 1.0e-12"
+  },
+  {
+    "diagnostic": "Combined-factor construction",
+    "diagnostic_id": "D12",
+    "does_not_prove": "Independence or exactness of the factorisation",
+    "expected_result": "Combined curve equals diagnosed component product and remains bounded",
+    "maximum_error": 0.0,
+    "observed_result": "range=[0.00000025, 0.98010000]",
+    "status": "Verified",
+    "supports": "Implementation of the stated leading-order factorisation",
+    "tolerance": "violation <= 1.0e-12"
+  },
+  {
+    "diagnostic": "Invalid-input handling",
+    "diagnostic_id": "D13",
+    "does_not_prove": "Protection against every possible misuse",
+    "expected_result": "Four invalid parameter cases fail clearly",
+    "maximum_error": 0.0,
+    "observed_result": "caught=4/4",
+    "status": "Verified",
+    "supports": "Clear failure for out-of-domain inputs",
+    "tolerance": "all four raise ValueError"
+  },
+  {
+    "diagnostic": "v2 analytic/simulation overlay contract",
+    "diagnostic_id": "D14",
+    "does_not_prove": "Compatibility with an implementation not yet converted",
+    "expected_result": "Required scientific and provenance roles are declared",
+    "maximum_error": 0.0,
+    "observed_result": "declared roles=10/10",
+    "status": "Verified",
+    "supports": "A stable semantic interface for future simulation curves",
+    "tolerance": "all ten roles present"
+  }
+]
