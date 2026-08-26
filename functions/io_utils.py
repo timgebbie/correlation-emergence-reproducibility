@@ -4,11 +4,42 @@ from __future__ import annotations
 
 import csv
 import json
+import os
 from pathlib import Path
 from typing import Iterable, Mapping
+import uuid
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+OUTPUT_STAGING_DIRECTORY = PROJECT_ROOT / ".output-staging"
+
+
+def remove_orphaned_output_staging_files() -> None:
+    """Remove incomplete tabular publications left by an interrupted route."""
+
+    if OUTPUT_STAGING_DIRECTORY.is_dir():
+        for temporary in OUTPUT_STAGING_DIRECTORY.iterdir():
+            if temporary.is_file():
+                temporary.unlink(missing_ok=True)
+        try:
+            OUTPUT_STAGING_DIRECTORY.rmdir()
+        except OSError:
+            pass
+
+
+def _staging_path(target: Path) -> Path:
+    OUTPUT_STAGING_DIRECTORY.mkdir(parents=True, exist_ok=True)
+    return OUTPUT_STAGING_DIRECTORY / (
+        f"{target.parent.name}-{target.stem}-{uuid.uuid4().hex}.tmp{target.suffix}"
+    )
+
+
+def _finish_publication(temporary: Path, target: Path) -> None:
+    """Commit one complete same-filesystem staged output."""
+
+    with temporary.open("r+b") as handle:
+        os.fsync(handle.fileno())
+    os.replace(temporary, target)
 
 
 def load_config() -> dict:
@@ -23,10 +54,20 @@ def ensure_output_directories() -> None:
 
 def write_csv(path: Path, fieldnames: list[str], rows: Iterable[Mapping[str, object]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fieldnames, lineterminator="\n")
-        writer.writeheader()
-        writer.writerows(rows)
+    temporary = _staging_path(path)
+    try:
+        with temporary.open("w", encoding="utf-8", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=fieldnames, lineterminator="\n")
+            writer.writeheader()
+            writer.writerows(rows)
+            handle.flush()
+        _finish_publication(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
+        try:
+            OUTPUT_STAGING_DIRECTORY.rmdir()
+        except OSError:
+            pass
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -36,9 +77,19 @@ def read_csv(path: Path) -> list[dict[str, str]]:
 
 def write_json(path: Path, payload: object) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8") as handle:
-        json.dump(payload, handle, indent=2, sort_keys=True)
-        handle.write("\n")
+    temporary = _staging_path(path)
+    try:
+        with temporary.open("w", encoding="utf-8", newline="\n") as handle:
+            json.dump(payload, handle, indent=2, sort_keys=True)
+            handle.write("\n")
+            handle.flush()
+        _finish_publication(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
+        try:
+            OUTPUT_STAGING_DIRECTORY.rmdir()
+        except OSError:
+            pass
 
 
 def latex_escape(value: object) -> str:
@@ -58,8 +109,10 @@ def latex_escape(value: object) -> str:
 
 __all__ = [
     "PROJECT_ROOT",
+    "OUTPUT_STAGING_DIRECTORY",
     "load_config",
     "ensure_output_directories",
+    "remove_orphaned_output_staging_files",
     "write_csv",
     "read_csv",
     "write_json",

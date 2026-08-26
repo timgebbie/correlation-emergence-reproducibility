@@ -1,0 +1,11 @@
+check_id,finding_id,check,observed,expected,absolute_error,tolerance,status,software_version
+OP-01,PA-02,corrected source value at y=1,-0.09048374180359596,-0.09048374180359596,0.0,1e-15,Verified,1.3.4
+OP-02,PA-02,corrected source positive-half first moment,-1.401247804099482,-1.401247804099482,0.0,1e-15,Verified,1.3.4
+OP-03,PA-03,zero-spread target coupling,0.0,0.0,0.0,0.0,Verified,1.3.4
+OP-04,PA-03,positive-spread lattice moment,-0.8407486824601196,-0.8407486824596891,4.304334666471732e-13,2e-11,Verified,1.3.4
+OP-05,PA-03,negative-spread lattice moment,0.8407486824601194,0.8407486824596891,4.3021142204224816e-13,2e-11,Verified,1.3.4
+OP-06,PA-04,raw Sibuya first coefficient,0.8,0.8,0.0,0.0,Verified,1.3.4
+OP-07,PA-04,raw Sibuya second coefficient,-0.07999999999999999,-0.08,1.3877787807814457e-17,2e-17,Verified,1.3.4
+OP-08,PA-04,most-recent history has unit survival,0.0,0.0,0.0,1e-15,Verified,1.3.4
+OP-09,PA-05,simultaneous initial price snapshot,0.0,0.0,0.0,0.0,Verified,1.3.4
+OP-10,PA-05,stationary initialization residual,5.551115123125783e-17,0.0,5.551115123125783e-17,2e-13,Verified,1.3.4

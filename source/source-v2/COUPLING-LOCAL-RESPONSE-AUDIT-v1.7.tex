@@ -1,0 +1,59 @@
+% Coupling local-response audit accepted at the v1.7.5 gate.
+% The accepted paper source remains frozen in source/source-v1.
+
+\section*{Local-response audit of the regularised thick-boundary coupling}
+
+The accepted thick-boundary implementation evaluates
+\[
+  \ell_\varepsilon(y,z)
+  =\gamma zq(y)W_\varepsilon(y,z),
+  \qquad
+  W_\varepsilon(y,z)
+  =\frac12\left[1+\tanh\left(\frac{yz}{\varepsilon}\right)\right].
+\]
+At fixed $y$ and $\varepsilon>0$, its small-spread expansion is
+\[
+  \ell_\varepsilon(y,z)
+  =\frac{\gamma}{2}zq(y)
+   +\frac{\gamma}{2\varepsilon}z^2yq(y)
+   -\frac{\gamma}{6\varepsilon^3}z^4y^3q(y)
+   +O(z^6).
+\]
+The only term linear in $z$ is therefore proportional to the uncoupled source
+$q(y)$.  For a stationary density satisfying a linear equation with source
+$q$, a perturbation proportional to $q$ changes the amplitude of the
+stationary front to first order but leaves its zero crossing fixed.  The
+first shape component capable of displacing the zero crossing enters here at
+order $z^2$, not at order $z$.
+
+Consequently, the mean-reverting boundary law
+\[
+  \frac{d}{du}z(u)=-\kappa z(u)+o(z)
+\]
+does not follow from the implemented density recurrence merely by assigning
+the raw first moment of $\ell_\varepsilon$ to a translation velocity.  That
+assignment is an additional closure, and the present numerical zero crossing
+does not realise it.  Symmetric translation-mode perturbations confirm this
+directly: over the registered positive-$\gamma$ scan, both the paired local
+drift and paired exponential response rates are non-positive and do not
+bracket the required $\kappa=2.5$ per model-time unit.
+
+The reduced symmetric two-price SDE remains internally consistent.  If
+$x=\kappa\Delta$, its covariance divided by $C\Delta$ is
+\[
+  F(x)=1-\frac{1-e^{-x}}{x},
+\]
+whereas its exact finite-scale return correlation is
+\[
+  \rho_{\mathrm{SDE}}(x)
+  =\frac{x-(1-e^{-x})}{x+(1-e^{-x})}.
+\]
+Thus $F$ is the normalized covariance response.  Treating it as a correlation
+additionally requires the approximately linear marginal-variance closure
+already stated in the paper.
+
+No replacement thick-boundary coupling is selected at this gate.  A correction
+must separately resolve the receiving-book sign convention, the side-selector
+limit and the translation-mode projection, then demonstrate a positive local
+rate before any Epps curve is fitted or any combined no-refit prediction is
+attempted.

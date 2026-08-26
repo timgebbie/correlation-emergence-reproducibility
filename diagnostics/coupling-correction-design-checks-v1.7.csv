@@ -1,0 +1,27 @@
+check_id,check,observed,criterion,status,software_version
+S7CC-01,accepted v1.7.5 input hashes,0,zero mismatches,Verified,1.7.6
+S7CC-02,accepted parent,v1.7.5,exactly v1.7.5,Verified,1.7.6
+S7CC-03,design-only production boundary,False:False:False,all false,Verified,1.7.6
+S7CC-04,uniform operational architecture,uniform_fixed_grid_only,uniform fixed grid only,Verified,1.7.6
+S7CC-05,coupling-only identity clock,identity_clock_for_coupling_recovery,identity clock,Verified,1.7.6
+S7CC-06,nonuniform update and interpolation excluded,forbidden:forbidden,both forbidden,Verified,1.7.6
+S7CC-07,accepted failed coupling retained as comparator,invalid_experiment,invalid_experiment and no v1.7.5 replacement,Verified,1.7.6
+S7CC-08,single selected correction,['CC-04'],CC-04 only,Verified,1.7.6
+S7CC-09,translation-mode definition,v_j=-partial_x(phi_j_current),v_j=-partial_x(phi_j_current),Verified,1.7.6
+S7CC-10,ordered-pair source sign,ell_T_jk=-kappa_jk*z_jk*v_j=kappa_jk*z_jk*partial_x(phi_j_current),ell=-kappa*z*v,Verified,1.7.6
+S7CC-11,receiving-book mean-reversion sign,True,own above other gives negative own drift and positive other drift,Verified,1.7.6
+S7CC-12,ordered rates sum to target,2.5,2.5 per model time unit,Verified,1.7.6
+S7CC-13,dimensional rate map,0.025,0.025 per second,Verified,1.7.6
+S7CC-14,explicit spread-step stability,0.9875,"equals registered 0.9875 and lies in (0,1)",Verified,1.7.6
+S7CC-15,zero-spread coupling response,True,exactly zero,Verified,1.7.6
+S7CC-16,translation-mode outer source values,0.0,exactly zero,Verified,1.7.6
+S7CC-17,one-step total-rate recovery,0.0006648912395888828,relative error <= 0.001,Verified,1.7.6
+S7CC-18,pair centre invariance,6.071532165918825e-16,absolute centre drift <= 1e-10,Verified,1.7.6
+S7CC-19,opposite-spread response symmetry,0.0,rate difference <= 1e-10,Verified,1.7.6
+S7CC-20,unique reaction boundaries,1,exactly one per book,Verified,1.7.6
+S7CC-21,interior reaction boundaries,9.9600222004576,strictly greater than 8.0,Verified,1.7.6
+S7CC-22,selector removed from claim-bearing leading mode,none,none,Verified,1.7.6
+S7CC-23,side-selective residual constrained,must_have_zero_adjoint_translation_projection_before_addition,zero adjoint translation projection,Verified,1.7.6
+S7CC-24,v1.7.7 deterministic rate gate precedes Epps curve,True,true with no combined refit,Verified,1.7.6
+S7CC-25,layer-separated deterministic design route,True,"no RNG, observation or legacy dependency",Verified,1.7.6
+S7CC-26,revised stage sequence,v1.7.6_coupling_correction_design:v1.8.0_event_semantics_and_impact_entry,v1.7.6 design through v1.8.0 entry,Verified,1.7.6

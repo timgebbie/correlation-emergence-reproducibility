@@ -2,15 +2,17 @@
 
 | Item | Treatment in v1.0.0 |
 |---|---|
-| Poisson refresh curve | Evaluated as the paper's renewal/overlap envelope, not asserted as an exact asynchronous estimator law in every setting. |
-| Exponential response curve | Evaluated after accepting the stated response-kernel and linear-variance normalisation. No OU path simulation is used as a surrogate proof. |
-| Combined curve | Treated as the paper's leading-order separable approximation under its C-assumptions. |
+| Poisson refresh curve | v1.7.4 distinguishes two objects. Equal-rate previous-refresh sampling has the exact `F(lambda*Delta)` law with each equal book rate. General inverse or unequal clocks use realised operational-interval overlap; the former pooled-rate envelope remains a rejected/effective diagnostic. |
+| Exponential response curve | v1.7.5 distinguishes the normalized covariance response `F(kappa*Delta)` from the exact finite-scale return correlation of the symmetric closed SDE. The reduced simulation recovers both separately; neither is used as proof that the thick boundary realizes the same local rate. |
+| Thick-boundary coupling response | The accepted selector coupling has a linear-in-spread term proportional to the base source. Its local translation-mode audit produces no positive rate bracket under the declared gamma scan, so the stochastic thick-boundary Epps test is invalid and not executed. The paper's first-moment projection remains a conditional closure, not a property established by the zero-crossing recurrence. |
+| Corrected coupling response | Accepted v1.7.6 selects the direct current-front mode `ell_T=-kappa_jk*z_jk*v_j`, `v_j=-partial_x(phi_j)`. Accepted v1.7.7 realizes the appendix adjoint projection by construction, recovers the independently registered deterministic rate and recovers both coupling-only stochastic estimands on holdout paths. Each ordered pair has an explicit response-rate parameter. |
+| Combined curve | Treated as the paper's leading-order separable approximation under its C-assumptions, not an exact estimator identity. Accepted corrected v1.7.11 freezes the accepted component parameters and recovers an exact conditional reduced estimator benchmark, but the benchmark differs from the simple product by RMSE `0.037391`. The thick boundary adds a separately measured covariance residual of RMSE `0.039719`; total analytical-product RMSE is `0.066963`. These are qualified nonseparability results, not refitted failures. |
 | Fractional curve | Evaluated on the non-negative real axis with declared characteristic-time scaling. No unconditional dimensional “slower” claim is made. |
 | Fractional identifiability | The leading combined exponent identifies an order sum; separate orders require later-scale information or independent constraints. |
 | Correlation scale | `rho_inf` is separated from attenuation and fixed to one in normalised figures. |
 | Source convention | Only the decaying Gaussian with finite analytic moment is active. The legacy positive-exponential finite-domain convention is excluded. |
-| Boundary response | Frozen-front, first-moment projection is used conditionally. The normalising convention is absorbed into coupling strength as in the paper. |
-| Boundary thickness | Front slope/structural thickness, selector width, and lattice spacing are not interchangeable. |
-| Selector width | Centred symmetric continuum moment is parity invariant; epsilon sensitivity shown in F5 is numerical representation sensitivity when alignment/domain controls change. |
+| Boundary response | Frozen-front, first-moment projection is conditional. v1.7.5 shows that the accepted source does not realize it; v1.7.6 therefore uses the appendix translation mode itself and fixes the receiving-book sign before implementation. |
+| Boundary thickness | Front slope/structural thickness, selector width, and lattice spacing are not interchangeable. In the selected correction, coupling thickness is inherited from the complete current front through `-partial_x(phi_j)` rather than assigned through `epsilon`. |
+| Selector width | Centred symmetric continuum moment is parity invariant; epsilon sensitivity shown in F5 is numerical representation sensitivity when alignment/domain controls change. Fixed-epsilon selection is inactive in the v1.7.7 primary recovery; any later side-selective residual must have zero adjoint translation projection. |
 | Discrete experiment | Rectangle-rule grid, half-cell selector shift, and truncated domain are explicit diagnostics, not the v2 legacy simulator. |
 | Computational evidence | Figures and tests illustrate and numerically verify implemented objects; they do not prove assumptions or validate market behaviour empirically. |

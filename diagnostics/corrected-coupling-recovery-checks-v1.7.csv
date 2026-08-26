@@ -1,0 +1,39 @@
+check_id,check,observed,criterion,status,software_version
+S7CR-01,accepted v1.7.6 input hashes,True,all accepted hashes exact,Verified,1.7.7
+S7CR-02,accepted parent,v1.7.6,exactly v1.7.6,Verified,1.7.7
+S7CR-03,split corrected implementation,"['functions/operational/translation_coupling.py', 'functions/operational/translation_solver.py', 'functions/operational/translation_path.py']",three distinct corrected operational modules,Verified,1.7.7
+S7CR-04,regularized comparator immutability,True,all accepted comparator hashes exact,Verified,1.7.7
+S7CR-05,uniform operational dynamics,uniform_fixed_grid_only,uniform_fixed_grid_only,Verified,1.7.7
+S7CR-06,identity-clock isolation,identity_clock_only,identity_clock_only,Verified,1.7.7
+S7CR-07,nonuniform update and interpolation excluded,forbidden:forbidden,both forbidden,Verified,1.7.7
+S7CR-08,explicit ordered rate type,TranslationModeCoupling,TranslationModeCoupling,Verified,1.7.7
+S7CR-09,zero-spread coupling,0.0,exactly zero,Verified,1.7.7
+S7CR-10,zero-spread stationary state,1.1622647289044608e-15,maximum error <= 2e-12,Verified,1.7.7
+S7CR-11,receiving-book sign,True,correct for every signed perturbation,Verified,1.7.7
+S7CR-12,deterministic exponential-rate recovery,0.006117255229946749,maximum relative error <= 0.05,Verified,1.7.7
+S7CR-13,deterministic local-drift rate recovery,0.0006450424039245561,maximum relative error <= 0.05,Verified,1.7.7
+S7CR-14,independent rate-measurement agreement,0.006289407181615303,relative difference <= 0.02,Verified,1.7.7
+S7CR-15,front-mode projection residual,0.0,maximum <= 1e-14,Verified,1.7.7
+S7CR-16,pair-centre preservation,2.1571286423771596e-15,maximum <= 1e-10,Verified,1.7.7
+S7CR-17,signed-spread preservation,True,true for every response path,Verified,1.7.7
+S7CR-18,unique deterministic boundaries,1,exactly one,Verified,1.7.7
+S7CR-19,interior deterministic boundaries,9.940049937171775,strictly greater than 8.0,Verified,1.7.7
+S7CR-20,grid recovery sequence,"[0.025098783179476846, 0.0059610931155630095, 0.001425268197201568]",every registered grid has rate error <= 0.05,Verified,1.7.7
+S7CR-21,deterministic precondition,True,passed before stochastic execution,Verified,1.7.7
+S7CR-22,disjoint calibration and validation seeds,177701:177702,different seeds,Verified,1.7.7
+S7CR-23,holdout input orthogonality,-1.8671932686877653e-18,absolute correlation <= 1e-14,Verified,1.7.7
+S7CR-24,positive frozen covariance scale,1.0568450226140758e-06,finite and positive,Verified,1.7.7
+S7CR-25,normalized covariance absolute recovery,0.016699893765436503,RMSE <= 0.03,Verified,1.7.7
+S7CR-26,normalized covariance standardized recovery,0.26383422019020664,standardized RMSE <= 2.0,Verified,1.7.7
+S7CR-27,normalized covariance coverage,1.0,coverage >= 0.9,Verified,1.7.7
+S7CR-28,normalized covariance plateau stability,0.049974046525943054,relative shift <= 0.05,Verified,1.7.7
+S7CR-29,exact return-correlation absolute recovery,0.008772309870121096,RMSE <= 0.03,Verified,1.7.7
+S7CR-30,exact return-correlation standardized recovery,0.41661787403762024,standardized RMSE <= 2.0,Verified,1.7.7
+S7CR-31,exact return-correlation coverage,1.0,coverage >= 0.9,Verified,1.7.7
+S7CR-32,stochastic spread-rate diagnostic,0.020241089871657715,relative error <= 0.1,Verified,1.7.7
+S7CR-33,stochastic boundary validity,"(9.814574208219671, 1)",unique and minimum edge distance > 8,Verified,1.7.7
+S7CR-34,paper source-v1 freeze,True,accepted source-v1 hash exact,Verified,1.7.7
+S7CR-35,theory qualification recorded,reduced_response_retained_regularized_source_to_rate_bridge_requires_qualification,reduced response retained and source-to-rate bridge qualified,Verified,1.7.7
+S7CR-36,combined prediction remains unfitted,forbidden,forbidden and not executed,Verified,1.7.7
+S7CR-37,pair-centre variance normalization stability,0.02758917352371155,relative range <= 0.05,Verified,1.7.7
+S7CR-38,Figure 8 and output contract,"(20, 11, 1288)","20 curve rows, 11 rate rows, 1288 response rows and figure pair",Verified,1.7.7

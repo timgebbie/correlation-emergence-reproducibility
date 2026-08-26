@@ -1,0 +1,130 @@
+{
+  "schema_version": "1.7.4",
+  "scope": "clock_only_theory_estimator_conformity",
+  "accepted_parent": "v1.7.3",
+  "accepted_parent_commit": "a6adf577a5c28a59033c3ecde00233dc36a26e84",
+  "target_ids": ["CNF-CLK-REF-01", "CNF-CLK-LOB-01"],
+  "accepted_inputs": [
+    {
+      "path": "config/config-v1.7.3.json",
+      "sha256": "575400f2b182b4cd984b00ea7d773d7e0c13ff246ec978dbc0f9617ffe0dcf38",
+      "role": "accepted_conformity_design"
+    },
+    {
+      "path": "source/source-v1/CATG-RD2Epps-v3-arXiv.tex",
+      "sha256": "48eea98a6fb084d6ecc397bede4c107a44cae947e16271d66a7041e2997afb5a",
+      "role": "pre_correction_theory_source"
+    },
+    {
+      "path": "functions/observation/subordination.py",
+      "sha256": "d2bc0640d374c2b1592230a4720fbed011873e602107745ac4bc3894a033c761",
+      "role": "accepted_general_inverse_clock_subordination"
+    },
+    {
+      "path": "functions/operational/solver.py",
+      "sha256": "44d0049874d4c4ae72bfb3ff0e68106e7012c82bb064e3383bbd686c390d4626",
+      "role": "accepted_uniform_operational_solver"
+    }
+  ],
+  "source_authorities": [
+    {
+      "citation": "Angstmann and Gebbie, arXiv:2606.14182v2",
+      "role": "fixed_grid_operational_time_and_general_inverse_clock_architecture",
+      "url": "https://arxiv.org/abs/2606.14182v2"
+    },
+    {
+      "citation": "Toth, Toth and Kertesz, arXiv:0704.3798, Eq. 29",
+      "role": "exact_equal_rate_poisson_previous_refresh_curve",
+      "url": "https://arxiv.org/abs/0704.3798"
+    }
+  ],
+  "correction_source": {
+    "path": "source/source-v2/CLOCK-RATE-CORRECTION-v1.7.tex",
+    "sha256": "5f2456e48945c26d36531c7f686f9657a05ec0b3eb8e586bc3624a9921cd3047",
+    "role": "v1.7.4_equal_rate_previous_refresh_correction_overlay",
+    "preserves_accepted_source": true
+  },
+  "architecture": {
+    "operational_dynamics": "uniform_fixed_grid_only",
+    "calendar_observation": "explicit_book_specific_time_change_after_operational_simulation",
+    "calendar_interpolation": "forbidden",
+    "nonuniform_state_update": "forbidden",
+    "general_inverse_clock_status": "retained_and_tested_against_realised_operational_interval_overlap",
+    "previous_refresh_status": "separate_exact_equal_rate_reference_benchmark"
+  },
+  "theory_rate_correction": {
+    "displayed_clock_rate_per_second": 0.1,
+    "equal_book_refresh_rates_per_second": [0.1, 0.1],
+    "pooled_minimum_wait_rate_per_second": 0.2,
+    "accepted_equal_rate_curve": "F(lambda_clock*Delta_t)",
+    "rejected_as_exact_previous_refresh_curve": "F((lambda_1_clock+lambda_2_clock)*Delta_t)",
+    "envelope": "F(x)=1-(1-exp(-x))/x",
+    "reason": "the exact equal-rate previous-refresh Brownian result uses the rate of either identically distributed book; the sum is the exact minimum-wait rate but not the exact attenuation parameter",
+    "unequal_rate_policy": "use_the_exact_realised_interval_overlap_until_a_separate_unequal_rate_formula_is_derived"
+  },
+  "time_resolution": {
+    "seconds_per_model_time_unit": 100.0,
+    "operational_step_model_units": 0.005,
+    "operational_step_seconds": 0.5,
+    "warm_up_seconds": 200.0,
+    "analysis_horizon_seconds": 2000.0,
+    "total_horizon_seconds": 2200.0,
+    "total_operational_steps": 4400,
+    "clock_characteristic_time_seconds": 10.0,
+    "operational_steps_per_clock_characteristic_time": 20
+  },
+  "reduced_reference": {
+    "operational_process": "two_correlated_brownian_log_prices_on_the_uniform_grid",
+    "operational_correlation": 0.8,
+    "innovation_scale": 1.0,
+    "validation_operational_paths": 32,
+    "clock_replications_per_path": 4,
+    "calibration_clock_groups": 16,
+    "calibration_clock_replications_per_group": 4,
+    "operational_seed": 170401,
+    "validation_clock_seed": 170402,
+    "calibration_clock_seed": 170403,
+    "warm_up_seconds": 200.0,
+    "analysis_horizon_seconds": 10000.0,
+    "total_horizon_seconds": 10200.0,
+    "total_operational_steps": 20400,
+    "uniform_draws_per_book_clock": 4096,
+    "normalization": "ratio_of_pooled_calendar_covariance_to_known_rho_u",
+    "uncertainty": "delete_one_operational_path_jackknife_of_the_ratio_of_pooled_sums"
+  },
+  "thick_boundary": {
+    "operational_process": "uncoupled_angstmann_gebbie_reaction_boundary_books",
+    "operational_correlation": 0.8,
+    "innovation_sigma": [0.4, 0.4],
+    "calibration_operational_paths": 16,
+    "validation_operational_paths": 32,
+    "clock_replications_per_validation_path": 4,
+    "calibration_operational_seed": 170411,
+    "validation_operational_seed": 170412,
+    "validation_clock_seed": 170413,
+    "uniform_draws_per_book_clock": 1024,
+    "coupling": "disabled",
+    "normalization": "validation_calendar_correlation_divided_by_frozen_calibration_identity_clock_correlation_at_each_lag",
+    "uncertainty": "independent_two_sample_delete_one_path_jackknife_delta_combination"
+  },
+  "registered_comparison_lags_seconds": [20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 320, 340, 360, 380, 400],
+  "acceptance_policy": {
+    "rate_relative_error_maximum": 0.05,
+    "plateau_relative_shift_maximum": 0.05,
+    "absolute_curve_rmse_maximum": 0.03,
+    "standardized_curve_rmse_maximum": 2.0,
+    "minimum_pointwise_normal_95_coverage": 0.9,
+    "exact_overlap_curve_rmse_maximum": 0.01,
+    "rejected_pooled_curve_rmse_minimum": 0.05,
+    "reduced_reference_must_recover_before_thick_boundary_claim": true,
+    "permitted_result_labels": ["recovered", "qualified_nonconformity", "invalid_experiment"]
+  },
+  "output_contract": {
+    "figure_number": 19,
+    "curve_rows": 40,
+    "summary_rows": 2,
+    "claim_bearing_curve": "ratio_of_pooled_sums",
+    "separate_non_claim_bearing_curves": ["path_group_mean", "old_pooled_rate_envelope"],
+    "next_stage_if_reduced_reference_recovers": "v1.7.5_coupling_only_recovery"
+  }
+}

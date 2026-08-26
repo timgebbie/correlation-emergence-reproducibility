@@ -1,19 +1,43 @@
-Correlation emergence v1.0.0 — source integrity record
-Date: 2026-08-01
+Correlation emergence — source integrity record
+Updated: 2026-08-12 (Stage 1 accepted v1.1.4)
+
+Released v1.0.0 source snapshot:
 
 707f4a6aee671acf1ab333758a2934edf4692014248696333ba9a78743b4f1a1  58058  source-v0/CATG-RD2Epps2-v2-arXiv.tex
 93a71de424f36a7cfbbbc302802b17900831316cd405901b455c85d657f8155d  13225  source-v0/CoupledOB.bib
 a74c899cc9dc1da83c7b284d9b771b3ee034a78eaa22720e3ab1c779b10eedbb   3820  source-v0/widetext.sty
 
-Source convention:
-- source-v0 files are byte-identical to the uploaded intake and are read-only;
-- source-v0 is not edited by the computational software;
-- computational notation changes must be recorded in provenance and implemented outside source-v0;
-- the local TeX filename contains “v2”, while the public arXiv record is currently arXiv:2606.14182v1; both identifiers are retained without silent normalisation.
+Current operational-time/subordination paper source snapshot:
 
-Static source checks:
+48eea98a6fb084d6ecc397bede4c107a44cae947e16271d66a7041e2997afb5a  79732  source-v1/CATG-RD2Epps-v3-arXiv.tex
+3c1f807f7efc465a3240eb99d16ce3d0b4e190e6156a2ad2f4115eadd9afe0dd  14294  source-v1/CoupledOB.bib
+
+Source convention:
+- source-v0 files are byte-identical to the original v1.0.0 intake and are read-only;
+- the source-v1 TeX and BibTeX files are byte-identical to the uploaded CATG-RD2Epps-v3 arXiv bundle and are read-only;
+- at intake the uploaded source-v1 figure was byte-identical to the tracked generated Figure 6, with SHA-256 d163a84d4177bf88c969a31ab471ff2bbcaf252d0dfeed57a5c5c7fa2e22332f;
+- that PDF is not part of the immutable source hash test because `scripts/run_all.py` regenerates it and renderer metadata is platform-dependent;
+- source-v0 is not edited by the computational software;
+- computational notation changes must be recorded in provenance and implemented outside both source snapshots;
+- the source-v0 TeX filename contains “v2”, while its frozen public identifier was arXiv:2606.14182v1; both identifiers are retained without silent normalisation.
+
+The source-v1 bundle is the current author source used to specify the fixed-grid
+operational-time and explicit-subordination extension. Its internal author
+revision label is retained verbatim and is not treated as a public software
+version.
+
+Static source-v0 checks:
 - 31 bibliography entries and 31 cited keys;
 - no missing, unused, or duplicate bibliography keys detected;
 - no duplicate labels or unresolved internal references detected by static key comparison;
 - no external scientific figure files referenced;
 - source compilation requires `elsarticle.cls`. The public arXiv PDF/HTML confirms a compiled v1 record.
+
+The source-v1 TeX references the active generated Figure 6. Its scientific
+values are verified through the corresponding CSV data and regression tests;
+the PDF is checked for a valid header, trailer, and nontrivial size rather than
+for byte identity after regeneration.
+
+Environment note for the source-v1 snapshot:
+- the `pdflatex` executable is available in the Stage 1 execution surface;
+- `elsarticle.cls` is not available, so source-v1 compilation is deferred rather than silently altering the document class or installing a package.

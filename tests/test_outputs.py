@@ -50,6 +50,7 @@ class GeneratedOutputTests(unittest.TestCase):
         self.assertTrue(all(path.read_bytes()[:4] == b"%PDF" for path in pdfs))
         self.assertTrue(all(path.read_bytes().rstrip().endswith(b"%%EOF") for path in pdfs))
         self.assertTrue(all(_png_chunks_are_valid(path) for path in pngs))
+        self.assertEqual(list((PROJECT_ROOT / "figures").glob(".*.tmp.*")), [])
 
     def test_six_machine_readable_figure_datasets_exist(self) -> None:
         datasets = sorted((PROJECT_ROOT / "outputs").glob("figure-0[1-6]-*-data-v1.csv"))
@@ -114,8 +115,8 @@ class GeneratedOutputTests(unittest.TestCase):
         self.assertTrue(all(row["status"] == "Verified" for row in rows))
 
     def test_supplement_pdf_and_tex_exist(self) -> None:
-        tex_path = PROJECT_ROOT / "SUPPLEMENTARY-MATERIAL-v1.0.0.tex"
-        pdf_path = PROJECT_ROOT / "supplementary-materials" / "SUPPLEMENTARY-MATERIAL-v1.0.0.pdf"
+        tex_path = PROJECT_ROOT / "SUPPLEMENTARY-MATERIAL-v2.0.0.tex"
+        pdf_path = PROJECT_ROOT / "supplementary-materials" / "SUPPLEMENTARY-MATERIAL-v2.0.0.pdf"
         self.assertTrue(tex_path.is_file())
         self.assertTrue(pdf_path.is_file())
         self.assertGreater(pdf_path.stat().st_size, 100_000)
@@ -123,13 +124,13 @@ class GeneratedOutputTests(unittest.TestCase):
         self.assertTrue(pdf_path.read_bytes().rstrip().endswith(b"%%EOF"))
 
     def test_source_freeze_hashes(self) -> None:
+        self.assertFalse((PROJECT_ROOT / "source/source-v0").exists())
         expected = {
-            "CATG-RD2Epps2-v2-arXiv.tex": "707f4a6aee671acf1ab333758a2934edf4692014248696333ba9a78743b4f1a1",
-            "CoupledOB.bib": "93a71de424f36a7cfbbbc302802b17900831316cd405901b455c85d657f8155d",
-            "widetext.sty": "a74c899cc9dc1da83c7b284d9b771b3ee034a78eaa22720e3ab1c779b10eedbb",
+            Path("source/source-v1/CATG-RD2Epps-v3-arXiv.tex"): "48eea98a6fb084d6ecc397bede4c107a44cae947e16271d66a7041e2997afb5a",
+            Path("source/source-v1/CoupledOB.bib"): "3c1f807f7efc465a3240eb99d16ce3d0b4e190e6156a2ad2f4115eadd9afe0dd",
         }
-        for name, digest in expected.items():
-            path = PROJECT_ROOT / "source" / "source-v0" / name
+        for relative_path, digest in expected.items():
+            path = PROJECT_ROOT / relative_path
             self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), digest)
 
 

@@ -1,0 +1,5 @@
+candidate_id,name,formula,linear_mode,selector_limit,rate_normalized,decision,reason,design_target_id,software_version
+CC-01,fixed_epsilon_regularized_source,"gamma*z*q(y)*W(y,z;epsilon)",0.5*gamma*z*q(y),width_epsilon_over_abs_z_diverges,False,rejected_primary,accepted_v1.7.5_amplitude_mode_and_wrong_sign_rate,CNF-CP-CORR-DESIGN-01,1.7.6
+CC-02,hard_side_or_fixed_spatial_width_source,"gamma*z*q(y)*W_side(y,sign(z);w)",directional_side_selected_source,finite_spatial_width_or_hard_side,False,deferred_robustness,preserves_side_interpretation_but_is_not_differentiable_or_rate_normalized_at_zero_spread,CNF-CP-CORR-DESIGN-01,1.7.6
+CC-03,shifted_source_centre,q(y+beta*z)-q(y),beta*z*partial_y(q),none,False,rejected_primary,response_depends_on_generator_resolvent_and_conflates_base_source_location_with_coupling,CNF-CP-CORR-DESIGN-01,1.7.6
+CC-04,current_front_translation_mode,-kappa_jk*z_jk*v_j,exact_current_front_translation_mode,not_required_for_primary_response,True,selected,exact_adjoint_projection_and_direct_ordered_rate_semantics,CNF-CP-CORR-DESIGN-01,1.7.6

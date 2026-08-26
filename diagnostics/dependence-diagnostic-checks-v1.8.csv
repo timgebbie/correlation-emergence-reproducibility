@@ -1,0 +1,50 @@
+check_id,check,observed,criterion,status,software_version
+S8D-01,accepted v1.8.2 input hashes,{},none,Verified,1.8.3
+S8D-02,accepted parent,v1.8.2,v1.8.2,Verified,1.8.3
+S8D-03,uniform operational event tape,complete_uniform_fixed_grid_event_tape,complete_uniform_fixed_grid_event_tape,Verified,1.8.3
+S8D-04,event application timing,each_market_event_density_delta_immediately_before_declared_operational_step,density delta before declared operational step,Verified,1.8.3
+S8D-05,calendar observation layer,book_specific_previous_refresh_after_complete_operational_path,previous refresh after complete path,Verified,1.8.3
+S8D-06,calendar interpolation,forbidden,forbidden,Verified,1.8.3
+S8D-07,legacy nonuniform state update,forbidden,forbidden,Verified,1.8.3
+S8D-08,model-parameter refit,forbidden,forbidden,Verified,1.8.3
+S8D-09,source-v1 change,False,false,Verified,1.8.3
+S8D-10,declared path count,8,equals 8,Verified,1.8.3
+S8D-11,operational input correlation,8.46545056276682e-18,absolute <= 0.05,Verified,1.8.3
+S8D-12,complete market-event tape,768,equals 768,Verified,1.8.3
+S8D-13,all market events fully filled,True,true,Verified,1.8.3
+S8D-14,event density-mass conservation,3.469446951953614e-18,maximum <= 1e-14,Verified,1.8.3
+S8D-15,execution proxies lie on aggressor side,0.13099516855525978,strictly positive,Verified,1.8.3
+S8D-16,unique reaction boundaries,1,equals 1,Verified,1.8.3
+S8D-17,interior reaction boundaries,9.792489979766588,minimum >= 7.0,Verified,1.8.3
+S8D-18,ground-truth sign balance,0.0,absolute <= 1e-14,Verified,1.8.3
+S8D-19,cross-book ground-truth sign correlation,0.0625,absolute <= 0.2,Verified,1.8.3
+S8D-20,ground-truth lag-one sign persistence,0.40133636053333,"in [0.15, 0.85]",Verified,1.8.3
+S8D-21,quote/midpoint signs,True,exactly equal ground truth,Verified,1.8.3
+S8D-22,quote and ground-truth event ACF,0.0,exactly zero,Verified,1.8.3
+S8D-23,legacy tick first-event convention,True,first event in every book/path is zero,Verified,1.8.3
+S8D-24,tick-rule ground-truth agreement,0.9479166666666666,"in [0.4, 0.99]",Verified,1.8.3
+S8D-25,tick rule remains distinct,0.05208333333333337,strictly positive disagreement,Verified,1.8.3
+S8D-26,autocorrelation lag-zero identities,True,all exact one,Verified,1.8.3
+S8D-27,autocorrelation bounds,1.0,maximum absolute <= 1.00000000000001,Verified,1.8.3
+S8D-28,mid-price increment variation,0.00041222034541543067,minimum variance >= 1e-08,Verified,1.8.3
+S8D-29,operational/calendar mid-price ACF separation,0.15024832848830275,RMSE >= 0.0001,Verified,1.8.3
+S8D-30,calendar image differs from operational path,True,true,Verified,1.8.3
+S8D-31,realised refresh rates,0.19526600587175938,maximum relative error <= 0.35,Verified,1.8.3
+S8D-32,three sign conventions,"[""ground_truth_aggressor"", ""quote_midpoint"", ""legacy_tick_rule""]",exact registered three,Verified,1.8.3
+S8D-33,passive limit-order role,passive_nontrade_and_excluded_from_trade_sign_series,passive nontrade excluded from trade signs,Verified,1.8.3
+S8D-34,level autocorrelation exclusion,excluded,excluded,Verified,1.8.3
+S8D-35,mid-price curve rows,42,equals 42,Verified,1.8.3
+S8D-36,mid-price member rows,672,equals 672,Verified,1.8.3
+S8D-37,event-sign curve rows,39,equals 39,Verified,1.8.3
+S8D-38,event-sign member rows,624,equals 624,Verified,1.8.3
+S8D-39,calendar sign-flow curve rows,63,equals 63,Verified,1.8.3
+S8D-40,calendar sign-flow member rows,1008,equals 1008,Verified,1.8.3
+S8D-41,agreement rows,3,equals 3,Verified,1.8.3
+S8D-42,clock rows,16,equals 16,Verified,1.8.3
+S8D-43,path archive,True,nonempty NPZ,Verified,1.8.3
+S8D-44,Figure 11 pair,True,PDF and PNG,Verified,1.8.3
+S8D-45,accepted inputs unchanged,{},all start/end hashes exact,Verified,1.8.3
+S8D-46,declared persistence qualification,True,true,Verified,1.8.3
+S8D-47,no new theoretical curve,False,false,Verified,1.8.3
+S8D-48,Stage 8 closure boundary,True,true,Verified,1.8.3
+S8D-49,next numeric gate,v1.9.0_final_estimator_aware_combined_epps_integration,v1.9.0 final integration,Verified,1.8.3

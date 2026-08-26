@@ -1,0 +1,81 @@
+{
+  "schema_version": "1.7.2",
+  "scope": "registered_analytical_simulation_overlay",
+  "target_id": "OVL-EPP-01",
+  "accepted_parent": "v1.7.1",
+  "accepted_inputs": [
+    {
+      "path": "config/config-v1.7.1.json",
+      "sha256": "abff1f7dec20ad372c6f188f60475487526b17e6298faf1a92566e5465e6e7f5",
+      "role": "accepted_simulated_figure_6_contract"
+    },
+    {
+      "path": "outputs/simulated-figure-6-curves-v1.7.csv",
+      "sha256": "b64d3ca30c10cc299fd6c6e4523ef423af003fb24f3dd6f8e985e3e5a78fd7ec",
+      "role": "accepted_simulated_curve"
+    },
+    {
+      "path": "outputs/simulated-figure-6-members-v1.7.csv",
+      "sha256": "59839450670290dbd19d9c7c3fc073e10f0805b0d80c7b77e912612315dd5345",
+      "role": "accepted_simulated_curve_members"
+    },
+    {
+      "path": "outputs/figure-06-calendar-time-epps-memory-data-v1.csv",
+      "sha256": "38977327989a375ea27ed24c5b8f39bfac045789ed4df07b504d96058eaf4627",
+      "role": "accepted_analytical_figure_6_data"
+    },
+    {
+      "path": "figures/figure-06-calendar-time-epps-memory-v1.pdf",
+      "sha256": "d163a84d4177bf88c969a31ab471ff2bbcaf252d0dfeed57a5c5c7fa2e22332f",
+      "role": "immutable_analytical_figure_6_pdf"
+    },
+    {
+      "path": "figures/figure-06-calendar-time-epps-memory-v1.png",
+      "sha256": "6fc489ec02d518cbc95cb19c39b3e272c0c78403c61a2173ac493f576f8ec0e3",
+      "role": "immutable_analytical_figure_6_png"
+    },
+    {
+      "path": "figures/figure-17-simulated-figure-6-v1.pdf",
+      "sha256": "aa5a21c3bfb52e940929675b29521260881e655bc3263edbb75f34ba87ab70fe",
+      "role": "accepted_simulated_figure_6_pdf"
+    },
+    {
+      "path": "figures/figure-17-simulated-figure-6-v1.png",
+      "sha256": "222e9c817efefeb88f0b35a3aca5633820c8f92615524802aa398dd148807587",
+      "role": "accepted_simulated_figure_6_png"
+    }
+  ],
+  "figure": {
+    "development_number": 18,
+    "analytical_reference_number": 6,
+    "simulation_reference_number": 17,
+    "final_release_number": "deferred_to_stage_9",
+    "comparison_x_seconds": [0.0, 400.0],
+    "comparison_y_normalized": [0.0, 1.05],
+    "residual_x_seconds": [0.0, 400.0],
+    "residual_y_normalized": [-1.1, 0.1],
+    "axis_transform": "linear"
+  },
+  "registration": {
+    "abscissa": "calendar_time_seconds",
+    "join": "exact_existing_analytical_abscissae_at_simulated_lags",
+    "interpolation": "forbidden",
+    "analytical_normalization": "rho_delta_t_divided_by_rho_infinity",
+    "simulation_normalization": "accepted_grouped_mean_divided_by_registered_finite_window_plateau_proxy",
+    "calibration": "none",
+    "analytical_profile_status": "illustrative_reference_convention_not_calibrated",
+    "simulation_map_status": "declared_clock_rate_map_not_fitted_to_the_epps_curve"
+  },
+  "comparison": {
+    "analytical_components": ["clock", "coupling", "combined"],
+    "primary_analytical_curve": "combined",
+    "primary_simulation_curve": "path_group_mean",
+    "residual": "simulation_minus_analytical_combined",
+    "uncertainty": "accepted_simulation_normal_95_path_group_band_shifted_by_analytical_combined"
+  },
+  "stage_boundary": {
+    "closes_stage_7": false,
+    "accepts_discrepancy_diagnostic": true,
+    "next_stage": "v1.7.3_theory_conformity_design"
+  }
+}

@@ -1,0 +1,4 @@
+first_convention,second_convention,agreement_fraction,disagreement_fraction,effective_events,both_positive,both_negative,first_positive_second_nonpositive,first_negative_second_nonnegative,software_version
+ground_truth_aggressor,quote_midpoint,1.0,0.0,768,384,384,0,0,1.8.3
+ground_truth_aggressor,legacy_tick_rule,0.9479166666666666,0.05208333333333337,768,364,364,20,20,1.8.3
+quote_midpoint,legacy_tick_rule,0.9479166666666666,0.05208333333333337,768,364,364,20,20,1.8.3

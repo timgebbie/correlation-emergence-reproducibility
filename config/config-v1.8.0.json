@@ -1,0 +1,130 @@
+{
+  "schema_version": "1.8.0",
+  "scope": "event_semantics_and_impact_entry",
+  "target_id": "S8-EVENT-01",
+  "accepted_parent": "v1.7.12",
+  "accepted_parent_commit": "65fd8138934e907c2ce31c0165e94ba050a871cc",
+  "accepted_parent_historical_commit": "b9e8484b0445a9e0d4495c57e0cdc5660d598d7b",
+  "accepted_archive": {
+    "path": "correlation-emergence-v1.7.12-gate.zip",
+    "sha256": "d186c211b21b2cfe1b715e148fda87420b126f1d62c92efd79f36402dae5344c",
+    "accepted_date": "2026-08-21"
+  },
+  "accepted_inputs": [
+    {"path": "config/config-v1.7.12.json", "sha256": "8abf980d28449959b050122a08f3610f87616f38f29a484e404a82ab42356561", "role": "accepted_stage_7_configuration"},
+    {"path": "diagnostics/stage-7-closure-checks-v1.7.csv", "sha256": "920a0f31e7678a979c0dfc2195bab5f79d058be4cc5593e1605f10b261e13a52", "role": "accepted_stage_7_checks"},
+    {"path": "outputs/stage-7-closure-summary-v1.7.csv", "sha256": "8b9c15d9e3664b44b961fde1e46331128ec46a0f12ea6cb44d744ca13b801717", "role": "accepted_stage_7_result"},
+    {"path": "provenance/STAGE-7-CLOSURE-v1.7.md", "sha256": "19227587103515c3cad2d0b11631755606f5ae9e3f097274434ad8ebd8d16bf8", "role": "accepted_stage_7_provenance"},
+    {"path": "provenance/FUTURE-IMPACT-EVENT-DIAGNOSTICS.md", "sha256": "94977c9d514440aab346cad4a61cede984079de306579848adc1a8dbbca07b09", "role": "accepted_impact_extension_scope"},
+    {"path": "provenance/JULIA-TO-PYTHON-MAP-v1.1.md", "sha256": "9438f1932902426d0182dd4a8172132b26e60f356881aec21c3f2ed8b939600d", "role": "accepted_legacy_julia_map"},
+    {"path": "functions/operational/translation_path.py", "sha256": "d5a0129c9ed494eb287c649ed057f8671c958d8dd54d22b28db429fc94577283", "role": "accepted_uniform_operational_path"},
+    {"path": "functions/operational/translation_solver.py", "sha256": "22423396c805ae7f683b81731e3c6a03b7932558e39beee7c879cbf6df5a75f2", "role": "accepted_uniform_operational_solver"},
+    {"path": "functions/observation/refresh_sampling.py", "sha256": "79161984d9aed19e694957b64817939b7e891ada793331c8eff1467813049e6b", "role": "accepted_explicit_subordination"},
+    {"path": "functions/path_diagnostics.py", "sha256": "c71b83de103743000855ff25768c8ba0c18e718b12133fef0660ef620ca508de", "role": "accepted_path_diagnostics"},
+    {"path": "source/source-v1/CATG-RD2Epps-v3-arXiv.tex", "sha256": "48eea98a6fb084d6ecc397bede4c107a44cae947e16271d66a7041e2997afb5a", "role": "accepted_source_v1_paper"}
+  ],
+  "architecture": {
+    "operational_dynamics": "uniform_fixed_grid_only",
+    "event_application": "density_delta_then_one_uniform_operational_step",
+    "clock_increment_rule": "calendar_increment_equals_operational_increment_divided_by_operational_rate",
+    "calendar_observation": "book_specific_previous_refresh_after_complete_operational_path",
+    "calendar_interpolation": "forbidden",
+    "legacy_nonuniform_state_update": "forbidden",
+    "source_change": false,
+    "figure_change": false,
+    "stochastic_path_or_figure_at_v1_8_0": false,
+    "legacy_shock_relabelled_as_trade_impact": false,
+    "current_book_geometry": "single_signed_density_front_per_book",
+    "execution_price_status": "deterministic_consumed_cell_proxy"
+  },
+  "event_taxonomy": {
+    "limit_order": "implemented_passive_one_cell_noncrossing_placement",
+    "market_order": "implemented_boundary_outward_opposing_liquidity_consumption",
+    "cancellation": "reserved_distinct_event_type_not_implemented"
+  },
+  "record_schema": [
+    "event_id",
+    "event_type",
+    "book_index",
+    "operational_step",
+    "side",
+    "quantity",
+    "limit_log_price",
+    "meta_order_id",
+    "child_index"
+  ],
+  "trade_sign_conventions": {
+    "ground_truth_aggressor": "market_order_side_with_passive_events_zero",
+    "quote_midpoint": "sign_of_execution_log_price_minus_pre_event_mid_log_price",
+    "tick_rule": "first_zero_then_price_change_sign_with_zero_tick_carry"
+  },
+  "legacy_julia_audit": {
+    "repository": "DominicGBauer/InteractingLOBs.jl",
+    "commit": "c8206c66906580516d2389b57c6955bb2f526862",
+    "source_paths": ["src/rl_push_function.jl", "src/Epps/epps.jl"],
+    "implemented_legacy_sign_rule": "tick_rule_only",
+    "first_trade_sign": 0,
+    "zero_tick_rule": "carry_previous_nonzero_sign"
+  },
+  "impact_matrix": [
+    {"event_book": 0, "response_book": 0, "impact_type": "own"},
+    {"event_book": 0, "response_book": 1, "impact_type": "cross"},
+    {"event_book": 1, "response_book": 0, "impact_type": "cross"},
+    {"event_book": 1, "response_book": 1, "impact_type": "own"}
+  ],
+  "impact_measurement_contract": {
+    "single_trade_stage": "v1.8.1",
+    "meta_order_stage": "v1.8.2",
+    "dependence_stage": "v1.8.3",
+    "common_random_numbers": "required_between_shocked_and_control_paths",
+    "operational_measurement": "before_calendar_observation",
+    "calendar_measurement": "after_explicit_book_specific_subordination"
+  },
+  "deterministic_fixture": {
+    "grid": [-2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0],
+    "density": [0.0, 1.5, 1.0, 0.5, 0.0, -0.5, -1.0, -1.5, 0.0],
+    "pre_event_mid_log_price": 0.0,
+    "limit_buy": {"quantity": 0.25, "limit_log_price": -1.0},
+    "limit_sell": {"quantity": 0.4, "limit_log_price": 1.0},
+    "market_buy": {"quantity": 0.6},
+    "market_sell": {"quantity": 0.6},
+    "tick_prices": [0.5, 1.0, 1.0, 0.25, 0.25],
+    "tick_signs": [0, 1, 1, -1, -1]
+  },
+  "stage_sequence": [
+    {"version": "v1.8.0", "scope": "event_semantics_and_impact_entry"},
+    {"version": "v1.8.1", "scope": "single_trade_own_and_cross_impact"},
+    {"version": "v1.8.2", "scope": "meta_order_own_and_cross_impact"},
+    {"version": "v1.8.3", "scope": "mid_price_and_trade_sign_dependence"},
+    {"version": "v1.9.0", "scope": "final_estimator_aware_combined_epps_integration"},
+    {"version": "v1.9.1", "scope": "release_streamlining"},
+    {"version": "v2.0.0", "scope": "final_release"}
+  ],
+  "final_epps_integration": {
+    "required_curves": [
+      "clock_only_theory",
+      "clock_only_simulation",
+      "coupling_only_theory",
+      "coupling_only_simulation",
+      "combined_simulation",
+      "leading_order_product",
+      "estimator_aware_finite_grid_finite_step_theory"
+    ],
+    "conformity_parameters": "frozen_no_retuning",
+    "optional_calibrated_curve": "separate_and_explicitly_labelled"
+  },
+  "release_streamlining": {
+    "classifications": ["release_critical", "provenance_archive_only", "development_only"],
+    "requirements": [
+      "one_clean_active_reproducibility_route",
+      "no_redundant_runtime_routes",
+      "no_superseded_planning_overhead_in_runtime_path",
+      "accepted_archive_ledger_retained",
+      "slim_clean_extraction_reproduces_release_claims"
+    ]
+  },
+  "acceptance_boundary": {
+    "closes_v1_8_0_only_on_user_acceptance": true,
+    "next_stage_on_acceptance": "v1.8.1_single_trade_own_and_cross_impact"
+  }
+}

@@ -1,0 +1,28 @@
+% Final estimator-aware Epps integration for the source-v2 supplement.
+% The accepted source/source-v1 paper remains frozen.
+
+\section*{Final estimator-aware theory--simulation integration}
+
+The final comparison retains the accepted clock and coupling parameters and
+evolves both order-density books on the uniform operational-time grid. The two
+book-specific previous-refresh clocks are applied only after the operational
+paths are complete. Realised waiting intervals therefore do not enter the
+state recurrence, and calendar-time interpolation is not used.
+
+Figure~26 places the clock-only, corrected coupling-only and combined results
+on one common linear aggregation scale. The first two panels compare the
+accepted simulations with their respective analytical responses. The third
+panel compares the combined no-refit holdout with both
+\[
+  F(\lambda\Delta)F(\kappa\Delta)
+\]
+and the exact conditional finite-grid, finite-step moment calculation on the
+operational indices selected by the same realised clocks.
+
+The same-clock estimator-aware curve reduces the combined normalized-
+covariance RMSE from $0.066963$ for the leading-order product to $0.039719$.
+Its standardized RMSE is $0.455132$, with pointwise normal 95\% coverage at
+all 20 registered lags. No clock rate, coupling rate, boundary normalization,
+time map or tolerance is changed. The conditional curve is consequently a
+finite-estimator refinement, not a fitted replacement for the paper's
+leading-order separability argument.

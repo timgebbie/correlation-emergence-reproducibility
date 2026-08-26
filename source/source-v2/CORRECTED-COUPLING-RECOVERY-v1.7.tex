@@ -1,0 +1,72 @@
+% Corrected coupling recovery accepted at the v1.7.7 gate.
+% The accepted source/source-v1 paper remains frozen.
+
+\section*{Theory consequence of the corrected coupling recovery}
+
+The v1.7.5 audit showed that the fixed-$\varepsilon$ regularised source
+\[
+  \ell_\varepsilon^{(j,k)}
+  =\gamma_{jk}z_{jk}q_j(y)
+  \frac{1}{2}\left[1+\tanh\left(\frac{yz_{jk}}{\varepsilon}\right)\right]
+\]
+does not generate the positive reaction-boundary relaxation rate assumed by
+the registered thick-front experiment.  This does not invalidate the
+conditional adjoint calculation in the paper.  It shows that the step from the
+raw first spatial moment of this source to the effective coefficient
+$\kappa_{jk}$ is a closure assumption, rather than a property established for
+the complete numerical recurrence.
+
+The corrected numerical source implements the paper's translation mode
+directly:
+\[
+  v_j(x,u)=-\partial_x\varphi^{(j)}(x,u),
+  \qquad
+  \ell_T^{(j,k)}(x,u)
+  =-\kappa_{jk}z_{jk}(u)v_j(x,u).
+\]
+For the normalized adjoint response mode $\psi_j$,
+\[
+  \dot p_j
+  =\frac{\langle\psi_j,\ell_T^{(j,k)}\rangle}
+  {\langle\psi_j,v_j\rangle}
+  =-\kappa_{jk}z_{jk}.
+\]
+Thus $\kappa_{jk}$ is an explicit ordered response-rate parameter; it is not a
+reinterpretation of the legacy source amplitude $\gamma_{jk}$.  The thickness
+of the forcing is inherited from the current receiving-book front through its
+spatial derivative, and the density is frozen at the immutable pre-step
+state.
+
+With $\kappa_{12}=\kappa_{21}=1.25$ per model-time unit, eight signed
+deterministic perturbations recover exponential rates with maximum relative
+error $0.00612$ and local-drift rates with maximum relative error $0.000646$.
+The pair centre is preserved to numerical precision, and all boundaries remain
+unique and interior.  A three-grid sequence reduces the exponential-rate error
+from $0.0251$ to $0.00143$.
+
+The stochastic comparison keeps two distinct estimands.  The normalized
+cross-covariance response is compared with
+\[
+  F(\kappa\Delta)
+  =1-\frac{1-e^{-\kappa\Delta}}{\kappa\Delta},
+\]
+using an independently frozen pair-centre variance-growth rate as its scale.
+The holdout RMSE is $0.01670$.  The realised return correlation is compared
+with the distinct exact symmetric closed-SDE expression and has holdout RMSE
+$0.00877$.  Both comparisons have full pointwise normal 95\% coverage under
+the declared path-group jackknife.
+
+The paper's reduced spread response and its normalized covariance envelope are
+therefore supported by the corrected implementation.  The manuscript should
+not claim that the original regularised $\tanh$ source necessarily realizes
+the same $\kappa_{jk}$ in the full thick-front recurrence.  A later manuscript
+revision should retain that source as a phenomenological or weak-moment
+representation, identify its source-to-rate step as conditional, and present
+the translation-mode source as the direct numerical realization of the
+reduced boundary dynamics.  The source-v1 manuscript remains unchanged until
+this gate is externally accepted.
+
+All dynamics in this recovery are evolved on the uniform operational grid.
+The identity clock is used for component isolation; no nonuniform state update,
+calendar interpolation or subordination is present.  The combined clock and
+coupling prediction remains a separate v1.7.8 holdout test.

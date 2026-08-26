@@ -30,6 +30,7 @@ from functions.coupling_moment import (
     response_rate_total,
 )
 from functions.io_utils import PROJECT_ROOT, ensure_output_directories, load_config, write_csv
+from functions.figure_io import atomic_savefig, remove_orphaned_figure_staging_files
 
 
 FIGURE_NAMES = {
@@ -71,8 +72,14 @@ def _save(fig: plt.Figure, stem: str, config: dict, *, square_canvas: bool = Fal
     fig.tight_layout(pad=0.8, w_pad=1.0, h_pad=0.9)
     metadata = {"Creator": "correlation-emergence-v1.0.0", "CreationDate": None, "ModDate": None}
     save_options = {} if square_canvas else {"bbox_inches": "tight"}
-    fig.savefig(PROJECT_ROOT / "figures" / f"{stem}.pdf", metadata=metadata, **save_options)
-    fig.savefig(
+    atomic_savefig(
+        fig,
+        PROJECT_ROOT / "figures" / f"{stem}.pdf",
+        metadata=metadata,
+        **save_options,
+    )
+    atomic_savefig(
+        fig,
         PROJECT_ROOT / "figures" / f"{stem}.png",
         dpi=config["figures"]["dpi"],
         **save_options,
@@ -593,6 +600,7 @@ def figure_6(config: dict, _: np.ndarray) -> list[dict[str, object]]:
 
 def main() -> int:
     ensure_output_directories()
+    remove_orphaned_figure_staging_files()
     _style()
     config = load_config()
     delta = _grid(config)

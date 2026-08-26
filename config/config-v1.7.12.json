@@ -1,0 +1,131 @@
+{
+  "schema_version": "1.7.12",
+  "scope": "stage_7_stability_integrity_and_closure",
+  "target_id": "S7-CLOSE-01",
+  "accepted_parent": "v1.7.11",
+  "accepted_parent_commit": "28da9526105dbef834f4c134eca422eb2d9306bb",
+  "accepted_inputs": [
+    {
+      "path": "config/config-v1.7.11.json",
+      "sha256": "76cf282fcc9501ae11a4063fda2817f6ec378e7ce286a79d6ba5198364983cb8",
+      "role": "accepted_combined_gate_configuration"
+    },
+    {
+      "path": "diagnostics/combined-no-refit-checks-v1.7.csv",
+      "sha256": "ec55409206fa168055c401b0f8b1b38b3f520517f4caf025a473d1979d5f2841",
+      "role": "accepted_combined_gate_checks"
+    },
+    {
+      "path": "outputs/combined-no-refit-summary-v1.7.csv",
+      "sha256": "717fa2a2ccd1fc4b362d7690c747f44f0086688d8cdfa2f53268917af5b1173e",
+      "role": "accepted_combined_gate_result"
+    },
+    {
+      "path": "provenance/GATE-VERIFICATION-v1.7.11.md",
+      "sha256": "29989f6a1c4ca0f283df30f338bbf415a230ea256038c6875856f1f2bf5e36c5",
+      "role": "accepted_cross_platform_gate_record"
+    },
+    {
+      "path": "requirements.txt",
+      "sha256": "4c40934e438ae009a1eb0b5a9322cce029fba6ca1af6e314c088c1957cee0c04",
+      "role": "accepted_runtime_contract"
+    },
+    {
+      "path": "functions/operational/translation_coupling.py",
+      "sha256": "555f36f1bb49d1c59d5f8aa79e5911f7c5051020125bd2d8c7463bc58d73915f",
+      "role": "accepted_translation_mode_coupling"
+    },
+    {
+      "path": "functions/operational/translation_solver.py",
+      "sha256": "22423396c805ae7f683b81731e3c6a03b7932558e39beee7c879cbf6df5a75f2",
+      "role": "accepted_operational_solver_entry"
+    },
+    {
+      "path": "functions/operational/translation_path.py",
+      "sha256": "d5a0129c9ed494eb287c649ed057f8671c958d8dd54d22b28db429fc94577283",
+      "role": "accepted_uniform_operational_path"
+    },
+    {
+      "path": "functions/observation/refresh_sampling.py",
+      "sha256": "79161984d9aed19e694957b64817939b7e891ada793331c8eff1467813049e6b",
+      "role": "accepted_post_dynamics_previous_refresh_subordination"
+    },
+    {
+      "path": "source/source-v1/CATG-RD2Epps-v3-arXiv.tex",
+      "sha256": "48eea98a6fb084d6ecc397bede4c107a44cae947e16271d66a7041e2997afb5a",
+      "role": "accepted_source_v1_paper"
+    }
+  ],
+  "stage_7_diagnostics": [
+    {"path": "diagnostics/updated-figure-16-checks-v1.7.csv", "version": "1.7.0", "verified": 26, "qualified": 0, "invalid": 0},
+    {"path": "diagnostics/simulated-figure-6-checks-v1.7.csv", "version": "1.7.1", "verified": 30, "qualified": 0, "invalid": 0},
+    {"path": "diagnostics/analytical-simulation-overlay-checks-v1.7.csv", "version": "1.7.2", "verified": 25, "qualified": 0, "invalid": 0},
+    {"path": "diagnostics/theory-conformity-design-checks-v1.7.csv", "version": "1.7.3", "verified": 25, "qualified": 0, "invalid": 0},
+    {"path": "diagnostics/clock-only-conformity-checks-v1.7.csv", "version": "1.7.4", "verified": 21, "qualified": 1, "invalid": 0},
+    {"path": "diagnostics/coupling-only-conformity-checks-v1.7.csv", "version": "1.7.5", "verified": 20, "qualified": 0, "invalid": 3},
+    {"path": "diagnostics/coupling-correction-design-checks-v1.7.csv", "version": "1.7.6", "verified": 26, "qualified": 0, "invalid": 0},
+    {"path": "diagnostics/corrected-coupling-recovery-checks-v1.7.csv", "version": "1.7.7", "verified": 38, "qualified": 0, "invalid": 0},
+    {"path": "diagnostics/combined-no-refit-checks-v1.7.csv", "version": "1.7.11", "verified": 33, "qualified": 5, "invalid": 0}
+  ],
+  "registered_results": {
+    "clock_only": {
+      "path": "outputs/clock-only-conformity-summary-v1.7.csv",
+      "labels": ["recovered", "qualified_nonconformity"]
+    },
+    "legacy_coupling_only": {
+      "path": "outputs/coupling-only-conformity-summary-v1.7.csv",
+      "labels": ["recovered", "invalid_experiment"]
+    },
+    "corrected_coupling": {
+      "path": "outputs/corrected-coupling-recovery-summary-v1.7.csv",
+      "labels": ["recovered"]
+    },
+    "combined": {
+      "path": "outputs/combined-no-refit-summary-v1.7.csv",
+      "labels": ["recovered", "qualified_nonconformity"]
+    }
+  },
+  "figure_stems": [
+    "figure-16-updated-epps-target-v1",
+    "figure-17-simulated-figure-6-v1",
+    "figure-18-analytical-simulation-overlay-v1",
+    "figure-19-clock-only-conformity-v1",
+    "figure-20-coupling-only-conformity-v1",
+    "figure-21-corrected-coupling-recovery-v1",
+    "figure-22-combined-no-refit-prediction-v1"
+  ],
+  "closure_contract": {
+    "expected_archive_entries": 370,
+    "expected_immutable_entries": 226,
+    "expected_stage_7_checks": 253,
+    "expected_verified_checks": 244,
+    "expected_qualified_checks": 6,
+    "expected_invalid_preconditions": 3,
+    "expected_failed_checks": 0,
+    "expected_figure_pairs": 7,
+    "legacy_figure_7_retained": true,
+    "new_scientific_figure": false,
+    "parameter_change": false,
+    "estimator_change": false,
+    "source_v1_change": false
+  },
+  "architecture": {
+    "operational_dynamics": "uniform_fixed_grid_only",
+    "calendar_observation": "book_specific_previous_refresh_after_operational_completion",
+    "calendar_interpolation": "forbidden",
+    "legacy_nonuniform_state_update": "forbidden",
+    "component_parameter_refit": "forbidden",
+    "combined_curve_refit": "forbidden"
+  },
+  "stage_boundary": {
+    "closes_stage_7_on_acceptance": true,
+    "next_stage": "v1.8.0_event_semantics_and_impact_entry",
+    "stage_8_scope": [
+      "limit_order_and_market_order_event_semantics",
+      "single_trade_own_impact_and_cross_impact",
+      "meta_order_own_impact_and_cross_impact",
+      "mid_price_and_trade_sign_autocorrelation",
+      "three_trade_sign_conventions"
+    ]
+  }
+}

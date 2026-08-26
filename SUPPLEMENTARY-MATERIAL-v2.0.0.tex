@@ -1,0 +1,359 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.82in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{pdflscape}
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue!55!black,urlcolor=blue!55!black,citecolor=blue!55!black}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+
+\title{Computational Supplement:\\Correlation Emergence and the Epps Effect}
+\author{Chris Angstmann \and Tim Gebbie}
+\date{Software release v2.0.0 --- 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This supplement records the analytical and simulation companion to ``Correlation emergence and the Epps effect in two coupled limit order books'' (arXiv:2606.14182). It evaluates the paper's ordinary and fractional correlation build-up factors, reports their sensitivities and identifiability limits, diagnoses finite-grid boundary representation, and verifies a corrected uniform-operational simulation followed by explicit book-specific previous-refresh subordination. The retained numerical evidence includes clock-only and corrected coupling-only conformity, a combined no-refit holdout, single-trade and meta-order impact, and mid-price-increment and trade-sign autocorrelations. The computations are model-conditional reproducibility evidence, not empirical calibration or mathematical proof.
+\end{abstract}
+
+\tableofcontents
+
+\section{Scientific and software boundary}
+
+The frozen source paper remains the mathematical source of truth. The v2 route adds a diagnosed simulation implementation without changing that source snapshot. The ordinary clock, coupling, and combined curves remain illustrations of the paper's renewal-envelope, exponential-response, and leading-order separability assumptions. The fractional curves evaluate the stated Mittag--Leffler replacement on the non-negative real axis. The corrected reaction-boundary implementation uses the decaying Gaussian convention for which the paper gives a finite half-line moment.
+
+Empirical covariance estimation, market-data calibration, trading use and pointwise kernel equivalence are excluded. The historical Bauer et al. implementation was used during development as a conversion and contrast audit. Its executable code, stored simulations and development-only tests are not shipped in v2. The release retains attribution and the precise mathematical corrections needed to understand the accepted route.
+
+Both books first evolve on one uniform operational grid. Book-specific calendar clocks act only after the complete operational path exists, by selecting the previous completed state. Calendar waits never enter the density recurrence; no calendar interpolation, extrapolation or nonuniform state update is used.
+
+\section{Theory-to-computation map}
+
+The ordinary build-up kernel is
+\begin{equation}
+F(x)=1-\frac{1-e^{-x}}{x},\qquad x\geq0,
+\label{eq:ordinary}
+\end{equation}
+with (F(0)=0) defined by continuity. The implementation uses \texttt{expm1} away from the origin and the local series
+\begin{equation}
+F(x)=\frac{x}{2}-\frac{x^2}{6}+\frac{x^3}{24}-\frac{x^4}{120}+O(x^5)
+\end{equation}
+near zero. Its derivative and local rate elasticity are
+\begin{equation}
+F'(x)=\frac{1-(1+x)e^{-x}}{x^2},
+\qquad
+S_F(x)=\frac{xF'(x)}{F(x)}.
+\label{eq:elasticity}
+\end{equation}
+
+The normalised ordinary components are
+\begin{align}
+C_{\mathrm{clock}}(\Delta)&=F(\lambda_{12}\Delta),\\
+C_{\mathrm{coupling}}(\Delta)&=F(\kappa\Delta),\\
+C_{\mathrm{combined}}(\Delta)&=C_{\mathrm{clock}}(\Delta)C_{\mathrm{coupling}}(\Delta).
+\end{align}
+The last expression is the paper's leading-order factorisation; the calculation does not promote it to an exact independence result.
+
+For a characteristic time \(\tau\), the fractional component is written
+\begin{equation}
+F_\alpha(\Delta;\tau)
+=1-E_{\alpha,2}\!\left[-(\Delta/\tau)^\alpha\right],
+\qquad 0<\alpha\leq1.
+\label{eq:fractional}
+\end{equation}
+The release evaluator uses a deterministic real-axis quadrature for \(0<\alpha<1\), a small-argument series, and the exact ordinary formula at \(\alpha=1\). Its registered release profiles are \(\alpha\in\{0.6,0.8,1\}\).
+
+The decaying Gaussian source and its selected half-line moment are
+\begin{equation}
+q_j(y)=-a_j\mu_j y e^{-\mu_jy^2},
+\qquad
+M_j^+=\int_0^\infty yq_j(y)\,dy
+=-\frac{a_j\sqrt\pi}{4\sqrt{\mu_j}}.
+\label{eq:moment}
+\end{equation}
+The local frozen-front mapping is
+\begin{equation}
+\kappa_j=\frac{\gamma_{jk}|M_j^+|}{|\mathcal L_j|},
+\qquad
+\kappa=\kappa_1+\kappa_2.
+\label{eq:response}
+\end{equation}
+
+\subsection{Corrected source and boundary representation}
+
+The corrected translated source uses
+\begin{equation}
+q_j(y)=-a_j\mu_j y\exp(-\mu_j y^2).
+\end{equation}
+The retired antecedent implementation used the distinct expression
+\(\exp[-(\mu_j y)^2]\). These expressions coincide only in special parameter
+cases and are not interchangeable.
+
+For the numerical density state \(\phi_j(x,u)\), the production coupling acts
+through the receiving front's translation mode
+\begin{equation}
+T_j(x,u)=-\partial_x\phi_j(x,u).
+\label{eq:translation-mode}
+\end{equation}
+A small multiple of \(T_j\) translates the resolved zero crossing to first
+order. The density profile already supplies the reaction-front width, so this
+implementation does not add a second fixed selector width or an independent
+boundary layer. The bounded regularised source in the paper remains an
+analytical weak/local moment closure. Its correspondence with
+Eq.~\eqref{eq:translation-mode} is asserted after projection onto front
+displacement, not as pointwise identity between kernels.
+
+This clarification is the development link to the Bauer antecedent. The
+conversion audit identified the nonuniform update, the different Gaussian
+convention and the interface ambiguity. The accepted Angstmann--Gebbie route
+then separated uniform operational dynamics from calendar observation and
+tested the translation-mode correction first as a component and then in a
+combined no-refit holdout. The retired implementation remains recoverable in
+the sealed pre-v1.9.3 gates and repository history, but is not an executable
+dependency of this release.
+
+\section{Ordinary Epps components and sensitivity}
+
+Figure~\ref{fig:ordinary-components} is the analytical baseline used to interpret the simulation results. The three panels nondimensionalise the clock rate to one and vary the response-to-clock rate ratio. The curves separate the two mechanisms before forming the combined product.
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth]{figures/figure-01-ordinary-epps-components-v1.pdf}
+\caption{\textbf{Ordinary Epps components under separated clock and coupling timescales.} The clock curve is $F(\lambda_{12}\Delta)$, the coupling-response curve is $F(\kappa\Delta)$, and the combined curve is their separable product. The horizontal axis is aggregation scale in clock characteristic-time units and the vertical axis is $\rho_\Delta/\rho_\infty$. Panels use $\kappa/\lambda_{12}=0.25,1,4$, with $\lambda_{12}=1$ and $\rho_\infty=1$. The figure shows how the mechanisms contribute across separated and comparable timescales and supplies the analytic overlay baseline for v2.0.0. It supports the component decomposition under the paper's renewal-envelope and separability assumptions; it does not fit market data, simulate an order book, prove statistical independence, or establish the approximation outside those assumptions.}
+\label{fig:ordinary-components}
+\end{figure}
+
+The short-scale limit of each component is linear in its dimensionless argument, so its rate elasticity approaches one. Once the component reaches its plateau, the elasticity approaches zero. For the product, the partial log-sensitivity to each rate is inherited from that component, while a common proportional perturbation of both rates has the sum of the two partial elasticities.
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth]{figures/figure-02-ordinary-epps-sensitivity-v1.pdf}
+\caption{\textbf{Aggregation-scale sensitivity of ordinary Epps components.} Curves report $S_F(x)=xF'(x)/F(x)$ for clock refresh and coupling response. The dashed red curve is the log-sensitivity of the combined product when both rates receive the same proportional perturbation. Panels use the Figure~\ref{fig:ordinary-components} rate ratios. Sensitivity tends to one per component in the resolved short-scale limit and to zero on the long-scale plateau, locating the aggregation range that contains rate information. The figure supports local, model-conditional sensitivity statements; it is not a global-identifiability proof, an empirical uncertainty estimate, or evidence that either rate can be recovered without adequate short-scale observations.}
+\label{fig:ordinary-sensitivity}
+\end{figure}
+
+The combined ordinary curve is invariant under exchange of the clock and response rates. Moreover,
+\begin{equation}
+C_{\mathrm{combined}}(\Delta)
+=\frac{\lambda_{12}\kappa}{4}\Delta^2+O(\Delta^3)
+\end{equation}
+at short scale. Thus the leading combined curve alone reveals the rate product rather than assigning each timescale to its mechanism. The simulation results below therefore retain independently declared refresh and response rates.
+
+\section{Fractional order sensitivity}
+
+From Eq.~\eqref{eq:fractional},
+\begin{equation}
+F_\alpha(\Delta;\tau)
+=\frac{(\Delta/\tau)^\alpha}{\Gamma(\alpha+2)}
++O(\Delta^{2\alpha}).
+\end{equation}
+A combined fractional curve therefore has leading power \(\Delta^{\alpha_c+\alpha_r}\). Equal-sum order pairs are deliberately included in Figure~\ref{fig:fractional} to show the resulting local confounding.
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth]{figures/figure-03-fractional-epps-sensitivity-v1.pdf}
+\caption{\textbf{Fractional Epps curves and short-scale exponent sensitivity.} Clock and response components use Eq.~\eqref{eq:fractional}, with unit characteristic times and the diagnosed evaluator recorded in the numerical-design note; \(\alpha=1\) recovers the ordinary kernel. Combined curves use order pairs \((1,1),(0.8,0.8),(0.6,1),(0.6,0.6)\). The equal-sum cases \((0.8,0.8)\) and \((0.6,1)\) share leading short-scale power \(\Delta^{1.6}\), exposing local confounding even when later-scale curvature differs. The figure shows formula sensitivity to fractional order and the ordinary limit. It does not identify both orders from a combined curve alone, attach an unconditional ``slower'' interpretation across dimensional conventions, or validate a fractional market-clock mechanism empirically.}
+\label{fig:fractional}
+\end{figure}
+
+\section{Conditional reaction-boundary propagation}
+
+Equation~\eqref{eq:response} yields conditional log-elasticities $+1,+1,-1/2,-1$ with respect to coupling strength, source amplitude, source width, and front-slope magnitude. Figure~\ref{fig:boundary} changes one quantity at a time. This is a propagation experiment: multiple structural parameter combinations generate the same effective response rate and hence the same analytic Epps curve.
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth,height=0.72\textheight,keepaspectratio]{figures/figure-04-boundary-to-epps-propagation-v1.pdf}
+\caption{\textbf{Conditional propagation of reaction-boundary structure into the Epps curve.} The response rate is varied through Eqs.~\eqref{eq:moment}--\eqref{eq:response}. Two symmetric books, unit source amplitude, width and front-slope magnitude, and $\gamma_{jk}=2/\sqrt\pi$ give baseline total response rate $\kappa=1$. Each panel changes one input by factors $0.5,1,2$, holding the others and the unit clock rate fixed; solid curves are coupling factors and dashed curves their combined products with the clock factor. This supports conditional propagation through the analytic response mapping. It does not uniquely infer reaction-front thickness, source width, or coupling strength from an Epps curve and does not claim pointwise equivalence to the legacy lattice coupling.}
+\label{fig:boundary}
+\end{figure}
+
+Three distinct notions must not be collapsed into a single ``boundary thickness'': the local reaction-front slope \(|\mathcal L_j|\), the continuum selector regularisation \(\varepsilon\), and the lattice spacing \(\Delta x\). The first enters the structural response mapping. The second regularises side selection. The third is a numerical resolution parameter.
+
+\section{Continuum selector and finite-grid representation}
+
+The paper's smooth selector is
+\begin{equation}
+W(y,z;\varepsilon)=\frac12\left[1+\tanh\left(\frac{yz}{\varepsilon}\right)\right].
+\end{equation}
+For a centred symmetric full domain, \(yq_j(y)\) is even and the hyperbolic-tangent contribution is odd. Consequently the selected first moment is independent of \(\varepsilon\) in the continuum calculation. Finite domains, misaligned numerical selectors, and coarse grids can break this cancellation. Figure~\ref{fig:grid} diagnoses those representation effects and propagates them through an effective response rate.
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth]{figures/figure-05-finite-grid-epps-distortion-v1.pdf}
+\caption{\textbf{Finite-grid boundary representation and induced Epps-curve distortion.} The left panel reports discrete-to-continuum first-moment ratios as selector resolution \(\sqrt\varepsilon/\Delta x\), lattice spacing, selector alignment, and domain margin vary. Lines give the midpoint and bands the range over four lattice spacings. The centred full-domain case is the parity control; half-cell selector displacement and truncation measure numerical representation errors. The right panel propagates all diagnosed effective-rate ratios through the coupling and combined Epps formulas; lines are continuum baselines and bands are discrete-representation envelopes. Structural parameters are fixed. The figure supports convergence and numerical-sensitivity statements and defines resolution metadata required for v2 overlays. It does not introduce a new continuum Epps mechanism or treat selector width, lattice spacing, and reaction-front thickness as interchangeable.}
+\label{fig:grid}
+\end{figure}
+
+\clearpage
+\section{Calendar-time representation and memory diagnostic}
+
+The aggregation variable in Figures~\ref{fig:ordinary-components}--\ref{fig:grid} remains the observation-window lag, but is reported relative to the clock characteristic time. Writing
+\begin{equation}
+x=\lambda_{12}\Delta t=\frac{\Delta t}{\tau_c},
+\qquad \tau_c=\lambda_{12}^{-1},
+\end{equation}
+shows that a calendar-time presentation requires only a declared time convention. For an ordinary exponential memory with rate \(r\),
+\begin{equation}
+h_r(u)=e^{-ru},
+\qquad
+F(r\Delta t)=1-\frac{1}{\Delta t}\int_0^{\Delta t}h_r(u)\,du.
+\label{eq:memory-average}
+\end{equation}
+For the clock mechanism, \(h_{\lambda_{12}}\) is the no-refresh survival. For the coupling mechanism, \(h_\kappa\) is the relaxation survival and equals the normalised positive-lag exponential covariance kernel used in the paper. Figure~\ref{fig:calendar-bridge} therefore presents the same analytical factors as Figure~\ref{fig:ordinary-components}, not a new Epps mechanism.
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=0.91\textwidth]{figures/figure-06-calendar-time-epps-memory-v1.pdf}
+\caption{\textbf{Calendar-time Epps curve.} The square main panel rewrites the Figure~\ref{fig:ordinary-components} slow-response profile on a linear calendar-time axis using the explicitly illustrative convention $\lambda_{12}=0.1\,\mathrm{s}^{-1}$, $\kappa=0.025\,\mathrm{s}^{-1}$, and $\rho_\infty=1$, corresponding to $\tau_c=10$ s and $\tau_r=40$ s. Black, blue and red curves are the clock factor, coupling factor and their leading-order separable product; the grey dotted line marks the normalised limiting correlation $\rho_{\Delta t}/\rho_\infty=1$. The enlarged inset reports the no-refresh and coupling-relaxation survival functions. The seconds scale is not fitted to data, and the inset is neither a path autocorrelation nor a power-spectrum estimate. Path-derived autocorrelations are reported separately in Figure~\ref{fig:dependence}.}
+\label{fig:calendar-bridge}
+\end{figure}
+
+The distinction from the simulation output is substantive. A sample autocorrelation requires a generated path, a declared estimator and finite-sample uncertainty. The deterministic inset exposes only the memory functions that enter Eq.~\eqref{eq:memory-average}. Figure~\ref{fig:dependence} reports the separate path-derived log-mid increment and trade-sign autocorrelations without retrospectively relabelling this analytical diagnostic.
+
+\clearpage
+\section{Corrected uniform-operational simulation}
+
+Let \(u_n=n\Delta u\) be the common operational grid. Both density fields are
+advanced on this grid before any calendar observation is constructed. External
+innovations are book-specific, the translation-mode coupling uses
+Eq.~\eqref{eq:translation-mode}, and labelled order events modify the density
+state at declared operational steps. The boundary price is the accepted unique
+interior zero crossing of the signed density field.
+
+For book \(j\), let \(U_{j,m}\) be its completed operational refresh indices
+and define
+\begin{equation}
+N_j(t)=\max\{m: T_{j,m}\leq t\},
+\qquad
+P_j^{\rm cal}(t)=P_j^{\rm op}(U_{j,N_j(t)}).
+\label{eq:subordination}
+\end{equation}
+Equation~\eqref{eq:subordination} is previous-refresh subordination. It selects
+an already completed state and never changes an operational update interval.
+
+\subsection{Final estimator-aware Epps comparison}
+
+Figure~\ref{fig:final-epps} is the primary release result. The component inputs,
+clock paths, holdout structure and parameter values were fixed before the
+combined comparison. The leading-order product remains the analytical paper
+envelope. The estimator-aware curve is the exact finite-grid, finite-step
+conditional moment evaluated at the operational indices selected by the same
+realised clocks as the simulation estimator; it is not a fitted replacement.
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth]{figures/figure-07-final-estimator-aware-epps-v2.pdf}
+\caption{\textbf{Final estimator-aware Epps integration.} Clock-only, corrected coupling-only and combined results share one linear 0--400 second and 0--1.1 normalized-covariance scale. The combined no-refit holdout is compared with the paper's leading-order product and the exact finite-grid, finite-step conditional moment on the same realised clocks. The estimator-aware combined RMSE is 0.039719, standardized RMSE is 0.455132, and pointwise normal-band coverage is complete. No parameter, normalization or time map is refitted.}
+\label{fig:final-epps}
+\end{figure}
+
+\subsection{Corrected translation-mode component}
+
+The corrected coupling is tested separately under identity clocks before it is
+used in the combined route. Deterministic signed-front relaxations diagnose the
+registered response rate; stochastic holdout paths test normalized covariance
+and the distinct finite-scale return correlation. The covariance scale is
+frozen from a disjoint calibration ensemble.
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth]{figures/figure-08-corrected-translation-mode-coupling-v2.pdf}
+\caption{\textbf{Corrected translation-mode coupling on uniform operational time.} Holdout thick-boundary paths are compared with the analytical normalized covariance response and the distinct finite-scale return correlation. Lower panels verify signed deterministic front relaxation and residuals at the frozen response rate. No clock, interpolation or parameter fit enters this component gate.}
+\label{fig:corrected-coupling}
+\end{figure}
+
+\section{Event impact and dependence diagnostics}
+
+Market-order events consume opposing density at the active boundary and are
+recorded on an immutable event tape. Impact is measured by pairing each event
+path with an otherwise identical zero-input control. Responses are
+aggressor-signed log-boundary differences, so own and cross effects use one
+common linear scale. Calendar versions are obtained only after the operational
+paths are complete, using Eq.~\eqref{eq:subordination}.
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth]{figures/figure-09-single-trade-impact-v2.pdf}
+\caption{\textbf{Paired single-trade own and cross impact.} One labelled market order is compared with a matched control in operational and previous-refresh calendar views. The figure reports own and cross boundary responses on a common linear scale. It is a declared model experiment, not an empirical trade calibration.}
+\label{fig:single-trade}
+\end{figure}
+
+A meta-order is a declared schedule of child market orders with fixed total
+quantity and book. Equal-volume horizon comparisons distinguish schedule timing
+from a true participation rate, which would require background market-order
+volume not present in this model.
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth]{figures/figure-10-meta-order-impact-v2.pdf}
+\caption{\textbf{Scheduled meta-order own and cross impact.} Matched schedules report trajectory, peak, relaxation and equal-volume horizon comparisons under operational and explicitly subordinated calendar observations. Schedule timing, cross-impact catch-up and long-lag convergence are kept as distinct observables.}
+\label{fig:meta-order}
+\end{figure}
+
+For a centered sequence \(X_n\), the registered sample autocorrelation at lag
+\(k\) is
+\begin{equation}
+\widehat\rho_X(k)=
+\frac{\sum_{n=1}^{N-k}(X_n-\bar X)(X_{n+k}-\bar X)}
+{\sum_{n=1}^{N}(X_n-\bar X)^2}.
+\end{equation}
+The price statistic is applied to log-mid increments, never to price levels.
+Trade-sign diagnostics distinguish ground-truth aggressor signs, a
+quote/midpoint rule and the historically inherited tick rule. Event-time signs
+and calendar-binned signed flow are separate estimands.
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth]{figures/figure-11-mid-price-trade-sign-autocorrelations-v2.pdf}
+\caption{\textbf{Mid-price and trade-sign autocorrelations.} Panels report log-mid increment autocorrelation for uniform operational and previous-refresh calendar observations, same-book event-time trade-sign autocorrelation for three sign conventions, subordinated signed-flow autocorrelation, and sign-convention agreement. Price-level autocorrelation is excluded. The finite Markov persistence is an estimator fixture, not empirical calibration or an endogenous long-memory claim.}
+\label{fig:dependence}
+\end{figure}
+
+\clearpage
+\begin{landscape}
+\input{tables/table-01-parameter-timescale-identifiability-v1.tex}
+\end{landscape}
+
+\begin{landscape}
+\input{tables/table-02-numerical-benchmarks-v1.tex}
+\end{landscape}
+
+\section{Parameter and numerical evidence}
+
+Table~\ref{tab:parameter-register} keeps the source notation, unambiguous code names, units, sensitivity paths, and identifiability qualifications together. In particular, the paper's refresh-rate and source-amplitude uses of \(\lambda\) are separated in code. Table~\ref{tab:numerical-benchmarks} is generated from the diagnostic results; scientific figures are not accepted if a row is failed. The fractional reference points were computed independently with adaptive quadrature, while the release evaluator uses fixed composite Gauss--Legendre quadrature and a small-argument series.
+
+\section{Reproducibility contract}
+
+The complete active route is
+\begin{verbatim}
+python scripts/run_all.py
+\end{verbatim}
+and the standard-library regression tests are
+\begin{verbatim}
+python -m unittest discover -s tests -v
+\end{verbatim}
+The run regenerates or scientifically verifies the eleven selected PDF/PNG figure pairs, two CSV/LaTeX table pairs, claim-bearing curve and summary datasets, diagnostic reports, and the retained simulation route. PDF bytes can differ across systems because of renderer metadata or font embedding; frozen inputs, machine-readable values, declared tolerances and diagnostic statuses are the cross-platform reproducibility objects.
+
+The accepted analytical output schemas retain their scientific object versions. The final simulation evidence is registered in the component, combined, impact and dependence CSV files listed in the figure manifest. Simulation resolution, alignment and domain metadata accompany the comparisons because Figure~\ref{fig:grid} shows that numerical boundary representation can move the apparent response curve.
+
+\section{Interpretive limits}
+
+The diagnosed computations support a limited set of conclusions. Ordinary clock and coupling factors are distinguishable when their timescales are sufficiently separated and the components are shown explicitly. The long-scale plateau contains little local information about either rate. The leading short-scale power of a combined fractional curve identifies an order sum rather than two separate orders. Reaction-boundary quantities affect the Epps curve conditionally through the effective response rate, but are not individually identified by that curve. Continuum selector invariance can coexist with finite-grid distortion when parity, alignment or domain controls are not respected. The corrected translation-mode simulation is consistent with the registered component curves and improves the no-refit combined comparison when the estimator's finite-grid, finite-step clock selection is represented exactly. The impact and autocorrelation figures are conditional model diagnostics, not empirical stylised-fact calibration.
+
+These are computational illustrations and numerical verification statements inside the paper's assumptions. They are not empirical validation, calibration or proof of the approximations. The retired Bauer implementation is not required to execute or interpret the accepted v2 route.
+
+\medskip
+\noindent\textbf{Software and licensing note.} Code is provided under the MIT License; supplementary text, captions, generated figures, tables, and documentation are provided under CC BY 4.0. The paper and frozen source retain their existing terms.
+
+\end{document}

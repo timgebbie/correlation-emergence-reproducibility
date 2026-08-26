@@ -1,0 +1,39 @@
+check_id,check,observed,criterion,status,software_version
+S7CM-01,accepted v1.7.7 input hashes,True,all accepted hashes exact,Verified,1.7.11
+S7CM-02,accepted parent,v1.7.7,exactly v1.7.7,Verified,1.7.11
+S7CM-03,uniform operational dynamics,uniform_fixed_grid_only,uniform_fixed_grid_only,Verified,1.7.11
+S7CM-04,explicit post-dynamics clock,independent_equal_rate_previous_refresh_after_operational_completion,independent previous refresh after operational completion,Verified,1.7.11
+S7CM-05,nonuniform update and interpolation excluded,"('forbidden', 'forbidden')",both forbidden,Verified,1.7.11
+S7CM-06,component and combined refit excluded,"('forbidden', 'forbidden')",both forbidden,Verified,1.7.11
+S7CM-07,exact reduced reference owns no clock or dynamics,conditional_gaussian_moments_given_selected_previous_refresh_operational_indices,conditional moments given selected indices,Verified,1.7.11
+S7CM-08,reduced external input orthogonality,-2.636779683484747e-18,absolute correlation <= 1e-14,Verified,1.7.11
+S7CM-09,thick external input orthogonality,1.2023210709861071e-17,absolute correlation <= 1e-14,Verified,1.7.11
+S7CM-10,reduced realised clock rates,0.0003262886584222413,maximum relative error <= 0.05,Verified,1.7.11
+S7CM-11,thick realised clock rates,0.004801313908810723,maximum relative error <= 0.05,Verified,1.7.11
+S7CM-12,reduced terminal state unused,20399,strictly below 20400,Verified,1.7.11
+S7CM-13,reduced covariance exact-reference RMSE,0.008530075347587832,RMSE <= 0.03,Verified,1.7.11
+S7CM-14,reduced covariance standardized RMSE,0.4002631425037403,standardized RMSE <= 2.0,Verified,1.7.11
+S7CM-15,reduced covariance coverage,1.0,coverage >= 0.9,Verified,1.7.11
+S7CM-16,reduced correlation exact-reference RMSE,0.002296304385481216,RMSE <= 0.03,Verified,1.7.11
+S7CM-17,reduced correlation standardized RMSE,0.38643783521812786,standardized RMSE <= 2.0,Verified,1.7.11
+S7CM-18,reduced correlation coverage,1.0,coverage >= 0.9,Verified,1.7.11
+S7CM-19,reduced estimator gate,True,recovered before product interpretation,Verified,1.7.11
+S7CM-20,leading-order product approximation,0.03739135130959094,RMSE <= 0.03 or qualified,Qualified,1.7.11
+S7CM-21,leading-order product result label,qualified_nonconformity,permitted scientific result,Verified,1.7.11
+S7CM-22,thick completed operational paths,4400,exactly 4400,Verified,1.7.11
+S7CM-23,thick unique boundaries,1,exactly one candidate,Verified,1.7.11
+S7CM-24,thick interior boundaries,9.881073772934249,minimum edge distance > 8,Verified,1.7.11
+S7CM-25,thick terminal state unused,3999,strictly below 4000,Verified,1.7.11
+S7CM-26,accepted covariance scale retained,1.0568450226140758e-06,exact v1.7.7 frozen scale,Verified,1.7.11
+S7CM-27,boundary-specific covariance residual,0.039719091508260605,RMSE <= 0.03 or qualified,Qualified,1.7.11
+S7CM-28,boundary-specific covariance standardized RMSE,0.4549796743859744,standardized RMSE <= 2.0 or qualified,Verified,1.7.11
+S7CM-29,boundary-specific covariance coverage,1.0,coverage >= 0.9 or qualified,Verified,1.7.11
+S7CM-30,boundary-specific correlation residual,0.014857980983509047,RMSE <= 0.03 or qualified,Verified,1.7.11
+S7CM-31,total analytical-product residual,0.06696349022251445,RMSE <= 0.03 or qualified,Qualified,1.7.11
+S7CM-32,total product standardized RMSE,1.4690812647710247,standardized RMSE <= 2.0 or qualified,Verified,1.7.11
+S7CM-33,total product coverage,0.9,coverage >= 0.9 or qualified,Verified,1.7.11
+S7CM-34,accepted-component-product residual,0.05604043498579246,RMSE <= 0.03 or qualified,Qualified,1.7.11
+S7CM-35,combined plateau stability,0.0771897419869215,relative shift <= 0.05 or qualified,Qualified,1.7.11
+S7CM-36,source-v1 paper freeze,48eea98a6fb084d6ecc397bede4c107a44cae947e16271d66a7041e2997afb5a,accepted source hash exact,Verified,1.7.11
+S7CM-37,Figure 22 output pair,True,nonempty PDF and PNG,Verified,1.7.11
+S7CM-38,Stage 7 remains open for closure,v1.7.12_stage_7_stability_integrity_and_closure,v1.7.12 stability and integrity closure,Verified,1.7.11

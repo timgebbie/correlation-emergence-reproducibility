@@ -1,0 +1,3 @@
+schedule_id,child_count,child_quantity,total_quantity,child_operational_steps,child_times_from_start_seconds,execution_horizon_seconds,signed_execution_rate_proxy_per_second,participation_rate_status,software_version
+fast,4,0.05,0.2,"[301, 311, 321, 331]","[0.0, 5.0, 10.0, 15.0]",15.0,0.013333333333333334,not_identified_without_background_market_order_volume,1.8.2
+slow,4,0.05,0.2,"[301, 341, 381, 421]","[0.0, 20.0, 40.0, 60.0]",60.0,0.0033333333333333335,not_identified_without_background_market_order_volume,1.8.2

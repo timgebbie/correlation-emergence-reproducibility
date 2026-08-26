@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.5.1",
+  "scope": "declared_two_book_clock_ensembles",
+  "paths": 16,
+  "operational_grid": {
+    "start": 0.0,
+    "step": 0.005,
+    "steps": 2400
+  },
+  "operational_order_reference": [1.0, 1.0],
+  "scenarios": {
+    "poisson_independent": {
+      "law": "poisson_refresh_exponential_waits",
+      "rates": [200.0, 200.0],
+      "dependence_policy": "independent_book_streams",
+      "dependence_parameter": 0.0,
+      "stream_ids": ["CLK151-POIS-IND-B1", "CLK151-POIS-IND-B2"],
+      "seeds": [151101, 151102]
+    },
+    "poisson_shared_fraction": {
+      "law": "poisson_refresh_exponential_waits",
+      "rates": [200.0, 200.0],
+      "dependence_policy": "common_wait_mixture",
+      "dependence_parameter": 0.6,
+      "stream_ids": ["CLK151-POIS-MIX-B1", "CLK151-POIS-MIX-B2"],
+      "seeds": {
+        "common": 151111,
+        "book_1_idiosyncratic": 151112,
+        "book_2_idiosyncratic": 151113,
+        "sharing_mask": 151114
+      }
+    },
+    "inverse_stable_independent": {
+      "law": "positive_stable_subordinator",
+      "alpha_t": [0.8, 0.65],
+      "calendar_scales": [1.0, 1.0],
+      "dependence_policy": "independent_book_streams",
+      "dependence_parameter": 0.0,
+      "stream_ids": ["CLK151-STABLE-IND-B1", "CLK151-STABLE-IND-B2"],
+      "seeds": {
+        "book_1_angle": 151121,
+        "book_1_exponential": 151122,
+        "book_2_angle": 151123,
+        "book_2_exponential": 151124
+      }
+    }
+  }
+}

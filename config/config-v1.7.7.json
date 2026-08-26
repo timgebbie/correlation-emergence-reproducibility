@@ -1,0 +1,171 @@
+{
+  "schema_version": "1.7.7",
+  "scope": "corrected_translation_mode_coupling_recovery",
+  "target_id": "CNF-CP-CORR-REC-01",
+  "accepted_parent": "v1.7.6",
+  "accepted_parent_commit": "ed7565a1d8d261e329d2a0a74071af0fb6c85497",
+  "accepted_inputs": [
+    {
+      "path": "config/config-v1.7.6.json",
+      "sha256": "57ca4f658c7ba37d803efa7c7d8681716a4a43cd2378f3d2e014229d2ac39c9d",
+      "role": "accepted_correction_design"
+    },
+    {
+      "path": "diagnostics/coupling-correction-design-checks-v1.7.csv",
+      "sha256": "125685bac3355982eb3cc6f65bdd89298f64f9236713393f9c66c83cf74aafcd",
+      "role": "accepted_design_checks"
+    },
+    {
+      "path": "outputs/coupling-correction-candidates-v1.7.csv",
+      "sha256": "3828f587c4586d817774eb92197d672182179a91cc4116c502b4f809c36da71e",
+      "role": "accepted_candidate_decision"
+    },
+    {
+      "path": "outputs/coupling-translation-mode-probe-v1.7.csv",
+      "sha256": "df2a7a94fc6fff56cd8718a7206dad4dbbf5ba1b5872eb4faf57297b9900109d",
+      "role": "accepted_one_step_tractability_probe"
+    },
+    {
+      "path": "functions/operational/coupling.py",
+      "sha256": "3684634666a9049c1d99f8e854acc5690dec57f3b6db97c069480bcd798dfd7d",
+      "role": "accepted_regularized_coupling_comparator"
+    },
+    {
+      "path": "functions/operational/solver.py",
+      "sha256": "44d0049874d4c4ae72bfb3ff0e68106e7012c82bb064e3383bbd686c390d4626",
+      "role": "accepted_regularized_solver_entry"
+    },
+    {
+      "path": "functions/operational/path.py",
+      "sha256": "7b7d0201aa151abe73c95e825a1fe7baae1959115b1bd984ba5cad26df3269ad",
+      "role": "accepted_regularized_path"
+    },
+    {
+      "path": "functions/operational/source.py",
+      "sha256": "4e7779552065ec734cb08ab6fda41c07c27e15681c8de71aef91b4bc3d7430b6",
+      "role": "accepted_corrected_base_source"
+    },
+    {
+      "path": "source/source-v1/CATG-RD2Epps-v3-arXiv.tex",
+      "sha256": "48eea98a6fb084d6ecc397bede4c107a44cae947e16271d66a7041e2997afb5a",
+      "role": "accepted_pre_audit_theory_source"
+    },
+    {
+      "path": "source/source-v2/COUPLING-CORRECTION-DESIGN-v1.7.tex",
+      "sha256": "a64d8cc7622c47366c00f8ec43e08650cddc284ba8e9a1106a95d274df2417f8",
+      "role": "accepted_correction_derivation"
+    }
+  ],
+  "architecture": {
+    "operational_dynamics": "uniform_fixed_grid_only",
+    "calendar_observation": "identity_clock_only",
+    "subordination": "not_active_in_this_component_gate",
+    "calendar_interpolation": "forbidden",
+    "legacy_nonuniform_state_update": "forbidden",
+    "implementation_split": {
+      "accepted_comparator": [
+        "functions/operational/coupling.py",
+        "functions/operational/solver.py",
+        "functions/operational/path.py"
+      ],
+      "corrected_target": [
+        "functions/operational/translation_coupling.py",
+        "functions/operational/translation_solver.py",
+        "functions/operational/translation_path.py"
+      ]
+    },
+    "production_type": "TranslationModeCoupling",
+    "density_snapshot": "immutable_most_recent_pre_step_receiving_book_density",
+    "combined_curve_refit": "forbidden"
+  },
+  "theory_conformity": {
+    "paper_reduced_dynamics": "dot_p_j=-kappa_jk*(p_j-p_k)",
+    "implemented_source": "ell_T_jk=-kappa_jk*z_jk*v_j",
+    "translation_mode": "v_j=-partial_x(phi_j_current)",
+    "projection_status": "exact_by_construction_at_the_source_level",
+    "regularized_tanh_source_status": "conditional_first_moment_closure_and_frozen_comparator",
+    "paper_status": "reduced_response_retained_regularized_source_to_rate_bridge_requires_qualification",
+    "source_v1_policy": "frozen_until_v1.7.7_recovery_evidence_is_accepted",
+    "base_source_correction": "paper_exp_minus_mu_y_squared_not_legacy_exp_minus_mu_y_all_squared"
+  },
+  "model": {
+    "grid_lower": -10.0,
+    "grid_upper": 10.0,
+    "primary_grid_points": 201,
+    "grid_convergence_points": [101, 201, 401],
+    "diffusion": [0.5, 0.5],
+    "transport_probability": 0.5,
+    "cancellation_rates": [0.0, 0.0],
+    "operational_orders": [1.0, 1.0],
+    "kernel_terms": [1, 1],
+    "source_lambda": [1.0, 1.0],
+    "source_mu": [0.1, 0.1],
+    "minimum_abs_boundary_slope": 1e-6,
+    "seconds_per_model_time_unit": 100.0,
+    "operational_step_model_units": 0.005,
+    "operational_step_seconds": 0.5
+  },
+  "coupling": {
+    "ordered_rates_per_model_time_unit": [1.25, 1.25],
+    "target_total_rate_per_model_time_unit": 2.5,
+    "target_total_rate_per_second": 0.025,
+    "primary_selector": "none",
+    "thickness": "current_reaction_front_derivative",
+    "legacy_gamma_reinterpretation": "forbidden"
+  },
+  "deterministic_recovery": {
+    "book_displacements": [0.01, 0.02, 0.04, 0.06],
+    "perturbation_signs": [-1, 1],
+    "response_horizon_model_units": 0.8,
+    "fit_horizon_model_units": 0.4,
+    "grid_probe_displacement": 0.02,
+    "innovation_sigma": [0.0, 0.0],
+    "maximum_projection_residual": 1e-14,
+    "maximum_absolute_pair_center_drift": 1e-10,
+    "minimum_boundary_edge_distance": 8.0,
+    "required_boundary_candidates": 1
+  },
+  "stochastic_recovery": {
+    "innovation_sigma": [0.4, 0.4],
+    "microscopic_innovation_correlation": 0.0,
+    "calibration_paths": 16,
+    "validation_paths": 32,
+    "total_operational_steps": 4400,
+    "warm_up_steps": 400,
+    "calibration_seed": 177701,
+    "validation_seed": 177702,
+    "calibration_lags_seconds": [50, 70, 90, 110],
+    "validation_lags_seconds": [20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 320, 340, 360, 380, 400],
+    "normalization": "frozen_calibration_pair_centre_variance_growth_rate",
+    "covariance_estimand": "cross_covariance_divided_by_C_times_Delta",
+    "correlation_estimand": "uncentred_realised_return_correlation",
+    "uncertainty": "delete_one_operational_path_jackknife",
+    "stochastic_rate_diagnostic_relative_error_maximum": 0.1,
+    "calibration_variance_rate_relative_range_maximum": 0.05
+  },
+  "acceptance_policy": {
+    "deterministic_rate_relative_error_maximum": 0.05,
+    "deterministic_rate_measurement_relative_difference_maximum": 0.02,
+    "curve_absolute_rmse_maximum": 0.03,
+    "curve_standardized_rmse_maximum": 2.0,
+    "minimum_pointwise_normal_95_coverage": 0.9,
+    "plateau_relative_shift_maximum": 0.05,
+    "deterministic_gate_must_pass_before_stochastic_execution": true,
+    "combined_uses_no_v1.7.7_curve_refit": true
+  },
+  "output_contract": {
+    "figure_number": 21,
+    "curve_rows": 20,
+    "deterministic_primary_rate_rows": 8,
+    "grid_convergence_rows": 3,
+    "result_label_when_all_claim_checks_pass": "recovered",
+    "next_stage": "v1.7.8_combined_no_refit_prediction"
+  },
+  "stage_boundary": {
+    "v1.7.7_is_corrected_coupling_recovery": true,
+    "source_v1_changed": false,
+    "combined_prediction_executed": false,
+    "stage_7_remains_open": true,
+    "next_stage_on_acceptance": "v1.7.8_combined_no_refit_prediction"
+  }
+}

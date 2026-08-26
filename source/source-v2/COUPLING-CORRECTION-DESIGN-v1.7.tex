@@ -1,0 +1,64 @@
+% Coupling-correction design accepted at the v1.7.6 gate.
+% The accepted source/source-v1 paper and v1.7.5 implementation remain frozen.
+
+\section*{Translation-mode coupling correction}
+
+Let the directed spread and the current receiving-book translation mode be
+\[
+  z_{jk}=p^{(j)}-p^{(k)},
+  \qquad
+  v_j(x,u)=-\partial_x\varphi^{(j)}(x,u).
+\]
+The accepted reaction-front reduction uses an adjoint response mode $\psi_j$
+and normalization
+\[
+  N_j=\langle\psi_j,v_j\rangle\ne0,
+  \qquad
+  \dot p_j
+  =\frac{\langle\psi_j,\ell^{(j,k)}\rangle}{N_j}.
+\]
+The minimal source that realizes the registered ordered-pair response is
+therefore
+\[
+  \ell_T^{(j,k)}(x,u)
+  =-\kappa_{jk}z_{jk}(u)v_j(x,u)
+  =\kappa_{jk}z_{jk}(u)\partial_x\varphi^{(j)}(x,u).
+\]
+Indeed,
+\[
+  \dot p_j
+  =\frac{\langle\psi_j,-\kappa_{jk}z_{jk}v_j\rangle}
+  {\langle\psi_j,v_j\rangle}
+  =-\kappa_{jk}z_{jk}.
+\]
+For two reciprocal ordered pairs,
+\[
+  \dot z
+  =\dot p_1-\dot p_2
+  =-(\kappa_{12}+\kappa_{21})z.
+\]
+Thus the sign is determined by the receiving-book convention: if $p^{(j)}$ is
+above $p^{(k)}$, then $z_{jk}>0$ and book $j$ moves down.
+
+The thickness of this coupling is the thickness of the current reaction front
+itself.  The mode is computed from the immutable pre-step density on the
+accepted uniform price grid.  No fixed-$\varepsilon$ selector enters the
+claim-bearing leading response.  The accepted smooth side-selected source is
+retained as a comparator, while a hard-side or finite-spatial-width residual is
+deferred.  Any such residual must first be made orthogonal to the adjoint
+translation response so that it cannot alter $\kappa_{jk}$.
+
+For the symmetric target,
+\[
+  \kappa_{12}=\kappa_{21}=1.25,
+  \qquad
+  \kappa=2.5
+\]
+per model-time unit. With $\Delta u=0.005$, the registered explicit spread
+factor is $1-\kappa\Delta u=0.9875$. A deterministic one-step probe through the
+existing external-source entry recovers rates from $2.498338$ to $2.499672$
+over signed spreads with maximum relative error $0.000665$, zero pair-centre
+drift to numerical precision and unique interior boundaries.
+
+This calculation selects an implementation contract; it is not yet the
+v1.7.7 production coupling or a stochastic Epps-curve validation.

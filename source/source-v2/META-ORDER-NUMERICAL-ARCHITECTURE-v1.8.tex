@@ -1,0 +1,44 @@
+% Draft supplementary-material insert registered at the v1.8.2 gate.
+% The accepted source-v1 paper remains frozen.
+
+\subsection{Scheduled meta-orders across operational and calendar time}
+\label{app:scheduled-meta-orders}
+
+A numerical meta-order is represented as a schedule of child market-order
+events, not as one enlarged instantaneous density perturbation.  For child
+$r$ with signed quantity $\epsilon q_r$ and declared operational index $n_r$,
+the event map first consumes the opposing density from the current reaction
+front outwards.  The ordinary uniform operational update is then applied from
+$n_r-1$ to $n_r$.  Thus every child acts on the state left by the preceding
+children and intervening diffusion, cancellation, source and coupling steps.
+
+The control path and each scheduled-event path use the same initial state and
+the same supplied operational innovations.  Both books are completed on the
+uniform operational grid before either book-specific clock is introduced.
+For calendar time $t$, book $j$ is observed only through its declared
+previous-refresh subordination,
+\begin{equation}
+  P_j(t)=p_j\!\left(U_j(t)\right),
+  \qquad
+  U_j(t)=\max\{u_{j,m}:t_{j,m}\leq t\}.
+\end{equation}
+No interpolation and no state update on a nonuniform calendar grid are used.
+Operational execution effects and observation-clock effects can therefore be
+reported separately for exactly the same completed path.
+
+The production experiment compares schedules with equal total signed volume
+but different first-to-last-child horizons.  Total volume divided by this
+horizon is a schedule-intensity proxy, not a participation rate: a true
+participation rate would also require a defined background stream of market
+order volume.  Post-completion own-impact relaxation, cross-impact catch-up and
+long-lag own/cross convergence are reported as different observables because
+coupling can transmit impact between children during a slow execution.
+
+This construction inherits the translation-mode numerical source in
+Equation~\eqref{eq:numerical-translation-source}.  No independent regularised
+boundary width is added for a meta-order.  The resolved front changes after
+each child, and subsequent coupling uses that current front profile.  The
+bounded source in the accepted analytical construction remains a weak-moment
+closure; the translation-mode numerical source conforms to its reduced
+front-displacement law after projection and is not claimed to be pointwise
+identical.

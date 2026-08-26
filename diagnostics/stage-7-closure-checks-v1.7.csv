@@ -1,0 +1,29 @@
+check_id,check,observed,criterion,status,software_version
+S7CL-01,accepted v1.7.11 input hashes,True,all accepted hashes exact,Verified,1.7.12
+S7CL-02,accepted parent,v1.7.11,equals v1.7.11,Verified,1.7.12
+S7CL-03,exact numerical runtime,"{""matplotlib"": ""3.10.8"", ""numpy"": ""2.3.5""}",NumPy 2.3.5 and Matplotlib 3.10.8,Verified,1.7.12
+S7CL-04,complete archive manifest path set,0,exact controlled workspace path set,Verified,1.7.12
+S7CL-05,complete archive manifest count,370,equals 370,Verified,1.7.12
+S7CL-06,immutable manifest classification,0,exact non-generated immutable subset,Verified,1.7.12
+S7CL-07,immutable manifest count,226,equals 226,Verified,1.7.12
+S7CL-08,immutable paths are archive paths,0,zero paths outside complete archive,Verified,1.7.12
+S7CL-09,workspace symbolic links,[],none,Verified,1.7.12
+S7CL-10,workspace staging and backup artifacts after cleanup,[],none,Verified,1.7.12
+S7CL-11,Stage 7 diagnostic inventory,True,all nine declared files and row counts,Verified,1.7.12
+S7CL-12,Stage 7 diagnostic versions,True,exact accepted numeric subphase versions,Verified,1.7.12
+S7CL-13,Stage 7 check identifiers,253,253 unique checks,Verified,1.7.12
+S7CL-14,verified Stage 7 checks,244,equals 244,Verified,1.7.12
+S7CL-15,qualified Stage 7 checks,6,equals 6,Verified,1.7.12
+S7CL-16,invalid Stage 7 preconditions,3,equals 3,Verified,1.7.12
+S7CL-17,failed Stage 7 checks,0,equals zero,Verified,1.7.12
+S7CL-18,qualified and invalid exception distribution,True,exactly the registered per-gate distribution,Verified,1.7.12
+S7CL-19,registered Stage 7 result labels,"{""clock_only"": [""qualified_nonconformity"", ""recovered""], ""combined"": [""qualified_nonconformity"", ""recovered""], ""corrected_coupling"": [""recovered""], ""legacy_coupling_only"": [""invalid_experiment"", ""recovered""]}",exact accepted label sets,Verified,1.7.12
+S7CL-20,Stage 7 figure pairs,7,equals 7,Verified,1.7.12
+S7CL-21,legacy Figure 7 retained,True,PDF and PNG both present,Verified,1.7.12
+S7CL-22,uniform operational dynamics,uniform_fixed_grid_only,uniform_fixed_grid_only,Verified,1.7.12
+S7CL-23,post-dynamics book-specific clocks,independent_equal_rate_previous_refresh_after_operational_completion,independent equal-rate previous refresh after operational completion,Verified,1.7.12
+S7CL-24,nonuniform update and interpolation excluded,"[""forbidden"", ""forbidden""]",both forbidden,Verified,1.7.12
+S7CL-25,component and combined refit excluded,"[""forbidden"", ""forbidden""]",both forbidden,Verified,1.7.12
+S7CL-26,v1.7.11 acceptance record,True,accepted status and date recorded,Verified,1.7.12
+S7CL-27,accepted inputs unchanged by closure,True,all start and end hashes identical,Verified,1.7.12
+S7CL-28,Stage 7 closure boundary,"{""closes_stage_7_on_acceptance"": true, ""next_stage"": ""v1.8.0_event_semantics_and_impact_entry"", ""stage_8_scope"": [""limit_order_and_market_order_event_semantics"", ""single_trade_own_impact_and_cross_impact"", ""meta_order_own_impact_and_cross_impact"", ""mid_price_and_trade_sign_autocorrelation"", ""three_trade_sign_conventions""]}",closes Stage 7 only on acceptance and opens v1.8.0,Verified,1.7.12

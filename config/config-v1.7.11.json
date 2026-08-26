@@ -1,0 +1,190 @@
+{
+  "schema_version": "1.7.11",
+  "scope": "combined_clock_corrected_coupling_no_refit_prediction",
+  "target_ids": [
+    "CNF-CMB-REF-01",
+    "CNF-CMB-LOB-01"
+  ],
+  "accepted_parent": "v1.7.7",
+  "accepted_parent_commit": "0e82ec1e61cc39594113281abacd10f85799f168",
+  "accepted_inputs": [
+    {
+      "path": "config/config-v1.7.4.json",
+      "sha256": "dd576dce659f61c4250ef73f06c5e84c672ea91d1a6360d89beef2f0dd424f6b",
+      "role": "accepted_clock_only_configuration"
+    },
+    {
+      "path": "outputs/clock-only-conformity-curves-v1.7.csv",
+      "sha256": "761983e8bbc63b6b3d10ed4aa930b87eafb1dcbb2b607a025b18684f81375039",
+      "role": "accepted_clock_component_curves"
+    },
+    {
+      "path": "config/config-v1.7.7.json",
+      "sha256": "d9579ef8e31159cf1198037b14e739943237c1f2776b1354aed95779e301660f",
+      "role": "accepted_corrected_coupling_configuration"
+    },
+    {
+      "path": "outputs/corrected-coupling-recovery-curves-v1.7.csv",
+      "sha256": "98bef2c19a39948a1813dd29dd715300348bbdac2a9789936294077d48d07960",
+      "role": "accepted_corrected_coupling_component_curves"
+    },
+    {
+      "path": "outputs/corrected-coupling-validation-paths-v1.7.npz",
+      "sha256": "a03cb837dfb82ebda1c6e3614d96417a9c9296bd33090107e2e853783f69c3d0",
+      "role": "accepted_frozen_covariance_scale"
+    },
+    {
+      "path": "functions/operational/translation_coupling.py",
+      "sha256": "555f36f1bb49d1c59d5f8aa79e5911f7c5051020125bd2d8c7463bc58d73915f",
+      "role": "accepted_corrected_coupling_type"
+    },
+    {
+      "path": "functions/operational/translation_solver.py",
+      "sha256": "22423396c805ae7f683b81731e3c6a03b7932558e39beee7c879cbf6df5a75f2",
+      "role": "accepted_corrected_solver_entry"
+    },
+    {
+      "path": "functions/operational/translation_path.py",
+      "sha256": "d5a0129c9ed494eb287c649ed057f8671c958d8dd54d22b28db429fc94577283",
+      "role": "accepted_corrected_operational_path"
+    },
+    {
+      "path": "functions/observation/refresh_sampling.py",
+      "sha256": "79161984d9aed19e694957b64817939b7e891ada793331c8eff1467813049e6b",
+      "role": "accepted_previous_refresh_subordination"
+    },
+    {
+      "path": "source/source-v1/CATG-RD2Epps-v3-arXiv.tex",
+      "sha256": "48eea98a6fb084d6ecc397bede4c107a44cae947e16271d66a7041e2997afb5a",
+      "role": "accepted_paper_source"
+    },
+    {
+      "path": "source/source-v2/CLOCK-RATE-CORRECTION-v1.7.tex",
+      "sha256": "5f2456e48945c26d36531c7f686f9657a05ec0b3eb8e586bc3624a9921cd3047",
+      "role": "accepted_equal_rate_clock_interpretation"
+    },
+    {
+      "path": "source/source-v2/CORRECTED-COUPLING-RECOVERY-v1.7.tex",
+      "sha256": "f1311c54dfa8474e3dd9c5fc18e6f6eaac07d7fc89847fa587f1d250433ee2a4",
+      "role": "accepted_corrected_coupling_interpretation"
+    }
+  ],
+  "architecture": {
+    "operational_dynamics": "uniform_fixed_grid_only",
+    "calendar_observation": "independent_equal_rate_previous_refresh_after_operational_completion",
+    "calendar_interpolation": "forbidden",
+    "legacy_nonuniform_state_update": "forbidden",
+    "clock_owns_operational_dynamics": false,
+    "component_parameter_refit": "forbidden",
+    "combined_curve_refit": "forbidden"
+  },
+  "frozen_components": {
+    "equal_book_refresh_rates_per_second": [
+      0.1,
+      0.1
+    ],
+    "clock_factor": "F(lambda*Delta)",
+    "ordered_coupling_rates_per_model_time_unit": [
+      1.25,
+      1.25
+    ],
+    "total_coupling_rate_per_second": 0.025,
+    "coupling_factor": "F(kappa*Delta)",
+    "analytical_combined": "F(lambda*Delta)*F(kappa*Delta)",
+    "frozen_thick_boundary_covariance_scale": 1.0568450226140758e-06,
+    "accepted_component_product": "accepted_clock_thick_boundary_curve_times_accepted_corrected_coupling_covariance_curve"
+  },
+  "exact_reduced_reference": {
+    "process": "stationary_symmetric_linear_coupling_sde",
+    "pair_centre_variance_rate": 0.08000000000000002,
+    "innovation_scale": 0.4,
+    "operational_step_seconds": 0.5,
+    "response_rate_per_second": 0.025,
+    "validation_paths": 64,
+    "clock_replications_per_path": 4,
+    "warm_up_seconds": 200.0,
+    "analysis_horizon_seconds": 10000.0,
+    "total_operational_steps": 20400,
+    "operational_seed": 178801,
+    "clock_seed": 178802,
+    "initial_spread_seed": 178803,
+    "uniform_draws_per_book_clock": 4096,
+    "exact_reference": "conditional_gaussian_moments_given_selected_previous_refresh_operational_indices",
+    "purpose": "validate_the_simulation_estimator_and_measure_intrinsic_product_approximation_residual"
+  },
+  "thick_boundary_holdout": {
+    "model_source": "accepted_v1.7.7_translation_mode_configuration",
+    "validation_paths": 32,
+    "clock_replications_per_path": 4,
+    "total_operational_steps": 4400,
+    "warm_up_steps": 400,
+    "analysis_horizon_seconds": 2000.0,
+    "operational_seed": 178811,
+    "clock_seed": 178812,
+    "uniform_draws_per_book_clock": 1024,
+    "normalization": "accepted_v1.7.7_frozen_pair_centre_variance_growth_rate",
+    "exact_reduced_same_clock_reference": true,
+    "purpose": "measure_boundary_specific_and_total_nonseparability_without_refit"
+  },
+  "registered_lags_seconds": [
+    20,
+    40,
+    60,
+    80,
+    100,
+    120,
+    140,
+    160,
+    180,
+    200,
+    220,
+    240,
+    260,
+    280,
+    300,
+    320,
+    340,
+    360,
+    380,
+    400
+  ],
+  "acceptance_policy": {
+    "clock_rate_relative_error_maximum": 0.05,
+    "reduced_exact_covariance_rmse_maximum": 0.03,
+    "reduced_exact_correlation_rmse_maximum": 0.03,
+    "standardized_rmse_maximum": 2.0,
+    "minimum_pointwise_normal_95_coverage": 0.9,
+    "leading_order_product_rmse_maximum": 0.03,
+    "boundary_specific_rmse_maximum": 0.03,
+    "accepted_component_product_rmse_maximum": 0.03,
+    "plateau_relative_shift_maximum": 0.05,
+    "scientific_nonconformity_is_qualified_not_failed": true,
+    "reduced_exact_estimator_gate_must_pass": true,
+    "permitted_result_labels": [
+      "recovered",
+      "qualified_nonconformity",
+      "invalid_experiment"
+    ]
+  },
+  "output_contract": {
+    "figure_number": 22,
+    "curve_rows": 20,
+    "summary_rows": 3,
+    "claim_bearing_estimand": "normalized_cross_covariance_divided_by_frozen_pair_centre_scale_times_Delta",
+    "separate_estimand": "uncentred_realised_return_correlation",
+    "required_residuals": [
+      "exact_reduced_minus_leading_order_product",
+      "thick_boundary_minus_exact_reduced_same_clock",
+      "thick_boundary_minus_accepted_component_product",
+      "thick_boundary_minus_leading_order_product"
+    ],
+    "next_stage": "v1.7.12_stage_7_stability_integrity_and_closure"
+  },
+  "stage_boundary": {
+    "combined_prediction_executed": true,
+    "component_parameters_changed": false,
+    "source_v1_changed": false,
+    "stage_7_remains_open": true,
+    "next_stage_on_acceptance": "v1.7.12_stage_7_stability_integrity_and_closure"
+  }
+}

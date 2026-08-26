@@ -1,0 +1,77 @@
+{
+  "schema_version": "1.6.2",
+  "scope": "leave_one_operational_path_out_mechanism_robustness_and_stage_6_closure",
+  "target_id": "DEC-EPP-01",
+  "accepted_parent": "v1.6.1",
+  "accepted_inputs": [
+    {
+      "path": "outputs/mechanism-factorial-members-v1.6.csv",
+      "sha256": "f965cbff6764fbc94147eb7688ce898d4110d5b71a7b3a6225f4e8417592ce86"
+    },
+    {
+      "path": "outputs/mechanism-decomposition-curves-v1.6.csv",
+      "sha256": "17043baf8a351e5cc28d0528ee1afae328e01077ef94692be3af8a0077b95966"
+    }
+  ],
+  "clock_scenarios": [
+    "poisson_independent",
+    "poisson_shared_fraction",
+    "inverse_stable_independent"
+  ],
+  "contrast_terms": [
+    "boundary_main",
+    "clock_main",
+    "interaction",
+    "total_change"
+  ],
+  "pairing": {
+    "operational_paths": 8,
+    "clock_replications_per_operational_path": 2,
+    "group_before_omission": true,
+    "omission_unit": "operational_path"
+  },
+  "lag_bands": [
+    {
+      "name": "short",
+      "minimum_lag": 1,
+      "maximum_lag": 10
+    },
+    {
+      "name": "medium",
+      "minimum_lag": 11,
+      "maximum_lag": 100
+    },
+    {
+      "name": "long",
+      "minimum_lag": 101,
+      "maximum_lag": 600
+    }
+  ],
+  "robustness_method": {
+    "name": "leave_one_operational_path_out",
+    "jackknife_standard_error": "sqrt((G-1)/G*sum((theta_minus_g-mean(theta_minus_g))^2))",
+    "pointwise_envelope": "minimum_and_maximum_over_eight_omissions",
+    "band_estimate": "equal_weight_mean_over_declared_lags"
+  },
+  "closure_tolerances": {
+    "member_reconstruction": 1e-12,
+    "grouped_reconstruction": 1e-12,
+    "leave_one_out_reconstruction": 1e-12,
+    "accepted_mean_recovery": 1e-12,
+    "accepted_standard_error_recovery": 1e-12,
+    "clock_invariant_boundary_main": 1e-12
+  },
+  "interpretation": {
+    "claim": "conditional_path_robustness_of_the_paired_computational_decomposition",
+    "not_claimed": [
+      "independent_simulation_replication",
+      "empirical_causal_effect",
+      "formal_hypothesis_test",
+      "universal_clock_boundary_ordering"
+    ]
+  },
+  "stage_boundary": {
+    "closes_stage_6_on_acceptance": true,
+    "next_stage": "v1.7.0_updated_figure_7_replacement"
+  }
+}

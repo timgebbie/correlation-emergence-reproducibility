@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import sys
-from datetime import date
+import re
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -12,6 +12,23 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from functions.diagnostic_checks import run_diagnostic_checks
 from functions.io_utils import ensure_output_directories, load_config, write_csv, write_json
+
+
+REPORT_PATH = PROJECT_ROOT / "TEST-REPORT-v1.0.0.md"
+
+
+def _stable_report_date() -> str:
+    """Preserve the accepted report date across ordinary reruns."""
+
+    if REPORT_PATH.is_file():
+        match = re.search(
+            r"^Date: (\d{4}-\d{2}-\d{2})$",
+            REPORT_PATH.read_text(encoding="utf-8"),
+            flags=re.MULTILINE,
+        )
+        if match:
+            return match.group(1)
+    return "2026-08-01"
 
 
 def main() -> int:
@@ -29,7 +46,7 @@ def main() -> int:
         "",
         "Artefact status: **diagnostic output**",
         "",
-        f"Date: {date.today().isoformat()}",
+        f"Date: {_stable_report_date()}",
         "",
         f"Result: **{len(results) - len(failures)} verified; {len(failures)} failed**",
         "",
@@ -47,7 +64,9 @@ def main() -> int:
             "",
         ]
     )
-    (PROJECT_ROOT / "TEST-REPORT-v1.0.0.md").write_text("\n".join(report_lines), encoding="utf-8")
+    REPORT_PATH.write_text(
+        "\n".join(report_lines), encoding="utf-8", newline="\n"
+    )
 
     for result in results:
         print(f"{result.diagnostic_id}: {result.status} - {result.diagnostic}")

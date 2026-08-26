@@ -1,0 +1,85 @@
+{
+  "schema_version": "1.9.0",
+  "scope": "final_estimator_aware_combined_epps_integration",
+  "target_id": "S9-EPPS-01",
+  "accepted_parent": "v1.8.3",
+  "accepted_parent_commit": "a35ac9d3b108b03b04d6d489c797f9f4d0a37ba2",
+  "accepted_inputs": [
+    {
+      "path": "config/config-v1.8.3.json",
+      "sha256": "196667485eb68412ea50060e25b5bf0e593b6ef53b495410448a1e9dbf979eda",
+      "role": "accepted_stage_8_closure_configuration"
+    },
+    {
+      "path": "outputs/clock-only-conformity-curves-v1.7.csv",
+      "sha256": "761983e8bbc63b6b3d10ed4aa930b87eafb1dcbb2b607a025b18684f81375039",
+      "role": "accepted_clock_only_theory_and_simulation"
+    },
+    {
+      "path": "outputs/corrected-coupling-recovery-curves-v1.7.csv",
+      "sha256": "98bef2c19a39948a1813dd29dd715300348bbdac2a9789936294077d48d07960",
+      "role": "accepted_corrected_coupling_theory_and_simulation"
+    },
+    {
+      "path": "outputs/combined-no-refit-curves-v1.7.csv",
+      "sha256": "b0c9520aa7a91d2caeab230c11d34cf1d36bb15f9748335726678b2664c67fd1",
+      "role": "accepted_combined_holdout_and_estimator_aware_reference"
+    },
+    {
+      "path": "source/source-v1/CATG-RD2Epps-v3-arXiv.tex",
+      "sha256": "48eea98a6fb084d6ecc397bede4c107a44cae947e16271d66a7041e2997afb5a",
+      "role": "frozen_source_v1_paper"
+    }
+  ],
+  "architecture": {
+    "operational_dynamics": "uniform_fixed_grid_only",
+    "calendar_observation": "book_specific_previous_refresh_after_operational_completion",
+    "calendar_interpolation": "forbidden",
+    "legacy_nonuniform_state_update": "forbidden",
+    "model_parameter_refit": "forbidden",
+    "curve_calibration": "forbidden",
+    "integration_route": "deterministic_assembly_of_frozen_accepted_curves"
+  },
+  "registered_lags_seconds": [
+    20, 40, 60, 80, 100, 120, 140, 160, 180, 200,
+    220, 240, 260, 280, 300, 320, 340, 360, 380, 400
+  ],
+  "required_curves": [
+    "clock_only_theory",
+    "clock_only_simulation",
+    "coupling_only_theory",
+    "coupling_only_simulation",
+    "combined_simulation",
+    "leading_order_product",
+    "estimator_aware_finite_grid_finite_step_theory"
+  ],
+  "display_contract": {
+    "figure_number": 26,
+    "panels": ["clock_only", "coupling_only", "combined"],
+    "shared_x_scale_seconds": [0.0, 410.0],
+    "shared_y_scale": [0.0, 1.1],
+    "aggregation_axis": "linear",
+    "simulation_uncertainty": "normal_95_percent_standard_error_band",
+    "optional_calibrated_curve": "excluded"
+  },
+  "acceptance_policy": {
+    "combined_standardized_rmse_maximum": 2.0,
+    "minimum_combined_pointwise_coverage": 0.9,
+    "estimator_aware_rmse_must_improve_on_leading_order_product": true,
+    "all_source_joins_must_be_exact": true,
+    "all_parameters_frozen": true
+  },
+  "output_contract": {
+    "curve_rows": 20,
+    "summary_rows": 1,
+    "generated_checks": 24,
+    "figure_stem": "figure-07-final-estimator-aware-epps-v2",
+    "next_stage": "v1.9.1_release_streamlining"
+  },
+  "stage_boundary": {
+    "stage_8_accepted": true,
+    "final_epps_integration_complete_on_acceptance": true,
+    "source_v1_changed": false,
+    "next_stage_on_acceptance": "v1.9.1_release_streamlining"
+  }
+}

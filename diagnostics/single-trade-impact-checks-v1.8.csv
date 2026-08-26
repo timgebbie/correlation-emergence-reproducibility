@@ -1,0 +1,45 @@
+check_id,check,observed,criterion,status,software_version
+S8I-01,accepted v1.8.0 input hashes,True,all accepted hashes exact,Verified,1.8.1
+S8I-02,accepted parent,v1.8.0,equals v1.8.0,Verified,1.8.1
+S8I-03,uniform operational dynamics,uniform_fixed_grid_only,uniform_fixed_grid_only,Verified,1.8.1
+S8I-04,event application timing,market_order_density_delta_immediately_before_declared_operational_step,density delta immediately before declared step,Verified,1.8.1
+S8I-05,paired-control construction,identical_initial_state_and_common_operational_innovations,common initial state and innovations,Verified,1.8.1
+S8I-06,operational impact estimand,aggressor_signed_shocked_minus_control_boundary_price,aggressor-signed shocked minus control,Verified,1.8.1
+S8I-07,calendar impact estimand,aggressor_signed_subordinated_shocked_minus_control_boundary_price,same paired paths after subordination,Verified,1.8.1
+S8I-08,calendar interpolation,forbidden,forbidden,Verified,1.8.1
+S8I-09,legacy nonuniform update,forbidden,forbidden,Verified,1.8.1
+S8I-10,source-v1 change,False,false,Verified,1.8.1
+S8I-11,declared path count,8,equals 8,Verified,1.8.1
+S8I-12,microscopic input correlation,-9.124645483638003e-18,absolute <= 1e-14,Verified,1.8.1
+S8I-13,symmetry-controlled input mean,"[5.898059818321145e-19, 2.2551405187698493e-19]",both zero within 1e-14,Verified,1.8.1
+S8I-14,book input variances,"[1.0000000000000058, 0.9999999999999997]",equal within 1e-14,Verified,1.8.1
+S8I-15,all market events fully filled,True,true,Verified,1.8.1
+S8I-16,event density-mass conservation,1.3877787807814457e-17,maximum absolute error <= 1e-14,Verified,1.8.1
+S8I-17,execution proxy lies on aggressor side,0.24764103340394078,strictly positive,Verified,1.8.1
+S8I-18,ground-truth event signs,"[-1, 1]","equals {-1,+1}",Verified,1.8.1
+S8I-19,quote-midpoint signs,True,all equal event side,Verified,1.8.1
+S8I-20,pre-event shocked/control identity,0.0,maximum <= 1e-14,Verified,1.8.1
+S8I-21,unique reaction boundaries,1,equals 1,Verified,1.8.1
+S8I-22,interior reaction boundaries,9.802485129955832,minimum >= 7.5,Verified,1.8.1
+S8I-23,operational own impact at event state,0.14707420531925816,>= 0.05,Verified,1.8.1
+S8I-24,simultaneous cross impact at event state,0.0,absolute <= 1e-12,Verified,1.8.1
+S8I-25,operational cross impact at 20 seconds,0.015196769313715094,>= 0.005,Verified,1.8.1
+S8I-26,book-exchange symmetry,4.300056842405215e-16,maximum relative difference <= 0.1,Verified,1.8.1
+S8I-27,buy/sell symmetry on domain own-impact scale,0.010373504988556942,maximum domain-scaled difference <= 0.15,Verified,1.8.1
+S8I-28,long-lag own/cross convergence ratio,0.8744159330118372,"in [0.6, 1.4]",Verified,1.8.1
+S8I-29,book-specific clock paths are distinct,True,true for every path,Verified,1.8.1
+S8I-30,realised refresh rates,0.299052332778104,maximum relative error <= 0.35,Verified,1.8.1
+S8I-31,calendar activity at event time,0.0,<= 0.25,Verified,1.8.1
+S8I-32,calendar activity by 40 seconds,1.0,>= 0.8,Verified,1.8.1
+S8I-33,calendar own impact by 40 seconds,0.029101440112343255,>= 0.005,Verified,1.8.1
+S8I-34,measurement domains,"[""calendar"", ""operational""]",operational and calendar,Verified,1.8.1
+S8I-35,complete two-book impact matrix,"[[0, 0], [0, 1], [1, 0], [1, 1]]",four cells,Verified,1.8.1
+S8I-36,curve output rows,96,equals 96,Verified,1.8.1
+S8I-37,member output rows,1536,equals 1536,Verified,1.8.1
+S8I-38,event output rows,32,equals 32,Verified,1.8.1
+S8I-39,path archive,True,nonempty NPZ,Verified,1.8.1
+S8I-40,Figure 9 pair,True,PDF and PNG,Verified,1.8.1
+S8I-41,accepted inputs unchanged,True,all start/end hashes exact,Verified,1.8.1
+S8I-42,no new theoretical impact curve,False,false,Verified,1.8.1
+S8I-43,meta-order and dependence boundary,"[true, true]",both true,Verified,1.8.1
+S8I-44,next numeric gate,v1.8.2_meta_order_own_and_cross_impact,v1.8.2 meta-order impact,Verified,1.8.1

@@ -1,0 +1,37 @@
+% Clock-rate correction introduced at the provisional v1.7.4 conformity gate.
+% The accepted v1.7.3 source remains frozen in source/source-v1.
+
+\section*{Clock-rate correction for the equal-rate previous-refresh benchmark}
+
+Let the two books have independent Poisson refresh processes with the same
+rate
+\[
+  \lambda_1^{\rm clk}=\lambda_2^{\rm clk}=\lambda^{\rm clk},
+\]
+and let $\gamma_j(t)$ be the latest refresh time of book $j$ not exceeding
+$t$.  Sampling the operational-time price by
+$P^{(j)}(t)=p^{(j)}(\gamma_j(t))$ gives the exact equal-rate attenuation
+derived for the previous-refresh estimator in Equation~29 of T\'{o}th,
+T\'{o}th and Kert\'{e}sz (2007, arXiv:0704.3798):
+\[
+  \mathcal A_{12}^{\rm Pois}(\Delta t)
+  =1-\frac{1-e^{-\lambda^{\rm clk}\Delta t}}
+           {\lambda^{\rm clk}\Delta t},
+  \qquad
+  \rho_{\Delta t}^{\rm sub}
+  =\rho_u\,\mathcal A_{12}^{\rm Pois}(\Delta t).
+\]
+Thus $\lambda^{\rm clk}$ is the refresh rate of each identically
+distributed book.  The minimum of the two independent forward waiting times
+is separately exponential with rate
+$\lambda_1^{\rm clk}+\lambda_2^{\rm clk}=2\lambda^{\rm clk}$, but that
+minimum-wait identity does not replace $\lambda^{\rm clk}$ by
+$2\lambda^{\rm clk}$ in the previous-refresh interval-overlap result.
+
+For unequal Poisson rates and for general inverse clocks, the numerical
+conformity route uses the exact realised operational-interval intersection,
+not the equal-rate closed form and not the pooled minimum-wait rate.  The
+earlier pooled-rate envelope is retained only as a rejected diagnostic.  This
+correction changes the theory-to-simulation rate map; it does not tune the
+simulation to the displayed curve.
+

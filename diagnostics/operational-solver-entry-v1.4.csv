@@ -1,0 +1,9 @@
+check_id,finding_id,check,observed,expected,absolute_error,tolerance,status,software_version
+OS-01,PA-10,exact-grid reaction boundary,0.0,0.0,0.0,0.0,Verified,1.4.0
+OS-02,PA-10,off-grid linear reaction boundary,0.2,0.2,0.0,2e-16,Verified,1.4.0
+OS-03,PA-10,nearest previous multiple-root selection,1.5,1.5,0.0,2e-16,Verified,1.4.0
+OS-04,PA-19,Dirichlet ghost values,0.0,0.0,0.0,0.0,Verified,1.4.0
+OS-05,PA-20,uniform operational increment,0.0012500000000000356,0.0012500000000000356,0.0,0.0,Verified,1.4.0
+OS-06,PA-20,stationary one-step fixed point,1.5440253242626767e-13,0.0,1.5440253242626767e-13,2e-12,Verified,1.4.0
+OS-07,PA-19,exact outer boundary values,0.0,0.0,0.0,0.0,Verified,1.4.0
+OS-08,PA-19,explicit boundary correction decomposition,0.0,0.0,0.0,1e-18,Verified,1.4.0

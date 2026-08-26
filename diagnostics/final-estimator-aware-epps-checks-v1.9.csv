@@ -1,0 +1,25 @@
+check_id,check,observed,criterion,status,software_version
+S9E-01,accepted v1.8.3 input hashes,True,all exact,Verified,1.9.0
+S9E-02,accepted parent,v1.8.3,v1.8.3,Verified,1.9.0
+S9E-03,uniform operational dynamics,uniform_fixed_grid_only,uniform fixed grid only,Verified,1.9.0
+S9E-04,post-path calendar observation,book_specific_previous_refresh_after_operational_completion,book-specific previous refresh after completion,Verified,1.9.0
+S9E-05,calendar interpolation,forbidden,forbidden,Verified,1.9.0
+S9E-06,legacy nonuniform state update,forbidden,forbidden,Verified,1.9.0
+S9E-07,parameter and curve refit,"[""forbidden"", ""forbidden""]",both forbidden,Verified,1.9.0
+S9E-08,required curve inventory,"[""clock_only_theory"", ""clock_only_simulation"", ""coupling_only_theory"", ""coupling_only_simulation"", ""combined_simulation"", ""leading_order_product"", ""estimator_aware_finite_grid_finite_step_theory""]",seven declared curves,Verified,1.9.0
+S9E-09,registered lag join,True,20 exact common lags,Verified,1.9.0
+S9E-10,clock theory source join,True,exact,Verified,1.9.0
+S9E-11,clock simulation source join,True,exact,Verified,1.9.0
+S9E-12,coupling theory source join,True,exact,Verified,1.9.0
+S9E-13,coupling simulation source join,True,exact,Verified,1.9.0
+S9E-14,leading-order product reconstruction,True,clock theory times coupling theory,Verified,1.9.0
+S9E-15,estimator-aware theory source,thick_exact_reduced_same_clock_covariance,accepted finite-grid finite-step same-clock reference,Verified,1.9.0
+S9E-16,combined simulation source,thick_simulated_combined_covariance,accepted no-refit holdout,Verified,1.9.0
+S9E-17,estimator-aware RMSE improvement,"[0.039719091508260605, 0.06696349022251445]",estimator-aware below leading-order product,Verified,1.9.0
+S9E-18,combined standardized RMSE,0.45513225399020835,at most 2.0,Verified,1.9.0
+S9E-19,combined pointwise coverage,1.0,at least 0.9,Verified,1.9.0
+S9E-20,common display scales,"{""aggregation_axis"": ""linear"", ""figure_number"": 26, ""optional_calibrated_curve"": ""excluded"", ""panels"": [""clock_only"", ""coupling_only"", ""combined""], ""shared_x_scale_seconds"": [0.0, 410.0], ""shared_y_scale"": [0.0, 1.1], ""simulation_uncertainty"": ""normal_95_percent_standard_error_band""}",three panels share linear x and y scales,Verified,1.9.0
+S9E-21,Figure 7 pair,True,PDF and PNG,Verified,1.9.0
+S9E-22,curve output rows,20,20,Verified,1.9.0
+S9E-23,optional calibrated curve,excluded,excluded,Verified,1.9.0
+S9E-24,accepted inputs unchanged,True,all start/end hashes exact,Verified,1.9.0

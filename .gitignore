@@ -2,10 +2,12 @@
 __pycache__/
 *.py[cod]
 .matplotlib-cache/
+figures/.figure-*.tmp.*
+.render-staging/
+.output-staging/
 supplementary-materials/*.aux
 supplementary-materials/*.fdb_latexmk
 supplementary-materials/*.fls
 supplementary-materials/*.log
 supplementary-materials/*.out
 supplementary-materials/*.toc
-

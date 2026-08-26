@@ -260,7 +260,7 @@ def main() -> int:
     table_one_csv = PROJECT_ROOT / "tables" / "table-01-parameter-timescale-identifiability-v1.csv"
     write_csv(table_one_csv, list(PARAMETER_ROWS[0]), PARAMETER_ROWS)
     (PROJECT_ROOT / "tables" / "table-01-parameter-timescale-identifiability-v1.tex").write_text(
-        _table_one_tex(PARAMETER_ROWS), encoding="utf-8"
+        _table_one_tex(PARAMETER_ROWS), encoding="utf-8", newline="\n"
     )
 
     diagnostics_path = PROJECT_ROOT / "diagnostics" / "diagnostic-results-v1.csv"
@@ -281,7 +281,7 @@ def main() -> int:
     table_two_csv = PROJECT_ROOT / "tables" / "table-02-numerical-benchmarks-v1.csv"
     write_csv(table_two_csv, table_two_fields, diagnostics)
     (PROJECT_ROOT / "tables" / "table-02-numerical-benchmarks-v1.tex").write_text(
-        _table_two_tex(diagnostics), encoding="utf-8"
+        _table_two_tex(diagnostics), encoding="utf-8", newline="\n"
     )
 
     failures = [row for row in diagnostics if row["status"] != "Verified"]

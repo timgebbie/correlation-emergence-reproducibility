@@ -1,0 +1,5 @@
+tier,book,target_rate_per_second,measured_rate_per_second,relative_error,software_version
+reduced_reference,1,0.1,0.10003262886584223,0.0003262886584222413,1.7.11
+reduced_reference,2,0.1,0.1000141039378931,0.0001410393789309794,1.7.11
+thick_boundary_holdout,1,0.1,0.09951986860911893,0.004801313908810723,1.7.11
+thick_boundary_holdout,2,0.1,0.10013583885737772,0.0013583885737770973,1.7.11

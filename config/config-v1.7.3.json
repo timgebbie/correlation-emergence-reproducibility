@@ -1,0 +1,240 @@
+{
+  "schema_version": "1.7.3",
+  "scope": "theory_conformity_design_before_simulation_reopening",
+  "target_id": "CNF-DESIGN-01",
+  "accepted_parent": "v1.7.2",
+  "accepted_parent_commit": "786d795e7ad45ba69c980190bb5ae7eab6aa5c4b",
+  "accepted_inputs": [
+    {
+      "path": "config/config-v1.7.2.json",
+      "sha256": "f933c73c0bf7c35f8476eb6da915d658cde9d32eed3ddc89eeeb58e25ca761a1",
+      "role": "accepted_discrepancy_contract"
+    },
+    {
+      "path": "outputs/analytical-simulation-comparison-v1.7.csv",
+      "sha256": "50011adc535f45cdc113505235ef5a77d9a9e7dc2e8257e555296ff711872df8",
+      "role": "accepted_discrepancy_evidence"
+    },
+    {
+      "path": "figures/figure-18-analytical-simulation-overlay-v1.pdf",
+      "sha256": "320bc658ef467fb20b85226cbbac3a19af4228ab1d32a30b0e36ee6ed2773dfa",
+      "role": "accepted_discrepancy_figure"
+    },
+    {
+      "path": "source/source-v1/CATG-RD2Epps-v3-arXiv.tex",
+      "sha256": "48eea98a6fb084d6ecc397bede4c107a44cae947e16271d66a7041e2997afb5a",
+      "role": "analytical_conformity_source"
+    },
+    {
+      "path": "config/config-v1.4.json",
+      "sha256": "ea044377a6b1b16509c68e7c8a1516df21ffec6bfe079de436e261fb93a5cbfe",
+      "role": "accepted_operational_solver_baseline"
+    },
+    {
+      "path": "config/config-v1.5.1.json",
+      "sha256": "2c4e3f3b0becf431809ca24a4e5f21705394f72555c3f7817d50792f88e6052c",
+      "role": "accepted_clock_baseline"
+    },
+    {
+      "path": "functions/operational/coupling.py",
+      "sha256": "3684634666a9049c1d99f8e854acc5690dec57f3b6db97c069480bcd798dfd7d",
+      "role": "accepted_thick_boundary_coupling"
+    },
+    {
+      "path": "functions/observation/subordination.py",
+      "sha256": "d2bc0640d374c2b1592230a4720fbed011873e602107745ac4bc3894a033c761",
+      "role": "accepted_explicit_subordination"
+    }
+  ],
+  "architecture": {
+    "operational_dynamics": "uniform_fixed_grid_only",
+    "calendar_observation": "explicit_book_specific_subordination_after_operational_simulation",
+    "legacy_nonuniform_state_update": "forbidden",
+    "calendar_interpolation": "forbidden",
+    "legacy_fourier_estimator": "legacy_diagnostic_only_not_claim_bearing",
+    "v1.7.3_changes_solver_or_simulation_parameters": false
+  },
+  "analytical_target": {
+    "envelope": "F(x)=1-(1-exp(-x))/x",
+    "clock_factor": "F(lambda_12_clock*Delta_t)",
+    "coupling_factor": "F(kappa*Delta_t)",
+    "combined_factor": "F(lambda_12_clock*Delta_t)*F(kappa*Delta_t)",
+    "lambda_1_clock_per_second": 0.05,
+    "lambda_2_clock_per_second": 0.05,
+    "lambda_12_clock_per_second": 0.1,
+    "kappa_per_second": 0.025,
+    "rho_infinity_normalized": 1.0,
+    "combined_status": "leading_order_separable_approximation"
+  },
+  "design_tiers": [
+    {
+      "name": "reduced_reference",
+      "purpose": "recover_the_analytical_envelopes_in_the_models_from_which_they_are_derived",
+      "clock_operational_process": "correlated_brownian_log_prices_with_known_nonzero_rho_u",
+      "coupling_operational_process": "two_price_linear_sde_with_ou_spread",
+      "combined_process": "explicit_subordination_of_the_validated_linear_coupling_paths"
+    },
+    {
+      "name": "thick_boundary",
+      "purpose": "test_the_reduction_of_the_full_angstmann_gebbie_boundary_simulation",
+      "clock_operational_process": "uncoupled_boundary_books_with_declared_nonzero_operational_innovation_correlation",
+      "coupling_operational_process": "regularized_thick_boundary_books_with_identity_clock_and_independent_innovations",
+      "combined_process": "explicit_subordination_of_the_validated_coupled_boundary_paths"
+    }
+  ],
+  "experiments": [
+    {
+      "target_id": "CNF-CLK-REF-01",
+      "tier": "reduced_reference",
+      "mechanism": "clock_only",
+      "operational_correlation": 0.8,
+      "coupling": "disabled",
+      "clock": "independent_poisson",
+      "normalization": "divide_by_known_rho_u",
+      "parameter_calibration": "none; input_clock_rates_are_set_directly",
+      "validation": "out_of_sample_clock_paths_and_lags"
+    },
+    {
+      "target_id": "CNF-CLK-LOB-01",
+      "tier": "thick_boundary",
+      "mechanism": "clock_only",
+      "operational_correlation": 0.8,
+      "coupling": "disabled",
+      "clock": "independent_poisson",
+      "normalization": "divide_by_frozen_identity_clock_boundary_price_reference",
+      "parameter_calibration": "none; input_clock_rates_are_set_directly",
+      "validation": "out_of_sample_operational_paths_clocks_and_lags"
+    },
+    {
+      "target_id": "CNF-CP-REF-01",
+      "tier": "reduced_reference",
+      "mechanism": "coupling_only",
+      "operational_correlation": 0.0,
+      "coupling": "linear_ou_spread",
+      "clock": "identity",
+      "normalization": "closed_sde_long_scale_limit",
+      "parameter_calibration": "set_kappa_directly_in_the_linear_sde",
+      "validation": "out_of_sample_paths_and_lags"
+    },
+    {
+      "target_id": "CNF-CP-LOB-01",
+      "tier": "thick_boundary",
+      "mechanism": "coupling_only",
+      "operational_correlation": 0.0,
+      "coupling": "regularized_angstmann_gebbie_boundary",
+      "clock": "identity",
+      "normalization": "frozen_long_scale_boundary_price_plateau",
+      "parameter_calibration": "adjust_gamma_only_to_match_independently_measured_spread_relaxation_kappa",
+      "validation": "out_of_sample_paths_perturbations_and_lags"
+    },
+    {
+      "target_id": "CNF-CMB-REF-01",
+      "tier": "reduced_reference",
+      "mechanism": "combined",
+      "operational_correlation": 0.0,
+      "coupling": "validated_linear_ou_spread",
+      "clock": "validated_independent_poisson",
+      "normalization": "validated_coupling_long_scale_limit",
+      "parameter_calibration": "forbidden",
+      "validation": "out_of_sample_product_prediction"
+    },
+    {
+      "target_id": "CNF-CMB-LOB-01",
+      "tier": "thick_boundary",
+      "mechanism": "combined",
+      "operational_correlation": 0.0,
+      "coupling": "validated_regularized_boundary",
+      "clock": "validated_independent_poisson",
+      "normalization": "frozen_coupling_only_boundary_price_plateau",
+      "parameter_calibration": "forbidden",
+      "validation": "out_of_sample_product_prediction_and_nonseparability_residual"
+    }
+  ],
+  "parameter_policy": {
+    "clock_rates": "set_from_the_analytical_target_and_verified_from_waiting_times_not_fitted_to_the_epps_curve",
+    "coupling_rate": "measured_from_small_spread_relaxation_or_conditional_spread_drift_not_fitted_to_the_epps_curve",
+    "allowed_thick_boundary_calibration_parameter": "coupling_gamma",
+    "fixed_primary_thickness_parameters": [
+      "reference_spread",
+      "reference_width",
+      "regularization_epsilon",
+      "source_mu",
+      "source_lambda"
+    ],
+    "combined_refit": "forbidden",
+    "calibration_and_validation_seeds": "disjoint",
+    "calibration_and_validation_lags": "disjoint"
+  },
+  "candidate_dimensional_resolution": {
+    "status": "design_candidate_to_be_verified_before_v1.7.4_execution",
+    "seconds_per_model_time_unit": 100.0,
+    "operational_step_model_units": 0.005,
+    "operational_step_seconds": 0.5,
+    "book_clock_rates_per_model_time_unit": [5.0, 5.0],
+    "pooled_clock_rate_per_model_time_unit": 10.0,
+    "target_kappa_per_model_time_unit": 2.5,
+    "clock_characteristic_time_seconds": 10.0,
+    "coupling_characteristic_time_seconds": 40.0,
+    "operational_steps_per_clock_characteristic_time": 20,
+    "operational_steps_per_coupling_characteristic_time": 80,
+    "minimum_path_horizon_seconds": 2000.0,
+    "minimum_operational_steps": 4000
+  },
+  "independent_rate_measurement": {
+    "clock": "maximum_likelihood_rate_from_realized_waiting_intervals_with_book_rates_summed_after_measurement",
+    "coupling": "local_regression_E[Delta_z_given_z]/Delta_u=-kappa*z_and_small_perturbation_exponential_relaxation",
+    "coupling_diagnostics": [
+      "local_drift_linearity",
+      "exponential_relaxation",
+      "front_shape_timescale_relative_to_inverse_kappa",
+      "small_displacement_remainder",
+      "simple_unique_boundary",
+      "state_dependence_and_asymmetry"
+    ],
+    "required_local_regime": "tau_shape_much_greater_than_inverse_kappa_and_small_displacement_remainder"
+  },
+  "statistical_design": {
+    "calibration_operational_paths": 16,
+    "validation_operational_paths": 32,
+    "clock_replications_per_validation_path": 4,
+    "registered_comparison_lags_seconds": [20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 320, 340, 360, 380, 400],
+    "plateau_start_minimum_characteristic_times": 10,
+    "plateau_sensitivity": "two_adjacent_nonoverlapping_long_lag_bands",
+    "uncertainty_unit": "operational_path_after_averaging_clock_replications",
+    "common_random_numbers": "used_only_for_paired_component_contrasts",
+    "ensemble_stability_sequence": [8, 16, 32]
+  },
+  "acceptance_policy": {
+    "rate_relative_error_maximum": 0.05,
+    "plateau_relative_shift_maximum": 0.05,
+    "absolute_curve_rmse_maximum": 0.03,
+    "standardized_curve_rmse_maximum": 2.0,
+    "minimum_pointwise_normal_95_coverage": 0.9,
+    "reduced_reference_must_recover_before_thick_boundary_claim": true,
+    "component_gates_must_pass_before_combined_test": true,
+    "combined_uses_frozen_component_parameters": true,
+    "permitted_result_labels": [
+      "recovered",
+      "qualified_nonconformity",
+      "invalid_experiment"
+    ]
+  },
+  "paper_assumptions_under_test": {
+    "clock": ["exogenous_clocks", "nonzero_operational_correlation", "effective_poisson_overlap_envelope"],
+    "coupling": ["small_spread_linearization", "ou_spread_relaxation", "slow_front_shape", "approximately_linear_variance_growth"],
+    "combined": ["clock_response_exogeneity", "leading_order_separability_C4"]
+  },
+  "stage_sequence": [
+    "v1.7.3_theory_conformity_design",
+    "v1.7.4_clock_only_recovery",
+    "v1.7.5_coupling_only_recovery",
+    "v1.7.6_combined_no_refit_prediction",
+    "v1.7.7_stage_7_stability_integrity_and_closure",
+    "v1.8.0_event_semantics_and_impact_entry"
+  ],
+  "stage_boundary": {
+    "v1.7.3_is_design_only": true,
+    "next_stage_on_acceptance": "v1.7.4_clock_only_recovery",
+    "stage_7_remains_open": true
+  }
+}

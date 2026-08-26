@@ -1,0 +1,9 @@
+check_id,check,observed,expected,absolute_error,tolerance,status,software_version
+OPATH-01,reference-scale epsilon,0.5,0.5,0.0,0.0,Verified,1.4.1
+OPATH-02,state-dependent width at z=0.5,1.0,1.0,0.0,0.0,Verified,1.4.1
+OPATH-03,state-dependent width at z=2,0.25,0.25,0.0,0.0,Verified,1.4.1
+OPATH-04,uniform operational-time increments,1.734723475976807e-18,0.0,1.734723475976807e-18,2e-18,Verified,1.4.1
+OPATH-05,stationary pre-shock path,1.161850417991983e-16,0.0,1.161850417991983e-16,2e-14,Verified,1.4.1
+OPATH-06,executed burn-in step,4,4.0,0.0,0.0,Verified,1.4.1
+OPATH-07,bounded rolling history columns,5,5.0,0.0,0.0,Verified,1.4.1
+OPATH-08,external shock operational step,8,8.0,0.0,0.0,Verified,1.4.1

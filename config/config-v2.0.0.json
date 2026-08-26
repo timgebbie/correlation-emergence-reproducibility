@@ -1,0 +1,94 @@
+{
+  "schema_version": "2.0.0",
+  "scope": "final_public_release_surface_and_claim_preservation",
+  "accepted_parent": "v1.9.3",
+  "accepted_parent_archive": "correlation-emergence-v1.9.3-gate.zip",
+  "accepted_parent_archive_sha256": "122ebd1d81a181cd54f6aa827edafa9f18f898eeb2c6756a123a5a9cb5e55f85",
+  "accepted_inputs": [
+    {
+      "path": "source/source-v1/CATG-RD2Epps-v3-arXiv.tex",
+      "sha256": "48eea98a6fb084d6ecc397bede4c107a44cae947e16271d66a7041e2997afb5a",
+      "role": "unchanged_target_paper_source"
+    },
+    {
+      "path": "figures/figure-07-final-estimator-aware-epps-v2.png",
+      "sha256": "a01dd28c71c1706fc7680a0025810469fc2d47c63bc8125ac870babeb6fceb77",
+      "role": "renamed_accepted_key_figure_pixels"
+    },
+    {
+      "path": "outputs/final-estimator-aware-epps-curves-v1.9.csv",
+      "sha256": "4ee7a668632d60a22a1bb85f7ccc55f33bc291082d1d27107d3493dce191c68a",
+      "role": "accepted_final_curve_semantics"
+    },
+    {
+      "path": "outputs/final-estimator-aware-epps-summary-v1.9.csv",
+      "sha256": "2c26b958d72593762a6b5e03462865043ab04a313b6f35346eccbffe1cdf5079",
+      "role": "accepted_final_metrics"
+    },
+    {
+      "path": "functions/operational/translation_coupling.py",
+      "sha256": "555f36f1bb49d1c59d5f8aa79e5911f7c5051020125bd2d8c7463bc58d73915f",
+      "role": "accepted_corrected_translation_mode"
+    },
+    {
+      "path": "functions/operational/translation_solver.py",
+      "sha256": "22423396c805ae7f683b81731e3c6a03b7932558e39beee7c879cbf6df5a75f2",
+      "role": "accepted_uniform_operational_solver"
+    },
+    {
+      "path": "functions/observation/refresh_sampling.py",
+      "sha256": "79161984d9aed19e694957b64817939b7e891ada793331c8eff1467813049e6b",
+      "role": "accepted_previous_refresh_subordination"
+    }
+  ],
+  "public_figure_policy": {
+    "figure_numbers": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+    "key_readme_figure": "figures/figure-07-final-estimator-aware-epps-v2.png",
+    "corrected_coupling_figure": "figures/figure-08-corrected-translation-mode-coupling-v2.png",
+    "single_trade_figure": "figures/figure-09-single-trade-impact-v2.png",
+    "meta_order_figure": "figures/figure-10-meta-order-impact-v2.png",
+    "autocorrelation_figure": "figures/figure-11-mid-price-trade-sign-autocorrelations-v2.png"
+  },
+  "bauer_retirement": {
+    "executable_surface_removed": true,
+    "stored_simulations_removed": true,
+    "development_figures_removed": true,
+    "legacy_only_tests_removed": true,
+    "source_v0_removed": true,
+    "compact_attribution_retained": "provenance/BAUER-ANTECEDENT-AND-CORRECTIONS-v2.md",
+    "reproduction_claim_removed": true
+  },
+  "claim_equivalence": {
+    "registered_lags": 20,
+    "leading_order_combined_rmse": 0.066963,
+    "estimator_aware_combined_rmse": 0.039719,
+    "estimator_aware_standardized_rmse": 0.455132,
+    "pointwise_normal_band_coverage": 1.0,
+    "no_parameter_refit": true,
+    "no_source_v1_change": true
+  },
+  "active_route": {
+    "entrypoints": ["scripts/run_all.py"],
+    "strict_fresh_archive_command": "python scripts/run_all.py",
+    "used_tree_rerun_command": "python scripts/run_all.py --rerun",
+    "generated_artifact_byte_identity_required_after_run": false
+  },
+  "runtime_contract": {
+    "controlled_python": "3.12",
+    "windows_compatibility_python": "3.13",
+    "numpy": "2.3.5",
+    "matplotlib": "3.10.8"
+  },
+  "publication_contract": {
+    "version": "v2.0.0",
+    "tag": "v2.0.0",
+    "release_title": "v2.0.0 — Correlation emergence and explicit-subordination simulation extension",
+    "archive_name": "correlation-emergence-reproducibility-v2.0.0.zip",
+    "push_untagged_state_first": true,
+    "inspect_and_correct_before_tag": true,
+    "repository_state": "untagged_v2.0.0_candidate",
+    "tag_created": false,
+    "github_release_created": false,
+    "separate_verification_only_archive": false
+  }
+}

@@ -1,0 +1,45 @@
+check_id,check,observed,criterion,status,software_version
+S8E-01,accepted Stage 7 input hashes,True,all accepted hashes exact,Verified,1.8.0
+S8E-02,accepted parent,v1.7.12,equals v1.7.12,Verified,1.8.0
+S8E-03,uniform operational dynamics,uniform_fixed_grid_only,uniform_fixed_grid_only,Verified,1.8.0
+S8E-04,event application order,density_delta_then_one_uniform_operational_step,density delta then one operational step,Verified,1.8.0
+S8E-05,operational-to-calendar increment bridge,calendar_increment_equals_operational_increment_divided_by_operational_rate,calendar increment equals operational increment divided by operational rate,Verified,1.8.0
+S8E-06,calendar observation layer,book_specific_previous_refresh_after_complete_operational_path,post-path book-specific previous refresh,Verified,1.8.0
+S8E-07,calendar interpolation,forbidden,forbidden,Verified,1.8.0
+S8E-08,legacy nonuniform state update,forbidden,forbidden,Verified,1.8.0
+S8E-09,source change at entry gate,False,false,Verified,1.8.0
+S8E-10,figure change at entry gate,False,false,Verified,1.8.0
+S8E-11,stochastic path or figure at entry gate,False,false,Verified,1.8.0
+S8E-12,legacy shock relabelling,False,false,Verified,1.8.0
+S8E-13,signed-density fixture,"[0.0, 0.0]",bid nonnegative below and ask nonpositive above,Verified,1.8.0
+S8E-14,limit-buy placement,"[[2], 0.25]",index 2 and quantity 0.25,Verified,1.8.0
+S8E-15,limit-sell placement,"[[6], 0.4]",index 6 and quantity 0.4,Verified,1.8.0
+S8E-16,passive events are not trades,"[false, false]",both false,Verified,1.8.0
+S8E-17,market-buy fill,0.6,equals 0.6,Verified,1.8.0
+S8E-18,market-buy boundary-outward indices,"[5, 6]",indices 5 then 6,Verified,1.8.0
+S8E-19,market-buy no ask sign crossing,"[0.0, -0.30000000000000004, -1.5, 0.0]",all nonpositive,Verified,1.8.0
+S8E-20,market-sell fill,0.6,equals 0.6,Verified,1.8.0
+S8E-21,market-sell boundary-outward indices,"[3, 2]",indices 3 then 2,Verified,1.8.0
+S8E-22,market-sell no bid sign crossing,"[0.0, 1.5, 0.30000000000000004, 0.0]",all nonnegative,Verified,1.8.0
+S8E-23,insufficient liquidity rejection,True,true without partial-fill permission,Verified,1.8.0
+S8E-24,explicit partial fill,1.5,equals all available ask liquidity 1.5,Verified,1.8.0
+S8E-25,event dispatch semantics,"[""passive_liquidity_placement"", ""aggressive_opposing_liquidity_consumption""]",passive placement and aggressive consumption,Verified,1.8.0
+S8E-26,ground-truth buy sign,1,+1,Verified,1.8.0
+S8E-27,ground-truth sell sign,-1,-1,Verified,1.8.0
+S8E-28,passive ground-truth sign,0,zero,Verified,1.8.0
+S8E-29,quote-midpoint buy sign,1,+1,Verified,1.8.0
+S8E-30,quote-midpoint sell sign,-1,-1,Verified,1.8.0
+S8E-31,tick-rule fixture,"[0, 1, 1, -1, -1]","[0, 1, 1, -1, -1]",Verified,1.8.0
+S8E-32,legacy tick convention,"{""commit"": ""c8206c66906580516d2389b57c6955bb2f526862"", ""first_trade_sign"": 0, ""implemented_legacy_sign_rule"": ""tick_rule_only"", ""repository"": ""DominicGBauer/InteractingLOBs.jl"", ""source_paths"": [""src/rl_push_function.jl"", ""src/Epps/epps.jl""], ""zero_tick_rule"": ""carry_previous_nonzero_sign""}",first zero and zero tick carries prior nonzero sign,Verified,1.8.0
+S8E-33,event record schema,"[""event_id"", ""event_type"", ""book_index"", ""operational_step"", ""side"", ""quantity"", ""limit_log_price"", ""meta_order_id"", ""child_index""]",nine declared fields,Verified,1.8.0
+S8E-34,meta-order identifiers are paired,True,meta_order_id and child_index validated together,Verified,1.8.0
+S8E-35,two-book impact matrix,4,four cells,Verified,1.8.0
+S8E-36,impact-matrix diagonal,"[""own"", ""own""]",own impact,Verified,1.8.0
+S8E-37,impact-matrix off-diagonal,"[""cross"", ""cross""]",cross impact,Verified,1.8.0
+S8E-38,common-random-number contract,required_between_shocked_and_control_paths,required,Verified,1.8.0
+S8E-39,operational and calendar impact separation,"[""before_calendar_observation"", ""after_explicit_book_specific_subordination""]",operational before explicit subordination,Verified,1.8.0
+S8E-40,numeric stage sequence,"[""v1.8.0"", ""v1.8.1"", ""v1.8.2"", ""v1.8.3"", ""v1.9.0"", ""v1.9.1"", ""v2.0.0""]",v1.8.0 through v2.0.0 declared,Verified,1.8.0
+S8E-41,final combined Epps curve inventory,"[""clock_only_simulation"", ""clock_only_theory"", ""combined_simulation"", ""coupling_only_simulation"", ""coupling_only_theory"", ""estimator_aware_finite_grid_finite_step_theory"", ""leading_order_product""]",all seven required theory/simulation roles,Verified,1.8.0
+S8E-42,final conformity and optional calibration separation,"[""frozen_no_retuning"", ""separate_and_explicitly_labelled""]",no retuning; optional fit separately labelled,Verified,1.8.0
+S8E-43,release streamlining contract,"{""classifications"": [""release_critical"", ""provenance_archive_only"", ""development_only""], ""requirements"": [""one_clean_active_reproducibility_route"", ""no_redundant_runtime_routes"", ""no_superseded_planning_overhead_in_runtime_path"", ""accepted_archive_ledger_retained"", ""slim_clean_extraction_reproduces_release_claims""]}",three classes and five release requirements,Verified,1.8.0
+S8E-44,v1.8.0 acceptance boundary,"{""closes_v1_8_0_only_on_user_acceptance"": true, ""next_stage_on_acceptance"": ""v1.8.1_single_trade_own_and_cross_impact""}",opens v1.8.1 only after acceptance,Verified,1.8.0

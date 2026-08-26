@@ -1,0 +1,213 @@
+{
+  "schema_version": "1.7.6",
+  "scope": "coupling_correction_design_before_implementation",
+  "target_id": "CNF-CP-CORR-DESIGN-01",
+  "accepted_parent": "v1.7.5",
+  "accepted_parent_commit": "fbca5554cb2ab1fd579032395ec443de8c5145f4",
+  "accepted_inputs": [
+    {
+      "path": "config/config-v1.7.5.json",
+      "sha256": "336bb90462547c542573d45844e39fd77d578590bcac3bca0621e07e67c4821c",
+      "role": "accepted_coupling_failure_contract"
+    },
+    {
+      "path": "diagnostics/coupling-only-conformity-checks-v1.7.csv",
+      "sha256": "50054ee78077ed1eee4eac2aaccc9fd48880b7ae690b8e53b2e12c3a4a91a8e9",
+      "role": "accepted_coupling_diagnostics"
+    },
+    {
+      "path": "outputs/coupling-only-conformity-summary-v1.7.csv",
+      "sha256": "214c10fb126c283efb9c4e80389a95fd404ec77c86c1d9457d6b3d77d85e53f0",
+      "role": "accepted_coupling_gate_decision"
+    },
+    {
+      "path": "outputs/coupling-local-rate-summary-v1.7.csv",
+      "sha256": "794f5449d7814722f8f6cdeeb48bc9ad2bd0ccf5cb8d861a1318cdec9a3fbc5c",
+      "role": "accepted_wrong_sign_rate_evidence"
+    },
+    {
+      "path": "functions/operational/coupling.py",
+      "sha256": "3684634666a9049c1d99f8e854acc5690dec57f3b6db97c069480bcd798dfd7d",
+      "role": "accepted_regularized_coupling_comparator"
+    },
+    {
+      "path": "functions/operational/solver.py",
+      "sha256": "44d0049874d4c4ae72bfb3ff0e68106e7012c82bb064e3383bbd686c390d4626",
+      "role": "accepted_uniform_solver"
+    },
+    {
+      "path": "functions/operational/path.py",
+      "sha256": "7b7d0201aa151abe73c95e825a1fe7baae1959115b1bd984ba5cad26df3269ad",
+      "role": "accepted_uniform_path"
+    },
+    {
+      "path": "functions/operational/source.py",
+      "sha256": "4e7779552065ec734cb08ab6fda41c07c27e15681c8de71aef91b4bc3d7430b6",
+      "role": "accepted_corrected_source_kernel"
+    },
+    {
+      "path": "functions/operational/response.py",
+      "sha256": "50a8ada6686e28826dd87f9b8d18d39126bc4b92e744673eb20e9b1af6f7f4d8",
+      "role": "accepted_response_estimators"
+    },
+    {
+      "path": "source/source-v1/CATG-RD2Epps-v3-arXiv.tex",
+      "sha256": "48eea98a6fb084d6ecc397bede4c107a44cae947e16271d66a7041e2997afb5a",
+      "role": "accepted_angstmann_gebbie_theory_source"
+    },
+    {
+      "path": "source/source-v2/COUPLING-LOCAL-RESPONSE-AUDIT-v1.7.tex",
+      "sha256": "944e6be975c6af2bfdabe72c450c598f440710fbd730ef3a860050da7f26f6b0",
+      "role": "accepted_v1_7_5_local_response_audit"
+    }
+  ],
+  "architecture": {
+    "v1.7.6_is_design_only": true,
+    "production_coupling_changed": false,
+    "production_solver_changed": false,
+    "production_path_changed": false,
+    "operational_dynamics": "uniform_fixed_grid_only",
+    "calendar_observation": "identity_clock_for_coupling_recovery",
+    "future_calendar_observation": "explicit_book_specific_subordination_after_operational_simulation",
+    "legacy_nonuniform_state_update": "forbidden",
+    "calendar_interpolation": "forbidden",
+    "design_probe": "deterministic_external_source_injection_through_existing_solver_entry",
+    "design_probe_rng": "none"
+  },
+  "accepted_failure": {
+    "coupling": "gamma*z*q(y)*0.5*(1+tanh(y*z/epsilon))",
+    "fixed_epsilon_small_spread_mode": "0.5*gamma*z*q(y)+O(z^2)",
+    "diagnosis": "leading_mode_rescales_source_and_does_not_translate_zero_crossing",
+    "result": "invalid_experiment",
+    "replacement_selected_at_v1.7.5": false
+  },
+  "selected_correction": {
+    "name": "current_front_translation_mode",
+    "local_coordinate": "y=x-p_j",
+    "directed_spread": "z_jk=p_j-p_k",
+    "translation_mode": "v_j=-partial_x(phi_j_current)",
+    "ordered_pair_source": "ell_T_jk=-kappa_jk*z_jk*v_j=kappa_jk*z_jk*partial_x(phi_j_current)",
+    "projected_velocity": "dot_p_j=<psi_j,ell_T_jk>/<psi_j,v_j>=-kappa_jk*z_jk",
+    "spread_velocity": "dot_z=-(kappa_12+kappa_21)*z",
+    "receiving_book_sign": "own_above_other_implies_negative_own_drift",
+    "density_snapshot": "immutable_most_recent_pre_step_receiving_book_density",
+    "spatial_derivative": "second_order_uniform_grid_gradient_with_zero_outer_source_values",
+    "primary_selector": "none",
+    "thickness": "inherited_from_current_reaction_front_translation_mode",
+    "zero_spread": "exactly_zero_coupling",
+    "parameter_semantics": "ordered_response_rate_not_legacy_source_amplitude"
+  },
+  "selector_policy": {
+    "fixed_epsilon_smooth_selector": "accepted_comparator_only_rejected_for_primary_linear_response",
+    "hard_side_or_fixed_spatial_width_selector": "deferred_side_order_flow_robustness_not_primary_recovery",
+    "leading_response_rule": "directed_spread_sign_enters_z_jk_not_a_separate_selector",
+    "future_side_selective_residual": "must_have_zero_adjoint_translation_projection_before_addition",
+    "epsilon_in_v1.7.7_primary_recovery": "inactive"
+  },
+  "candidate_corrections": [
+    {
+      "candidate_id": "CC-01",
+      "name": "fixed_epsilon_regularized_source",
+      "formula": "gamma*z*q(y)*W(y,z;epsilon)",
+      "linear_mode": "0.5*gamma*z*q(y)",
+      "selector_limit": "width_epsilon_over_abs_z_diverges",
+      "rate_normalized": false,
+      "decision": "rejected_primary",
+      "reason": "accepted_v1.7.5_amplitude_mode_and_wrong_sign_rate"
+    },
+    {
+      "candidate_id": "CC-02",
+      "name": "hard_side_or_fixed_spatial_width_source",
+      "formula": "gamma*z*q(y)*W_side(y,sign(z);w)",
+      "linear_mode": "directional_side_selected_source",
+      "selector_limit": "finite_spatial_width_or_hard_side",
+      "rate_normalized": false,
+      "decision": "deferred_robustness",
+      "reason": "preserves_side_interpretation_but_is_not_differentiable_or_rate_normalized_at_zero_spread"
+    },
+    {
+      "candidate_id": "CC-03",
+      "name": "shifted_source_centre",
+      "formula": "q(y+beta*z)-q(y)",
+      "linear_mode": "beta*z*partial_y(q)",
+      "selector_limit": "none",
+      "rate_normalized": false,
+      "decision": "rejected_primary",
+      "reason": "response_depends_on_generator_resolvent_and_conflates_base_source_location_with_coupling"
+    },
+    {
+      "candidate_id": "CC-04",
+      "name": "current_front_translation_mode",
+      "formula": "-kappa_jk*z_jk*v_j",
+      "linear_mode": "exact_current_front_translation_mode",
+      "selector_limit": "not_required_for_primary_response",
+      "rate_normalized": true,
+      "decision": "selected",
+      "reason": "exact_adjoint_projection_and_direct_ordered_rate_semantics"
+    }
+  ],
+  "rate_map": {
+    "seconds_per_model_time_unit": 100.0,
+    "operational_step_model_units": 0.005,
+    "operational_step_seconds": 0.5,
+    "target_total_spread_rate_per_model_time_unit": 2.5,
+    "target_total_spread_rate_per_second": 0.025,
+    "ordered_pair_rates_per_model_time_unit": [1.25, 1.25],
+    "ordered_pair_rates_per_second": [0.0125, 0.0125],
+    "explicit_euler_spread_factor": 0.9875
+  },
+  "deterministic_probe": {
+    "grid_lower": -10.0,
+    "grid_upper": 10.0,
+    "grid_points": 201,
+    "diffusion": 0.5,
+    "transport_probability": 0.5,
+    "cancellation_rates": [0.0, 0.0],
+    "source_lambda": 1.0,
+    "source_mu": 0.1,
+    "directed_spreads": [-0.08, -0.04, -0.02, -0.01, 0.0, 0.01, 0.02, 0.04, 0.08],
+    "maximum_relative_total_rate_error": 0.001,
+    "maximum_absolute_center_drift": 1e-10,
+    "maximum_opposite_spread_rate_difference": 1e-10,
+    "minimum_boundary_edge_distance": 8.0,
+    "required_boundary_candidates": 1
+  },
+  "v1.7.7_implementation_contract": {
+    "new_type": "TranslationModeCoupling",
+    "legacy_regularized_coupling": "retained_unchanged_as_comparator",
+    "solver_extension": "dispatch_new_coupling_from_immutable_pre_step_density_snapshot",
+    "initialization": "zero_spread_stationary_state_unchanged",
+    "primary_rate_parameter": "kappa_jk",
+    "primary_calibration": "none_set_ordered_rates_from_registered_total_then_measure_independently",
+    "required_deterministic_tests": [
+      "receiving_book_sign",
+      "zero_spread_exact_zero",
+      "ordered_rate_recovery",
+      "spread_rate_recovery",
+      "opposite_spread_symmetry",
+      "grid_convergence",
+      "unique_interior_boundaries",
+      "front_mode_projection_residual",
+      "legacy_coupling_immutability"
+    ],
+    "rate_relative_error_maximum": 0.05,
+    "component_curve_absolute_rmse_maximum": 0.03,
+    "component_curve_standardized_rmse_maximum": 2.0,
+    "minimum_pointwise_normal_95_coverage": 0.9,
+    "plateau_relative_shift_maximum": 0.05,
+    "stochastic_epps_curve_requires_deterministic_rate_gate": true,
+    "combined_curve_refit": "forbidden"
+  },
+  "stage_sequence": [
+    "v1.7.6_coupling_correction_design",
+    "v1.7.7_corrected_coupling_recovery",
+    "v1.7.8_combined_no_refit_prediction",
+    "v1.7.9_stage_7_stability_integrity_and_closure",
+    "v1.8.0_event_semantics_and_impact_entry"
+  ],
+  "stage_boundary": {
+    "v1.7.6_is_design_only": true,
+    "next_stage_on_acceptance": "v1.7.7_corrected_coupling_recovery",
+    "stage_7_remains_open": true
+  }
+}

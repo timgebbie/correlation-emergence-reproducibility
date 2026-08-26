@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.5.2",
+  "scope": "timestamp_aware_calendar_estimation_and_stage_5_close",
+  "operational_price_scenario": "regularized_coupling",
+  "clock_scenarios": [
+    "identity",
+    "poisson_independent",
+    "poisson_shared_fraction",
+    "inverse_stable_independent"
+  ],
+  "calendar_grid": {
+    "step": 0.005,
+    "horizon_policy": "floor_minimum_support_across_all_books_paths_and_scenarios"
+  },
+  "aggregation_lags": {
+    "minimum": 1,
+    "maximum": 600,
+    "step": 1
+  },
+  "path_pairing": {
+    "clock_paths": 16,
+    "operational_paths": 8,
+    "rule": "operational_path_index=clock_path_index_mod_8",
+    "clock_replications_per_operational_path": 2,
+    "uncertainty_group": "operational_path_after_clock_replication_mean"
+  },
+  "estimator": "overlapping_previous_state_common_calendar_grid",
+  "analytic_reference": {
+    "scenario": "poisson_independent",
+    "pooled_clock_rate": 400.0,
+    "role": "leading_order_separable_reference_not_fitted_and_not_exact"
+  },
+  "figure": {
+    "id": "SUB-EPP-01",
+    "historical_alias": "Bauer Figure 5 project alias; Figure 4 in arXiv:2408.03181v2",
+    "output_number": 13
+  }
+}

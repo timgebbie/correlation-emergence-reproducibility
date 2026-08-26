@@ -1,0 +1,74 @@
+{
+  "schema_version": "1.6.1",
+  "scope": "paired_clock_boundary_mechanism_decomposition_and_stage_6_entry",
+  "target_id": "DEC-EPP-01",
+  "reference_cell": {
+    "boundary_scenario": "uncoupled_control",
+    "clock_scenario": "identity"
+  },
+  "boundary_scenarios": [
+    {
+      "name": "uncoupled_control",
+      "factor_level": 0,
+      "stored_array": "uncoupled_control_prices"
+    },
+    {
+      "name": "regularized_coupling",
+      "factor_level": 1,
+      "stored_array": "regularized_coupling_prices"
+    }
+  ],
+  "clock_scenarios": [
+    "identity",
+    "poisson_independent",
+    "poisson_shared_fraction",
+    "inverse_stable_independent"
+  ],
+  "primary_figure_clock_scenario": "poisson_independent",
+  "calendar_grid": {
+    "step": 0.005,
+    "analysis_horizon": 11.615,
+    "horizon_policy": "reuse_v1.5.2_global_supported_horizon"
+  },
+  "aggregation_lags": {
+    "minimum": 1,
+    "maximum": 600,
+    "step": 1
+  },
+  "path_pairing": {
+    "clock_paths": 16,
+    "operational_paths": 8,
+    "rule": "operational_path_index=clock_path_index_mod_8",
+    "clock_replications_per_operational_path": 2,
+    "same_operational_innovations_across_boundary_factor": true,
+    "same_clock_path_across_boundary_factor": true,
+    "uncertainty_sequence": "member_contrast_then_clock_replication_mean_then_eight_path_standard_error"
+  },
+  "estimator": "overlapping_previous_state_common_calendar_grid",
+  "contrast_definitions": {
+    "baseline": "rho_control_identity",
+    "boundary_main": "rho_coupled_identity-rho_control_identity",
+    "clock_main": "rho_control_clocked-rho_control_identity",
+    "interaction": "rho_coupled_clocked-rho_coupled_identity-rho_control_clocked+rho_control_identity",
+    "reconstruction": "baseline+boundary_main+clock_main+interaction"
+  },
+  "interpretation": {
+    "claim": "paired_computational_mechanism_decomposition",
+    "not_claimed": [
+      "empirical_causal_effect",
+      "pointwise_recovery_of_the_legacy_nonuniform_path",
+      "trade_or_meta_order_impact"
+    ]
+  },
+  "workspace_policy": {
+    "retain_legacy_evidence": "active_provenance_and_regression_comparator",
+    "exclude_from_bundle": [
+      ".git",
+      ".matplotlib-cache",
+      "__pycache__",
+      "editor_backup_files",
+      "atomic_figure_staging_files"
+    ]
+  },
+  "next_subphase": "v1.6.2_mechanism_robustness_and_stage_6_closing_evidence"
+}

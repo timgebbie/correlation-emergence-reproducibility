@@ -1,0 +1,81 @@
+% Combined no-refit prediction accepted at the v1.7.11 gate.
+% The accepted source/source-v1 paper remains frozen.
+
+\section*{Combined clock and corrected-coupling no-refit prediction}
+
+The accepted clock-only and corrected coupling-only components are combined
+without changing either book clock rate, either ordered coupling rate or the
+thick-boundary covariance normalization.  The numerical order of operations is
+now explicit: both order-density books are first evolved to completion on one
+fixed uniform operational-time grid, and independent book-specific
+previous-refresh clocks are applied only afterwards.  No realised waiting time
+enters the state recurrence, and no calendar-time interpolation is used.
+
+For equal book refresh rates $\lambda=0.1\,\mathrm{s}^{-1}$ and total
+coupling rate $\kappa=0.025\,\mathrm{s}^{-1}$, the manuscript's leading-order
+separability approximation is
+\[
+  R_{\mathrm{prod}}(\Delta)
+  =F(\lambda\Delta)F(\kappa\Delta),
+  \qquad
+  F(x)=1-\frac{1-e^{-x}}{x}.
+\]
+The component-only simulation curves also define a separately frozen product.
+Neither product is fitted to the combined simulation.
+
+The product is not an exact finite-sample estimator identity.  To distinguish
+an estimator effect from an implementation defect, the reduced symmetric
+coupled process is evaluated conditionally on the exact operational indices
+selected by the realised previous-refresh clocks.  For the two selected
+operational intervals $[a,b]$ and $[c,d]$, define
+\[
+  O=\max\{0,\min(b,d)-\max(a,c)\},
+\]
+and
+\[
+  G=e^{-\kappa|b-d|}-e^{-\kappa|b-c|}
+    -e^{-\kappa|a-d|}+e^{-\kappa|a-c|}.
+\]
+With unit pair-centre variance rate, the exact conditional cross-covariance is
+\[
+  C(a,b,c,d)=O-\frac{G}{2\kappa},
+\]
+while a same-book interval of length $L$ has variance
+\[
+  V(L)=L+\frac{1-e^{-\kappa L}}{\kappa}.
+\]
+Summing these quantities over exactly the windows used by the numerical
+estimator gives an exact estimator-aware reference for normalized covariance and return
+correlation.  This reference owns no random-number generator, clock,
+interpolation or operational dynamics.
+
+The reduced simulation recovers this exact conditional reference: normalized
+covariance RMSE is $0.008530$, return-correlation RMSE is $0.002296$, both
+standardized RMSE values are below $0.41$, and both comparisons have pointwise
+normal 95\% coverage $1.0$.  The leading-order product nevertheless differs
+from the exact conditional reduced covariance by RMSE $0.037391$, above the
+registered $0.03$ threshold.  This is a qualified scientific nonconformity:
+it measures intrinsic estimator-level nonseparability and does not invalidate
+the operational-time simulation or post-dynamics subordination.
+
+Using the same clock rule with the accepted thick-boundary implementation, the
+boundary-specific normalized-covariance residual relative to the exact reduced
+same-clock reference has RMSE $0.039719$.  Its standardized RMSE is $0.454980$
+and its coverage is $1.0$; the corresponding return-correlation residual has
+RMSE $0.014858$.  The total thick-boundary residual relative to the analytical
+product has RMSE $0.066963$, and the residual relative to the accepted
+component product has RMSE $0.056040$.  The plateau proxy shifts by $0.077190$
+relative to its registered tolerance of $0.05$.
+
+These results refine rather than contradict the manuscript.  Appendix C
+already labels the product a leading-order separability approximation and
+states that it need not hold when clock overlap and coupling transmission are
+materially dependent.  The experiment supplies the missing quantitative
+decomposition: one residual is present even in the exact reduced
+estimator-aware calculation, and a second is attributable to the thick
+reaction-boundary representation.  The product remains a useful mechanism
+summary, but it must not be described as an exact numerical consequence of
+independent observation clocks and finite coupling.
+
+The accepted source-v1 manuscript remains unchanged at this provisional gate.
+Stage 7 remains open for the v1.7.12 stability, integrity and closure audit.

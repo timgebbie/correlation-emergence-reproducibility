@@ -227,7 +227,9 @@ def main() -> int:
             "",
         ]
     )
-    (PROJECT_ROOT / "diagnostics" / "sensitivity-report-v1.md").write_text("\n".join(report), encoding="utf-8")
+    (PROJECT_ROOT / "diagnostics" / "sensitivity-report-v1.md").write_text(
+        "\n".join(report), encoding="utf-8", newline="\n"
+    )
 
     for check in checks:
         print(f"{check['check_id']}: {check['status']} - {check['sensitivity_check']}")

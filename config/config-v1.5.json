@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.5.0",
+  "scope": "book_clock_and_subordination_entry",
+  "inverse_definition": "E_j(t)=inf{u>=0:T_j(u)>t}",
+  "finite_grid_convention": "previous_completed_operational_state",
+  "operational_grid": {
+    "start": 0.0,
+    "stop": 4.0,
+    "step": 0.5
+  },
+  "calendar_query_grid": {
+    "start": 0.0,
+    "stop": 4.0,
+    "step": 0.25
+  },
+  "book_clocks": [
+    {
+      "book_index": 0,
+      "law": "explicit_equal_mean_fixture",
+      "stream_id": "CLK-V1.5.0-BOOK-1",
+      "seed": 15001,
+      "calendar_intervals": [0.4, 0.6, 0.5, 0.7, 0.3, 0.5, 0.4, 0.6]
+    },
+    {
+      "book_index": 1,
+      "law": "explicit_equal_mean_fixture",
+      "stream_id": "CLK-V1.5.0-BOOK-2",
+      "seed": 15002,
+      "calendar_intervals": [0.6, 0.4, 0.7, 0.3, 0.5, 0.6, 0.5, 0.4]
+    }
+  ]
+}

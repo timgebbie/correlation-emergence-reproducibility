@@ -1,0 +1,51 @@
+check_id,check,observed,criterion,status,software_version
+S8M-01,accepted v1.8.1 input hashes,True,all accepted hashes exact,Verified,1.8.2
+S8M-02,accepted parent,v1.8.1,equals v1.8.1,Verified,1.8.2
+S8M-03,uniform operational dynamics,uniform_fixed_grid_only,uniform_fixed_grid_only,Verified,1.8.2
+S8M-04,meta-order definition,declared_schedule_of_signed_child_market_order_events,schedule of child market orders,Verified,1.8.2
+S8M-05,child application timing,each_child_density_delta_immediately_before_its_declared_operational_step,each delta before its declared step,Verified,1.8.2
+S8M-06,paired-control construction,identical_initial_state_and_common_operational_innovations,common initial state and innovations,Verified,1.8.2
+S8M-07,calendar observation,same_completed_paths_same_book_specific_previous_refresh_clocks,same completed paths and clocks,Verified,1.8.2
+S8M-08,calendar interpolation,forbidden,forbidden,Verified,1.8.2
+S8M-09,legacy nonuniform update,forbidden,forbidden,Verified,1.8.2
+S8M-10,source-v1 change,False,false,Verified,1.8.2
+S8M-11,declared path count,8,equals 8,Verified,1.8.2
+S8M-12,microscopic input correlation,-9.769962616701371e-18,absolute <= 1e-14,Verified,1.8.2
+S8M-13,two execution horizons,"[15.0, 60.0]",two distinct positive horizons,Verified,1.8.2
+S8M-14,equal total meta-order quantity,"[0.2, 0.2]",both equal 0.2,Verified,1.8.2
+S8M-15,all child market events fully filled,True,true,Verified,1.8.2
+S8M-16,child density-mass conservation,6.938893903907228e-18,maximum <= 1e-14,Verified,1.8.2
+S8M-17,execution proxies lie on aggressor side,0.2512463337729424,strictly positive,Verified,1.8.2
+S8M-18,pre-first-child shocked/control identity,0.0,maximum <= 1e-14,Verified,1.8.2
+S8M-19,unique reaction boundaries,1,equals 1,Verified,1.8.2
+S8M-20,interior reaction boundaries,9.603606509138894,minimum >= 7.5,Verified,1.8.2
+S8M-21,first-child operational own impact,0.14129133450634593,>= 0.05,Verified,1.8.2
+S8M-22,final-child operational own impact,0.19959909912002255,>= 0.05,Verified,1.8.2
+S8M-23,final-child operational cross-impact,0.03054524680357882,>= 0.005,Verified,1.8.2
+S8M-24,operational own-impact build-up,0.00021140592266977176,nonnegative across child states,Verified,1.8.2
+S8M-25,execution-horizon effect,0.1418543044345802,absolute final-own difference >= 0.005,Verified,1.8.2
+S8M-26,book-exchange symmetry,3.045625116816945e-16,maximum relative difference <= 0.1,Verified,1.8.2
+S8M-27,buy/sell symmetry on domain own-impact scale,0.0516695052910077,maximum <= 0.15,Verified,1.8.2
+S8M-28,post-completion own-impact relaxation,"[0.8528719851514297, 0.7482390043623832]",every schedule >= 0.05,Verified,1.8.2
+S8M-29,peak post-completion cross-impact catch-up,"[0.5980558961123321, 0.28746327385379444]",every schedule >= 0.05,Verified,1.8.2
+S8M-30,long-lag own/cross convergence ratios,"[0.8842100906145682, 0.8985013868951629]","all in [0.6, 1.4]",Verified,1.8.2
+S8M-31,book-specific clock paths are distinct,True,true for every path,Verified,1.8.2
+S8M-32,realised refresh rates,0.20756170960458606,maximum relative error <= 0.35,Verified,1.8.2
+S8M-33,calendar activity at 80 seconds after completion,1.0,>= 0.8,Verified,1.8.2
+S8M-34,calendar own impact at 80 seconds after completion,0.06016951630027048,>= 0.005,Verified,1.8.2
+S8M-35,measurement domains,"[""calendar"", ""operational""]",operational and calendar,Verified,1.8.2
+S8M-36,complete two-book impact matrix,"[[0, 0], [0, 1], [1, 0], [1, 1]]",four cells,Verified,1.8.2
+S8M-37,trajectory curve rows,64,equals 64,Verified,1.8.2
+S8M-38,trajectory member rows,1024,equals 1024,Verified,1.8.2
+S8M-39,relaxation curve rows,144,equals 144,Verified,1.8.2
+S8M-40,relaxation member rows,2304,equals 2304,Verified,1.8.2
+S8M-41,child-event rows,256,equals 256,Verified,1.8.2
+S8M-42,schedule rows,2,equals 2,Verified,1.8.2
+S8M-43,path archive,True,nonempty NPZ,Verified,1.8.2
+S8M-44,Figure 10 pair,True,PDF and PNG,Verified,1.8.2
+S8M-45,accepted inputs unchanged,True,all start/end hashes exact,Verified,1.8.2
+S8M-46,no new theoretical impact curve,False,false,Verified,1.8.2
+S8M-47,participation-rate qualification,not_identified_without_background_market_order_volume,not identified without background volume,Verified,1.8.2
+S8M-48,supplementary architecture inherited,True,true,Verified,1.8.2
+S8M-49,dependence-stage boundary,True,true,Verified,1.8.2
+S8M-50,next numeric gate,v1.8.3_mid_price_and_trade_sign_dependence,v1.8.3 dependence diagnostics,Verified,1.8.2

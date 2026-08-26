@@ -1,0 +1,148 @@
+{
+  "schema_version": "1.8.2",
+  "scope": "scheduled_meta_order_own_cross_impact_and_relaxation",
+  "target_id": "S8-META-01",
+  "accepted_parent": "v1.8.1",
+  "accepted_parent_commit": "489412b85a5c982aa0bffc80a688a17d908ffec3",
+  "accepted_archive": {
+    "path": "correlation-emergence-v1.8.1-gate.zip",
+    "sha256": "c959d89878faef5432c7e5a04351bbb06551be27bcffc1a5c04a65b994163af9",
+    "accepted_date": "2026-08-21"
+  },
+  "accepted_inputs": [
+    {"path": "config/config-v1.8.1.json", "sha256": "63adf539e766b8522785a12ab7730c8557c0651d9730d89d2c14afbe5c8fb38c", "role": "accepted_single_trade_configuration"},
+    {"path": "diagnostics/single-trade-impact-checks-v1.8.csv", "sha256": "37f578721d36905c934fbd820783c24aa6c79d8c5e07366a1c6a5e6da0f12a48", "role": "accepted_single_trade_checks"},
+    {"path": "outputs/single-trade-impact-summary-v1.8.csv", "sha256": "27d65c7509b945b0869e4103de6bc34638ffa2ddfdfc04991c4e845e88ddfac9", "role": "accepted_single_trade_result"},
+    {"path": "provenance/SINGLE-TRADE-IMPACT-v1.8.md", "sha256": "8f08214889e7cf9f518b397ad8e59acce5a563263fba746b5a4079629caa834a", "role": "accepted_single_trade_provenance"},
+    {"path": "functions/events/impact.py", "sha256": "3de8acc7ea2298901df11131fd07c8b0900178a280764475cd2f78e570fa0236", "role": "accepted_single_event_path"},
+    {"path": "functions/events/records.py", "sha256": "241db8eb95854d8498538cafdac1eb7a0342faf0989ea728478de2e89191bdb2", "role": "accepted_event_semantics"},
+    {"path": "functions/operational/translation_path.py", "sha256": "d5a0129c9ed494eb287c649ed057f8671c958d8dd54d22b28db429fc94577283", "role": "accepted_uniform_operational_path"},
+    {"path": "functions/operational/translation_solver.py", "sha256": "22423396c805ae7f683b81731e3c6a03b7932558e39beee7c879cbf6df5a75f2", "role": "accepted_translation_mode_solver"},
+    {"path": "functions/observation/refresh_sampling.py", "sha256": "79161984d9aed19e694957b64817939b7e891ada793331c8eff1467813049e6b", "role": "accepted_previous_refresh_subordination"},
+    {"path": "source/source-v1/CATG-RD2Epps-v3-arXiv.tex", "sha256": "48eea98a6fb084d6ecc397bede4c107a44cae947e16271d66a7041e2997afb5a", "role": "accepted_source_v1_paper"},
+    {"path": "source/source-v2/TRANSLATION-MODE-NUMERICAL-ARCHITECTURE-v1.8.tex", "sha256": "b6e85d7d06c1f2f7b1b4c99875c4a0f884e8ab0e5316383253373b38bdce2711", "role": "accepted_supplementary_architecture_draft"}
+  ],
+  "architecture": {
+    "operational_dynamics": "uniform_fixed_grid_only",
+    "meta_order": "declared_schedule_of_signed_child_market_order_events",
+    "event_application": "each_child_density_delta_immediately_before_its_declared_operational_step",
+    "paired_control": "identical_initial_state_and_common_operational_innovations",
+    "operational_measurement": "aggressor_signed_shocked_minus_control_boundary_price",
+    "calendar_observation": "same_completed_paths_same_book_specific_previous_refresh_clocks",
+    "calendar_interpolation": "forbidden",
+    "legacy_nonuniform_state_update": "forbidden",
+    "component_or_combined_refit": "forbidden",
+    "source_v1_change": false
+  },
+  "model": {
+    "grid_lower": -10.0,
+    "grid_upper": 10.0,
+    "grid_points": 201,
+    "diffusion": [0.5, 0.5],
+    "transport_probability": 0.5,
+    "cancellation_rates": [0.0, 0.0],
+    "operational_orders": [1.0, 1.0],
+    "kernel_terms": [1, 1],
+    "source_lambda": [1.0, 1.0],
+    "source_mu": [0.1, 0.1],
+    "minimum_abs_boundary_slope": 1e-6,
+    "ordered_coupling_rates_per_model_time_unit": [1.25, 1.25],
+    "innovation_sigma": [0.4, 0.4],
+    "microscopic_innovation_correlation": 0.0,
+    "seconds_per_model_time_unit": 100.0,
+    "operational_step_model_units": 0.005,
+    "operational_step_seconds": 0.5
+  },
+  "experiment": {
+    "paths": 8,
+    "primitive_random_paths": 2,
+    "input_construction": "primitive_antithetic_and_book_swapped",
+    "operational_seed": 188201,
+    "clock_seed": 188202,
+    "total_operational_steps": 1000,
+    "event_books": [0, 1],
+    "event_sides": [-1, 1],
+    "child_quantity": 0.05,
+    "children_per_meta_order": 4,
+    "total_meta_order_quantity": 0.2,
+    "event_type": "market_order",
+    "schedules": [
+      {
+        "schedule_id": "fast",
+        "child_operational_steps": [301, 311, 321, 331],
+        "child_times_from_start_seconds": [0.0, 5.0, 10.0, 15.0],
+        "execution_horizon_seconds": 15.0,
+        "signed_execution_rate_proxy_per_second": 0.013333333333333334
+      },
+      {
+        "schedule_id": "slow",
+        "child_operational_steps": [301, 341, 381, 421],
+        "child_times_from_start_seconds": [0.0, 20.0, 40.0, 60.0],
+        "execution_horizon_seconds": 60.0,
+        "signed_execution_rate_proxy_per_second": 0.0033333333333333335
+      }
+    ],
+    "post_completion_lags_seconds": [0.0, 5.0, 10.0, 20.0, 40.0, 80.0, 120.0, 160.0, 200.0],
+    "clock_type": "independent_equal_rate_poisson_previous_refresh",
+    "book_refresh_rates_per_second": [0.1, 0.1],
+    "clock_uniforms_per_book_path": 1200,
+    "uncertainty": "standard_error_across_operational_paths_after_side_symmetrisation",
+    "event_execution_price": "volume_weighted_consumed_grid_log_price_proxy",
+    "participation_rate_status": "not_identified_without_background_market_order_volume",
+    "reported_schedule_intensity": "total_quantity_divided_by_first_to_last_child_horizon"
+  },
+  "impact_matrix": [
+    {"event_book": 0, "response_book": 0, "impact_type": "own"},
+    {"event_book": 0, "response_book": 1, "impact_type": "cross"},
+    {"event_book": 1, "response_book": 0, "impact_type": "cross"},
+    {"event_book": 1, "response_book": 1, "impact_type": "own"}
+  ],
+  "acceptance_policy": {
+    "all_child_events_full_fill": true,
+    "maximum_child_density_mass_error": 1e-14,
+    "maximum_pre_first_event_absolute_paired_difference": 1e-14,
+    "maximum_input_correlation_absolute": 1e-14,
+    "required_boundary_candidates": 1,
+    "minimum_boundary_edge_distance": 7.5,
+    "minimum_first_child_operational_own_impact": 0.05,
+    "minimum_final_child_operational_own_impact": 0.05,
+    "minimum_final_child_operational_cross_impact": 0.005,
+    "require_operational_own_impact_non_decreasing_across_children": true,
+    "minimum_fast_slow_final_own_absolute_difference": 0.005,
+    "maximum_book_exchange_relative_difference": 0.1,
+    "buy_sell_symmetry_metric": "maximum_absolute_side_difference_normalized_by_domain_peak_own_impact",
+    "maximum_buy_sell_domain_scaled_difference": 0.15,
+    "minimum_post_completion_own_relaxation_fraction": 0.05,
+    "minimum_peak_post_completion_cross_catchup_fraction": 0.05,
+    "minimum_long_lag_own_cross_ratio": 0.6,
+    "maximum_long_lag_own_cross_ratio": 1.4,
+    "minimum_calendar_active_fraction_at_80_seconds_after_completion": 0.8,
+    "minimum_calendar_own_impact_at_80_seconds_after_completion": 0.005
+  },
+  "output_contract": {
+    "figure_number": 24,
+    "trajectory_curve_rows": 64,
+    "trajectory_member_rows": 1024,
+    "relaxation_curve_rows": 144,
+    "relaxation_member_rows": 2304,
+    "event_rows": 256,
+    "schedule_rows": 2,
+    "measurement_domains": ["operational", "calendar"],
+    "result_label_when_checks_pass": "meta_order_impact_established",
+    "new_theoretical_impact_curve": false,
+    "next_stage": "v1.8.3_mid_price_and_trade_sign_dependence"
+  },
+  "supplementary_material_contract": {
+    "inherit_v1_8_1_boundary_architecture_contrast": true,
+    "meta_order_definition": "declared_schedule_of_child_market_events_not_one_density_shock",
+    "impact_coordinates": ["scheduled_cumulative_signed_volume", "execution_horizon", "post_completion_lag"],
+    "true_participation_rate_requires_background_trade_volume": true,
+    "source_v1_remains_frozen": true
+  },
+  "stage_boundary": {
+    "v1.8.2_is_meta_order_impact_only": true,
+    "dependence_diagnostics_not_implemented": true,
+    "stage_8_remains_open": true,
+    "next_stage_on_acceptance": "v1.8.3_mid_price_and_trade_sign_dependence"
+  }
+}
