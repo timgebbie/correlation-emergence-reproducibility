@@ -100,10 +100,9 @@ class ReleaseSurfaceTests(unittest.TestCase):
             self.assertIn(token, self.readme)
 
     def test_readme_and_provenance_explain_boundary_correction(self) -> None:
-        self.assertIn("-d(phi)/dx", self.readme)
+        self.assertIn("$q_j(y)=-a_j\\mu_j y\\exp(-\\mu_j y^2)$", self.readme)
         self.assertIn("weak/local", self.readme)
-        self.assertIn("not pointwise equality", self.readme)
-        self.assertIn("exp(-mu*y^2)", self.readme)
+        self.assertIn("not as\npointwise equality", self.readme)
 
     def test_single_entrypoint_supports_strict_and_rerun(self) -> None:
         self.assertEqual(self.config["active_route"]["entrypoints"], ["scripts/run_all.py"])
@@ -119,7 +118,10 @@ class ReleaseSurfaceTests(unittest.TestCase):
         self.assertFalse(publication["tag_created"])
         self.assertFalse(publication["github_release_created"])
         self.assertEqual(publication["tag"], "v2.0.0")
-        self.assertTrue(publication["release_title"].startswith("v2.0.0 — "))
+        self.assertEqual(
+            publication["release_title"],
+            "v2.0.0 — Reproducibility code for arXiv:2606.14182",
+        )
         self.assertFalse((ROOT / "ACCEPTANCE-REPORT-v1.9.3.md").exists())
         self.assertFalse((ROOT / "TEST-REPORT-v1.9.3.md").exists())
 

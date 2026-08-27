@@ -1,4 +1,4 @@
-# v2.0.0 — Correlation emergence and explicit-subordination simulation extension
+# v2.0.0 — Reproducibility code for arXiv:2606.14182
 
 This release extends the analytical reproducibility bundle for
 arXiv:2606.14182 with the accepted corrected order-book simulation route.

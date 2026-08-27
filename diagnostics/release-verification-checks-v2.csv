@@ -25,5 +25,5 @@ V2R-23,v2 supplement source,True,present,Verified,2.0.0
 V2R-24,v2 compiled supplement,True,present,Verified,2.0.0
 V2R-25,no cache or gate-only report files,[],empty,Verified,2.0.0
 V2R-26,GitHub inspection precedes tag,"[True, True]",both true,Verified,2.0.0
-V2R-27,final release identity,"['v2.0.0', 'v2.0.0 — Correlation emergence and explicit-subordination simulation extension', 'correlation-emergence-reproducibility-v2.0.0.zip']",fixed v2.0.0 identity,Verified,2.0.0
+V2R-27,final release identity,"['v2.0.0', 'v2.0.0 — Reproducibility code for arXiv:2606.14182', 'correlation-emergence-reproducibility-v2.0.0.zip']",fixed v2.0.0 identity,Verified,2.0.0
 V2R-28,release state remains untagged,"['untagged_v2.0.0_candidate', False, False]",untagged candidate; no release,Verified,2.0.0

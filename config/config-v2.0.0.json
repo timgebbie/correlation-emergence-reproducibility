@@ -82,7 +82,7 @@
   "publication_contract": {
     "version": "v2.0.0",
     "tag": "v2.0.0",
-    "release_title": "v2.0.0 — Correlation emergence and explicit-subordination simulation extension",
+    "release_title": "v2.0.0 — Reproducibility code for arXiv:2606.14182",
     "archive_name": "correlation-emergence-reproducibility-v2.0.0.zip",
     "push_untagged_state_first": true,
     "inspect_and_correct_before_tag": true,
