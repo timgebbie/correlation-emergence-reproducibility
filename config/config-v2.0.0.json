@@ -12,8 +12,8 @@
     },
     {
       "path": "figures/figure-07-final-estimator-aware-epps-v2.png",
-      "sha256": "a01dd28c71c1706fc7680a0025810469fc2d47c63bc8125ac870babeb6fceb77",
-      "role": "renamed_accepted_key_figure_pixels"
+      "sha256": "2f0a9c415559eac29fc2efd50a4b8a084be4355b52c5307052d67e50d228246b",
+      "role": "accepted_key_figure_presentation"
     },
     {
       "path": "outputs/final-estimator-aware-epps-curves-v1.9.csv",

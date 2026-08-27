@@ -672,14 +672,14 @@ def _plot(
         stochastic["covariance_curve"] + 1.96 * stochastic["covariance_se"],
         color="#2166ac",
         alpha=0.17,
-        label="Corrected simulation 95% jackknife band",
+        label="Translation-mode simulation 95% jackknife band",
     )
     axis.plot(lags, stochastic["covariance_theory"], color="#111111", lw=2.0, label=r"$F(\kappa\Delta)$")
     axis.plot(lags, stochastic["covariance_curve"], color="#2166ac", lw=1.7, label="Normalized thick-boundary covariance")
     axis.set_ylim(0.0, 1.05)
     axis.set_xlabel(r"Identity-clock aggregation scale $\Delta t$ [s]")
     axis.set_ylabel("Normalized covariance response")
-    axis.set_title("Paper envelope and corrected boundary simulation")
+    axis.set_title("Paper envelope and translation-mode simulation")
     axis.grid(alpha=0.18, linewidth=0.5)
     axis.legend(frameon=False, fontsize=7.5, loc="lower right")
 
@@ -690,7 +690,7 @@ def _plot(
         stochastic["correlation_curve"] + 1.96 * stochastic["correlation_se"],
         color="#b2182b",
         alpha=0.14,
-        label="Corrected simulation 95% jackknife band",
+        label="Translation-mode simulation 95% jackknife band",
     )
     axis.plot(lags, stochastic["correlation_theory"], color="#111111", lw=2.0, label="Exact closed-SDE correlation")
     axis.plot(lags, stochastic["correlation_curve"], color="#b2182b", lw=1.7, label="Thick-boundary return correlation")
@@ -742,7 +742,7 @@ def _plot(
     axis.grid(alpha=0.18, linewidth=0.5)
     axis.legend(frameon=False, fontsize=7.5, loc="best")
 
-    figure.suptitle("Corrected coupling recovery on uniform operational time")
+    figure.suptitle("Translation-mode coupling on uniform operational time")
     figure.subplots_adjust(left=0.08, right=0.98, bottom=0.09, top=0.92, wspace=0.24, hspace=0.29)
     metadata = {
         "Creator": "correlation-emergence-v1.7.7",

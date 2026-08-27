@@ -43,7 +43,7 @@ path autocorrelation or spectrum.
 
 ## Figure 7 - Final estimator-aware Epps integration
 
-Clock-only, corrected coupling-only and combined results share one linear
+Clock-only, translation-mode coupling-only and combined results share one linear
 0--400 second, 0--1.1 normalized-covariance scale. The combined no-refit
 holdout is compared with the paper's leading-order product and with the exact
 finite-grid, finite-step conditional moment on the same realised clocks. The
@@ -51,9 +51,9 @@ estimator-aware RMSE is `0.039719`, standardized RMSE is `0.455132`, and
 pointwise normal-band coverage is complete. No parameter or normalization is
 refitted.
 
-## Figure 8 - Corrected translation-mode coupling
+## Figure 8 - Translation-mode coupling
 
-The corrected thick-boundary holdout is compared with the analytical
+The translation-mode thick-boundary holdout is compared with the analytical
 normalized covariance response and the distinct finite-scale return
 correlation. Deterministic panels verify signed front relaxation at the frozen
 response rate. Dynamics use uniform operational time and the current receiving

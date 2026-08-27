@@ -13,7 +13,7 @@ The supplementary-materials document is included here:
 > [SUPPLEMENTARY-MATERIAL-v2.0.0.pdf](supplementary-materials/SUPPLEMENTARY-MATERIAL-v2.0.0.pdf)
 
 This repository is a quantitative-finance reproducibility bundle. It extends
-the analytical v1.0.0 materials with a corrected Python implementation of two
+the analytical v1.0.0 materials with a Python implementation of two
 coupled order books, explicit separation of operational and calendar time, and
 event-impact and dependence diagnostics. The code regenerates or verifies the
 eleven selected figures, two publication tables, numerical diagnostics and
@@ -24,7 +24,7 @@ machine-readable evidence used in the supplementary material.
 ![Figure 7: estimator-aware Epps theory and simulation](figures/figure-07-final-estimator-aware-epps-v2.png)
 
 **Figure 7. Final estimator-aware Epps integration.** The first two panels
-compare the frozen clock-only and corrected coupling-only simulations with
+compare the frozen clock-only and translation-mode coupling-only simulations with
 their theoretical curves. The third panel is a no-refit holdout comparison of
 the combined simulation with both the paper's leading-order separable product
 and the finite-grid, finite-step conditional moment evaluated on the same
@@ -55,9 +55,9 @@ nonuniform state update is used.
 The current v2.0.0 bundle contains:
 
 - the six analytical figures and two publication tables retained from v1.0.0;
-- estimator-aware clock-only, corrected coupling-only and combined no-refit
+- estimator-aware clock-only, translation-mode coupling-only and combined no-refit
   comparisons;
-- corrected receiving-front translation-mode coupling on uniform operational
+- receiving-front translation-mode coupling on uniform operational
   time;
 - separate book-specific calendar clocks and previous-refresh subordination;
 - paired single-trade and scheduled meta-order own/cross-impact simulations;
@@ -71,7 +71,7 @@ The public figure sequence is deliberately compact:
 |---|---|
 | 1--6 | Analytical mechanism, sensitivity, finite-grid and calendar-time results |
 | 7 | Final estimator-aware clock/coupling/combined Epps comparison |
-| 8 | Corrected translation-mode coupling recovery on uniform operational time |
+| 8 | Translation-mode coupling recovery on uniform operational time |
 | 9 | Paired single-trade own- and cross-impact simulation |
 | 10 | Scheduled meta-order own- and cross-impact simulation |
 | 11 | Log-mid increment and trade-sign autocorrelations across event, operational and calendar layers |
@@ -96,7 +96,7 @@ The conversion was then used to identify the time-update, source and coupling
 interfaces that had to be changed for the present implementation. Its
 executable surface, stored simulations and development-only tests are not
 shipped in v2.0.0; the staged Git history and
-[`provenance/BAUER-ANTECEDENT-AND-CORRECTIONS-v2.md`](provenance/BAUER-ANTECEDENT-AND-CORRECTIONS-v2.md)
+[implementation-differences record](provenance/BAUER-ANTECEDENT-AND-CORRECTIONS-v2.md)
 preserve the audit trail.
 
 The source convention is
@@ -133,14 +133,14 @@ front slope, analytical regularization width, lattice spacing and the numerical
 translation mode remain distinct objects.
 
 The target-paper source in `source/source-v1/` remains frozen. Computational
-clarifications and corrections are recorded in the README, the supplement and
+clarifications and implementation distinctions are recorded in the README, the supplement and
 `source/source-v2/`.
 
 ## Repository structure
 
 ```text
 config/                  Accepted scientific and release configurations
-functions/operational/   Uniform-grid density and corrected coupling dynamics
+functions/operational/   Uniform-grid density and translation-mode coupling
 functions/observation/   Clocks, previous-refresh sampling and subordination
 functions/events/        Order-event records, tapes and impact operations
 scripts/                 Active reproduction and verification commands
@@ -152,7 +152,7 @@ tables/                  Two generated CSV/LaTeX publication tables
 captions/                Standalone captions for the selected evidence
 diagnostics/             Generated scientific acceptance checks
 source/source-v1/        Frozen Angstmann--Gebbie target-paper source
-source/source-v2/        Computational correction and conformity inserts
+source/source-v2/        Computational conformity and clarification inserts
 provenance/              Theory-to-code and numerical traceability
 supplementary-materials/ Compiled computational supplement
 ```
@@ -230,8 +230,8 @@ The public version history follows semantic versioning:
 
 ```text
 v1.0.0        first public analytical reproducibility release
-v2.0.0        corrected simulation, subordination, impact and dependence release
-v2.0.1        documentation or metadata corrections without a scientific change
+v2.0.0        simulation, subordination, impact and dependence release
+v2.0.1        documentation or metadata updates without a scientific change
 v2.1.0        compatible diagnostics or scientific extensions
 v3.0.0        incompatible model, interface or scientific-scope change
 ```
@@ -243,7 +243,7 @@ Git history:
 |---|---|---|
 | `v1.2.x` | Julia-to-Python conversion and declared-input reconstruction | Retired executable; audit retained |
 | `v1.4.x--v1.5.x` | Uniform operational dynamics and explicit calendar subordination | Retained core |
-| `v1.7.7` | Receiving-front translation-mode coupling and corrected source convention | Retained core and Figure 8 |
+| `v1.7.7` | Receiving-front translation-mode coupling and source convention | Retained core and Figure 8 |
 | `v1.8.0--v1.8.3` | Event semantics, impact and dependence diagnostics | Retained in Figures 9--11 |
 | `v1.9.0` | Estimator-aware final Epps integration | Retained as key Figure 7 |
 | `v1.9.2` | Slim public payload and claim-equivalence gate | Accepted parent stage |

@@ -25,16 +25,16 @@
 \maketitle
 
 \begin{abstract}
-This supplement records the analytical and simulation companion to ``Correlation emergence and the Epps effect in two coupled limit order books'' (arXiv:2606.14182). It evaluates the paper's ordinary and fractional correlation build-up factors, reports their sensitivities and identifiability limits, diagnoses finite-grid boundary representation, and verifies a corrected uniform-operational simulation followed by explicit book-specific previous-refresh subordination. The retained numerical evidence includes clock-only and corrected coupling-only conformity, a combined no-refit holdout, single-trade and meta-order impact, and mid-price-increment and trade-sign autocorrelations. The computations are model-conditional reproducibility evidence, not empirical calibration or mathematical proof.
+This supplement records the analytical and simulation companion to ``Correlation emergence and the Epps effect in two coupled limit order books'' (arXiv:2606.14182). It evaluates the paper's ordinary and fractional correlation build-up factors, reports their sensitivities and identifiability limits, diagnoses finite-grid boundary representation, and verifies a uniform-operational simulation followed by explicit book-specific previous-refresh subordination. The retained numerical evidence includes clock-only and translation-mode coupling-only conformity, a combined no-refit holdout, single-trade and meta-order impact, and mid-price-increment and trade-sign autocorrelations. The computations are model-conditional reproducibility evidence, not empirical calibration or mathematical proof.
 \end{abstract}
 
 \tableofcontents
 
 \section{Scientific and software boundary}
 
-The frozen source paper remains the mathematical source of truth. The v2 route adds a diagnosed simulation implementation without changing that source snapshot. The ordinary clock, coupling, and combined curves remain illustrations of the paper's renewal-envelope, exponential-response, and leading-order separability assumptions. The fractional curves evaluate the stated Mittag--Leffler replacement on the non-negative real axis. The corrected reaction-boundary implementation uses the decaying Gaussian convention for which the paper gives a finite half-line moment.
+The frozen source paper remains the mathematical source of truth. The v2 route adds a diagnosed simulation implementation without changing that source snapshot. The ordinary clock, coupling, and combined curves remain illustrations of the paper's renewal-envelope, exponential-response, and leading-order separability assumptions. The fractional curves evaluate the stated Mittag--Leffler replacement on the non-negative real axis. The reaction-boundary implementation uses the decaying Gaussian convention for which the paper gives a finite half-line moment.
 
-Empirical covariance estimation, market-data calibration, trading use and pointwise kernel equivalence are excluded. The historical Bauer et al. implementation was used during development as a conversion and contrast audit. Its executable code, stored simulations and development-only tests are not shipped in v2. The release retains attribution and the precise mathematical corrections needed to understand the accepted route.
+Empirical covariance estimation, market-data calibration, trading use and pointwise kernel equivalence are excluded. The historical Bauer et al. implementation was used during development as a conversion and contrast audit. Its executable code, stored simulations and development-only tests are not shipped in v2. The release retains attribution and the precise mathematical distinctions needed to understand the accepted route.
 
 Both books first evolve on one uniform operational grid. Book-specific calendar clocks act only after the complete operational path exists, by selecting the previous completed state. Calendar waits never enter the density recurrence; no calendar interpolation, extrapolation or nonuniform state update is used.
 
@@ -90,9 +90,9 @@ The local frozen-front mapping is
 \label{eq:response}
 \end{equation}
 
-\subsection{Corrected source and boundary representation}
+\subsection{Source convention and boundary representation}
 
-The corrected translated source uses
+The translated source uses
 \begin{equation}
 q_j(y)=-a_j\mu_j y\exp(-\mu_j y^2).
 \end{equation}
@@ -118,7 +118,7 @@ This clarification is the development link to the Bauer antecedent. The
 conversion audit identified the nonuniform update, the different Gaussian
 convention and the interface ambiguity. The accepted Angstmann--Gebbie route
 then separated uniform operational dynamics from calendar observation and
-tested the translation-mode correction first as a component and then in a
+tested the translation-mode implementation first as a component and then in a
 combined no-refit holdout. The retired implementation remains recoverable in
 the sealed pre-v1.9.3 gates and repository history, but is not an executable
 dependency of this release.
@@ -222,7 +222,7 @@ For the clock mechanism, \(h_{\lambda_{12}}\) is the no-refresh survival. For th
 The distinction from the simulation output is substantive. A sample autocorrelation requires a generated path, a declared estimator and finite-sample uncertainty. The deterministic inset exposes only the memory functions that enter Eq.~\eqref{eq:memory-average}. Figure~\ref{fig:dependence} reports the separate path-derived log-mid increment and trade-sign autocorrelations without retrospectively relabelling this analytical diagnostic.
 
 \clearpage
-\section{Corrected uniform-operational simulation}
+\section{Uniform-operational simulation}
 
 Let \(u_n=n\Delta u\) be the common operational grid. Both density fields are
 advanced on this grid before any calendar observation is constructed. External
@@ -254,13 +254,13 @@ realised clocks as the simulation estimator; it is not a fitted replacement.
 \begin{figure}[p]
 \centering
 \includegraphics[width=\textwidth]{figures/figure-07-final-estimator-aware-epps-v2.pdf}
-\caption{\textbf{Final estimator-aware Epps integration.} Clock-only, corrected coupling-only and combined results share one linear 0--400 second and 0--1.1 normalized-covariance scale. The combined no-refit holdout is compared with the paper's leading-order product and the exact finite-grid, finite-step conditional moment on the same realised clocks. The estimator-aware combined RMSE is 0.039719, standardized RMSE is 0.455132, and pointwise normal-band coverage is complete. No parameter, normalization or time map is refitted.}
+\caption{\textbf{Final estimator-aware Epps integration.} Clock-only, translation-mode coupling-only and combined results share one linear 0--400 second and 0--1.1 normalized-covariance scale. The combined no-refit holdout is compared with the paper's leading-order product and the exact finite-grid, finite-step conditional moment on the same realised clocks. The estimator-aware combined RMSE is 0.039719, standardized RMSE is 0.455132, and pointwise normal-band coverage is complete. No parameter, normalization or time map is refitted.}
 \label{fig:final-epps}
 \end{figure}
 
-\subsection{Corrected translation-mode component}
+\subsection{Translation-mode component}
 
-The corrected coupling is tested separately under identity clocks before it is
+The translation-mode coupling is tested separately under identity clocks before it is
 used in the combined route. Deterministic signed-front relaxations diagnose the
 registered response rate; stochastic holdout paths test normalized covariance
 and the distinct finite-scale return correlation. The covariance scale is
@@ -269,8 +269,8 @@ frozen from a disjoint calibration ensemble.
 \begin{figure}[p]
 \centering
 \includegraphics[width=\textwidth]{figures/figure-08-corrected-translation-mode-coupling-v2.pdf}
-\caption{\textbf{Corrected translation-mode coupling on uniform operational time.} Holdout thick-boundary paths are compared with the analytical normalized covariance response and the distinct finite-scale return correlation. Lower panels verify signed deterministic front relaxation and residuals at the frozen response rate. No clock, interpolation or parameter fit enters this component gate.}
-\label{fig:corrected-coupling}
+\caption{\textbf{Translation-mode coupling on uniform operational time.} Holdout thick-boundary paths are compared with the analytical normalized covariance response and the distinct finite-scale return correlation. Lower panels verify signed deterministic front relaxation and residuals at the frozen response rate. No clock, interpolation or parameter fit enters this component gate.}
+\label{fig:translation-mode-coupling}
 \end{figure}
 
 \section{Event impact and dependence diagnostics}
@@ -349,7 +349,7 @@ The accepted analytical output schemas retain their scientific object versions. 
 
 \section{Interpretive limits}
 
-The diagnosed computations support a limited set of conclusions. Ordinary clock and coupling factors are distinguishable when their timescales are sufficiently separated and the components are shown explicitly. The long-scale plateau contains little local information about either rate. The leading short-scale power of a combined fractional curve identifies an order sum rather than two separate orders. Reaction-boundary quantities affect the Epps curve conditionally through the effective response rate, but are not individually identified by that curve. Continuum selector invariance can coexist with finite-grid distortion when parity, alignment or domain controls are not respected. The corrected translation-mode simulation is consistent with the registered component curves and improves the no-refit combined comparison when the estimator's finite-grid, finite-step clock selection is represented exactly. The impact and autocorrelation figures are conditional model diagnostics, not empirical stylised-fact calibration.
+The diagnosed computations support a limited set of conclusions. Ordinary clock and coupling factors are distinguishable when their timescales are sufficiently separated and the components are shown explicitly. The long-scale plateau contains little local information about either rate. The leading short-scale power of a combined fractional curve identifies an order sum rather than two separate orders. Reaction-boundary quantities affect the Epps curve conditionally through the effective response rate, but are not individually identified by that curve. Continuum selector invariance can coexist with finite-grid distortion when parity, alignment or domain controls are not respected. The translation-mode simulation is consistent with the registered component curves and improves the no-refit combined comparison when the estimator's finite-grid, finite-step clock selection is represented exactly. The impact and autocorrelation figures are conditional model diagnostics, not empirical stylised-fact calibration.
 
 These are computational illustrations and numerical verification statements inside the paper's assumptions. They are not empirical validation, calibration or proof of the approximations. The retired Bauer implementation is not required to execute or interpret the accepted v2 route.
 

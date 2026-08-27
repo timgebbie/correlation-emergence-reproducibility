@@ -103,7 +103,7 @@ def _save_figure(
         ),
         (
             axes[1],
-            "Corrected coupling only",
+            "Translation-mode coupling only",
             coupling_theory,
             coupling_simulation,
             coupling_se,
@@ -157,7 +157,7 @@ def _save_figure(
         linewidth=2.3,
         label="Combined simulation",
     )
-    axes[2].set_title("Clock and corrected coupling")
+    axes[2].set_title("Clock and translation-mode coupling")
 
     for axis in axes:
         axis.set_xlim(0.0, 410.0)
