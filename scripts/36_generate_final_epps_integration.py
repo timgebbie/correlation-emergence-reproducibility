@@ -89,11 +89,11 @@ def _save_figure(
     combined_se: np.ndarray,
 ) -> None:
     remove_orphaned_figure_staging_files()
-    fig, axes = plt.subplots(1, 3, figsize=(15.2, 5.1), sharex=True, sharey=True)
+    fig, axes = plt.subplots(1, 3, figsize=(15.2, 6.0), sharex=True, sharey=True)
     panels = (
         (
             axes[0],
-            "Clock only",
+            "(a) Clock only",
             clock_theory,
             clock_simulation,
             clock_se,
@@ -103,7 +103,7 @@ def _save_figure(
         ),
         (
             axes[1],
-            "Translation-mode coupling only",
+            "(b) Translation-mode coupling only",
             coupling_theory,
             coupling_simulation,
             coupling_se,
@@ -157,9 +157,10 @@ def _save_figure(
         linewidth=2.3,
         label="Combined simulation",
     )
-    axes[2].set_title("Clock and translation-mode coupling")
+    axes[2].set_title("(c) Clock and translation-mode coupling")
 
     for axis in axes:
+        axis.set_box_aspect(1)
         axis.set_xlim(0.0, 410.0)
         axis.set_ylim(0.0, 1.1)
         axis.set_xlabel(r"Calendar aggregation scale $\Delta t$ [s]")
@@ -167,7 +168,7 @@ def _save_figure(
         axis.legend(loc="lower right", fontsize=8.2, frameon=False)
     axes[0].set_ylabel("Normalized covariance response")
     fig.suptitle("Final estimator-aware Epps integration: frozen parameters", fontsize=15)
-    fig.tight_layout(rect=(0.0, 0.0, 1.0, 0.95))
+    fig.tight_layout(rect=(0.0, 0.0, 1.0, 0.94))
     atomic_savefig(fig, FIGURE_STEM.with_suffix(".pdf"), bbox_inches="tight")
     atomic_savefig(fig, FIGURE_STEM.with_suffix(".png"), dpi=220, bbox_inches="tight")
     plt.close(fig)

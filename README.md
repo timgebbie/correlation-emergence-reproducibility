@@ -23,13 +23,14 @@ machine-readable evidence used in the supplementary material.
 
 ![Figure 7: estimator-aware Epps theory and simulation](figures/figure-07-final-estimator-aware-epps-v2.png)
 
-**Figure 7. Final estimator-aware Epps integration.** The first two panels
-compare the frozen clock-only and translation-mode coupling-only simulations with
-their theoretical curves. The third panel is a no-refit holdout comparison of
-the combined simulation with both the paper's leading-order separable product
-and the finite-grid, finite-step conditional moment evaluated on the same
-realised clocks as the estimator. All panels share the same linear 0--400
-second and 0--1.1 normalized-covariance scales. The estimator-aware reference
+**Figure 7. Final estimator-aware Epps integration.** Figure 7(a) compares the
+frozen clock-only simulation with its theoretical curve; Figure 7(b) makes the
+corresponding translation-mode coupling-only comparison; and Figure 7(c) is a
+no-refit holdout comparison of the combined simulation with both the paper's
+leading-order separable product and the finite-grid, finite-step conditional
+moment evaluated on the same realised clocks as the estimator. The three square
+panels share the same linear 0--400 second and 0--1.1 normalized-covariance
+scales. The estimator-aware reference
 reduces combined RMSE from `0.066963` to `0.039719`, with standardized RMSE
 `0.455132` and full pointwise 95% normal-band coverage. No clock, coupling,
 boundary, normalization or simulation parameter is refitted.

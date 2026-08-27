@@ -43,10 +43,12 @@ path autocorrelation or spectrum.
 
 ## Figure 7 - Final estimator-aware Epps integration
 
-Clock-only, translation-mode coupling-only and combined results share one linear
-0--400 second, 0--1.1 normalized-covariance scale. The combined no-refit
-holdout is compared with the paper's leading-order product and with the exact
-finite-grid, finite-step conditional moment on the same realised clocks. The
+The three square panels share one linear 0--400 second, 0--1.1
+normalized-covariance scale. Figure 7(a) shows the clock-only comparison,
+Figure 7(b) shows the translation-mode coupling-only comparison, and Figure
+7(c) compares the combined no-refit holdout with the paper's leading-order
+product and with the exact finite-grid, finite-step conditional moment on the
+same realised clocks. The
 estimator-aware RMSE is `0.039719`, standardized RMSE is `0.455132`, and
 pointwise normal-band coverage is complete. No parameter or normalization is
 refitted.
