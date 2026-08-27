@@ -6,7 +6,7 @@ arXiv:2606.14182 with the accepted order-book simulation route.
 It contains:
 
 - six analytical figures and two publication tables;
-- estimator-aware clock-only, translation-mode coupling-only and combined no-refit
+- clock-only, translation-mode coupling-only and combined no-refit
   evidence, with Figure 7 as the key result;
 - receiving-front translation-mode coupling on uniform operational
   time;

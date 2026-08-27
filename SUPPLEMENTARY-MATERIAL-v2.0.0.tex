@@ -215,7 +215,7 @@ For the clock mechanism, \(h_{\lambda_{12}}\) is the no-refresh survival. For th
 \begin{figure}[p]
 \centering
 \includegraphics[width=0.91\textwidth]{figures/figure-06-calendar-time-epps-memory-v1.pdf}
-\caption{\textbf{Calendar-time Epps curve.} The square main panel rewrites the Figure~\ref{fig:ordinary-components} slow-response profile on a linear calendar-time axis using the explicitly illustrative convention $\lambda_{12}=0.1\,\mathrm{s}^{-1}$, $\kappa=0.025\,\mathrm{s}^{-1}$, and $\rho_\infty=1$, corresponding to $\tau_c=10$ s and $\tau_r=40$ s. Black, blue and red curves are the clock factor, coupling factor and their leading-order separable product; the grey dotted line marks the normalised limiting correlation $\rho_{\Delta t}/\rho_\infty=1$. The enlarged inset reports the no-refresh and coupling-relaxation survival functions. The seconds scale is not fitted to data, and the inset is neither a path autocorrelation nor a power-spectrum estimate. Path-derived autocorrelations are reported separately in Figure~\ref{fig:dependence}.}
+\caption{\textbf{Calendar-time Epps curve.} The square main panel rewrites the Figure~\ref{fig:ordinary-components} slow-response profile on a linear calendar-time axis using the explicitly illustrative convention $\lambda_{12}=0.1\,\mathrm{s}^{-1}$, $\kappa=0.025\,\mathrm{s}^{-1}$, and $\rho_\infty=1$, corresponding to $\tau_c=10$ s and $\tau_r=40$ s. Black, blue and red curves are the clock factor, coupling factor and their leading-order separable product; the grey dotted line marks the normalised limiting correlation $\rho_{\Delta t}/\rho_\infty=1$. The enlarged inset reports $h_c(u)=e^{-\lambda_{12}u}$ and $h_r(u)=e^{-\kappa u}$: respectively the no-refresh survival and coupling-relaxation survival, with the latter also equal to the normalised positive-lag exponential covariance kernel. The seconds scale is not fitted to data, and the inset is neither a path autocorrelation nor a power-spectrum estimate. Path-derived autocorrelations are reported separately in Figure~\ref{fig:dependence}.}
 \label{fig:calendar-bridge}
 \end{figure}
 
@@ -242,19 +242,19 @@ P_j^{\rm cal}(t)=P_j^{\rm op}(U_{j,N_j(t)}).
 Equation~\eqref{eq:subordination} is previous-refresh subordination. It selects
 an already completed state and never changes an operational update interval.
 
-\subsection{Final estimator-aware Epps comparison}
+\subsection{Final theory-to-simulation Epps comparison}
 
 Figure~\ref{fig:final-epps} is the primary release result. The component inputs,
 clock paths, holdout structure and parameter values were fixed before the
 combined comparison. The leading-order product remains the analytical paper
-envelope. The estimator-aware curve is the exact finite-grid, finite-step
+envelope. The same-clock conditional reference is the exact finite-step
 conditional moment evaluated at the operational indices selected by the same
-realised clocks as the simulation estimator; it is not a fitted replacement.
+realised clocks as the simulation; it is not a fitted replacement.
 
 \begin{figure}[p]
 \centering
 \includegraphics[width=\textwidth]{figures/figure-07-final-estimator-aware-epps-v2.pdf}
-\caption{\textbf{Final estimator-aware Epps integration.} The three square panels share one linear 0--400 second and 0--1.1 normalized-covariance scale. Panel (a) shows the clock-only comparison, panel (b) shows the translation-mode coupling-only comparison, and panel (c) compares the combined no-refit holdout with the paper's leading-order product and the exact finite-grid, finite-step conditional moment on the same realised clocks. The estimator-aware combined RMSE is 0.039719, standardized RMSE is 0.455132, and pointwise normal-band coverage is complete. No parameter, normalization or time map is refitted.}
+\caption{\textbf{Clock, coupling and combined Epps curves: theory and simulation.} The three square panels share one linear 0--400 second and 0--1.1 normalized-covariance scale. Panel (a) compares the clock-only simulation with the exact equal-rate previous-refresh factor $F(\lambda^{\rm clk}\Delta)$, where each book has $\lambda^{\rm clk}=0.1\,\mathrm{s}^{-1}$ rather than the $0.2\,\mathrm{s}^{-1}$ pooled minimum-wait rate. Panel (b) compares the translation-mode coupling simulation with $F(\kappa\Delta)$, using $\kappa=0.025\,\mathrm{s}^{-1}$. Panel (c) compares the combined no-refit holdout with the paper's leading-order separable product $F(\lambda^{\rm clk}\Delta)F(\kappa\Delta)$ and the same-clock conditional reference. The latter evaluates the reduced finite-step conditional moment at the same realised previous-refresh indices as the simulation; it is not a fitted curve. Its combined RMSE is 0.039719, standardized RMSE is 0.455132, and pointwise normal-band coverage is complete. No parameter, normalization or time map is refitted.}
 \label{fig:final-epps}
 \end{figure}
 

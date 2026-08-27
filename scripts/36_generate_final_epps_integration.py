@@ -97,7 +97,7 @@ def _save_figure(
             clock_theory,
             clock_simulation,
             clock_se,
-            "Equal-rate previous-refresh theory",
+            r"Equal-rate clock theory $F(\lambda^{\mathrm{clk}}\Delta)$",
             "Clock-only simulation",
             "#1f77b4",
         ),
@@ -139,16 +139,16 @@ def _save_figure(
         lags,
         product,
         color="black",
-        linestyle="--",
-        linewidth=2.0,
-        label="Leading-order product",
+        linewidth=2.1,
+        label=r"Leading-order product $F(\lambda^{\mathrm{clk}}\Delta)F(\kappa\Delta)$",
     )
     axes[2].plot(
         lags,
         estimator_theory,
         color="#666666",
-        linewidth=2.4,
-        label="Estimator-aware theory",
+        linewidth=2.0,
+        linestyle="--",
+        label="Same-clock conditional reference",
     )
     axes[2].plot(
         lags,
@@ -167,7 +167,10 @@ def _save_figure(
         axis.grid(alpha=0.18)
         axis.legend(loc="lower right", fontsize=8.2, frameon=False)
     axes[0].set_ylabel("Normalized covariance response")
-    fig.suptitle("Final estimator-aware Epps integration: frozen parameters", fontsize=15)
+    fig.suptitle(
+        "Clock, coupling and combined Epps curves: theory and simulation",
+        fontsize=15,
+    )
     fig.tight_layout(rect=(0.0, 0.0, 1.0, 0.94))
     atomic_savefig(fig, FIGURE_STEM.with_suffix(".pdf"), bbox_inches="tight")
     atomic_savefig(fig, FIGURE_STEM.with_suffix(".png"), dpi=220, bbox_inches="tight")

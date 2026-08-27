@@ -19,26 +19,30 @@ event-impact and dependence diagnostics. The code regenerates or verifies the
 eleven selected figures, two publication tables, numerical diagnostics and
 machine-readable evidence used in the supplementary material.
 
-## Key figure: estimator-aware theory and simulation
+## Key figure: theory and simulation
 
-![Figure 7: estimator-aware Epps theory and simulation](figures/figure-07-final-estimator-aware-epps-v2.png)
+![Figure 7: clock, coupling and combined Epps theory and simulation](figures/figure-07-final-estimator-aware-epps-v2.png)
 
-**Figure 7. Final estimator-aware Epps integration.** Figure 7(a) compares the
-frozen clock-only simulation with its theoretical curve; Figure 7(b) makes the
-corresponding translation-mode coupling-only comparison; and Figure 7(c) is a
-no-refit holdout comparison of the combined simulation with both the paper's
-leading-order separable product and the finite-grid, finite-step conditional
-moment evaluated on the same realised clocks as the estimator. The three square
-panels share the same linear 0--400 second and 0--1.1 normalized-covariance
-scales. The estimator-aware reference
-reduces combined RMSE from `0.066963` to `0.039719`, with standardized RMSE
-`0.455132` and full pointwise 95% normal-band coverage. No clock, coupling,
-boundary, normalization or simulation parameter is refitted.
+**Figure 7. Clock, coupling and combined Epps curves: theory and simulation.**
+Figure 7(a) compares the clock-only simulation with the exact equal-rate
+previous-refresh factor $F(\lambda^{\rm clk}\Delta)$, where each book has
+$\lambda^{\rm clk}=0.1\,\mathrm{s}^{-1}$. This rate is distinct from the
+$0.2\,\mathrm{s}^{-1}$ pooled minimum-wait rate. Figure 7(b) compares the
+translation-mode coupling simulation with $F(\kappa\Delta)$, using
+$\kappa=0.025\,\mathrm{s}^{-1}$. Figure 7(c) compares the combined simulation
+with the paper's leading-order separable product
+$F(\lambda^{\rm clk}\Delta)F(\kappa\Delta)$ and the same-clock conditional
+reference. The latter evaluates the reduced finite-step conditional moment at
+the same realised previous-refresh indices as the simulation; it is not a
+fitted curve. The three square panels share the same linear 0--400 second and
+0--1.1 normalized-covariance scales. The same-clock reference reduces combined
+RMSE from `0.066963` to `0.039719`, with standardized RMSE `0.455132` and full
+pointwise 95% normal-band coverage. No clock, coupling, boundary, normalization
+or simulation parameter is refitted.
 
-The machine-readable curves and summary are
-[`outputs/final-estimator-aware-epps-curves-v1.9.csv`](outputs/final-estimator-aware-epps-curves-v1.9.csv)
-and
-[`outputs/final-estimator-aware-epps-summary-v1.9.csv`](outputs/final-estimator-aware-epps-summary-v1.9.csv).
+The [machine-readable curves](outputs/final-estimator-aware-epps-curves-v1.9.csv)
+and [summary statistics](outputs/final-estimator-aware-epps-summary-v1.9.csv)
+retain their frozen development identifiers.
 
 ## Current situation: v2.0.0
 
@@ -56,7 +60,7 @@ nonuniform state update is used.
 The current v2.0.0 bundle contains:
 
 - the six analytical figures and two publication tables retained from v1.0.0;
-- estimator-aware clock-only, translation-mode coupling-only and combined no-refit
+- clock-only, translation-mode coupling-only and combined no-refit
   comparisons;
 - receiving-front translation-mode coupling on uniform operational
   time;
@@ -71,7 +75,7 @@ The public figure sequence is deliberately compact:
 | Figure | Evidence |
 |---|---|
 | 1--6 | Analytical mechanism, sensitivity, finite-grid and calendar-time results |
-| 7 | Final estimator-aware clock/coupling/combined Epps comparison |
+| 7 | Clock, coupling and combined Epps theory-to-simulation comparison |
 | 8 | Translation-mode coupling recovery on uniform operational time |
 | 9 | Paired single-trade own- and cross-impact simulation |
 | 10 | Scheduled meta-order own- and cross-impact simulation |
@@ -127,8 +131,8 @@ These are possible extensions, not claims made by the current release.
 
 This is a simulation and interpretation bundle for the associated paper and
 supplement. It is not an empirical market-data calibration, a trading strategy
-or a production execution library. The estimator-aware reference represents
-the accepted finite-grid, finite-step conditional moment; it is not a fitted
+or a production execution library. The same-clock conditional reference
+represents the accepted finite-step conditional moment; it is not a fitted
 replacement for the paper's leading-order mechanism decomposition. Reaction
 front slope, analytical regularization width, lattice spacing and the numerical
 translation mode remain distinct objects.
@@ -246,7 +250,7 @@ Git history:
 | `v1.4.x--v1.5.x` | Uniform operational dynamics and explicit calendar subordination | Retained core |
 | `v1.7.7` | Receiving-front translation-mode coupling and source convention | Retained core and Figure 8 |
 | `v1.8.0--v1.8.3` | Event semantics, impact and dependence diagnostics | Retained in Figures 9--11 |
-| `v1.9.0` | Estimator-aware final Epps integration | Retained as key Figure 7 |
+| `v1.9.0` | Final theory-to-simulation Epps integration | Retained as key Figure 7 |
 | `v1.9.2` | Slim public payload and claim-equivalence gate | Accepted parent stage |
 | `v1.9.3` | Legacy executable retirement and final public evidence map | Accepted final gate |
 | `v2.0.0` | Public promotion of the accepted v1.9.3 scientific payload | Current version |
