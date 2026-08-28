@@ -7,6 +7,7 @@ import math
 import os
 import sys
 from pathlib import Path
+from statistics import NormalDist
 
 import numpy as np
 
@@ -63,6 +64,9 @@ EVENT_PATH = PROJECT_ROOT / "outputs" / "dependence-event-tape-v1.8.csv"
 CLOCK_PATH = PROJECT_ROOT / "outputs" / "dependence-clock-rates-v1.8.csv"
 SUMMARY_PATH = PROJECT_ROOT / "outputs" / "dependence-summary-v1.8.csv"
 PATH_ARCHIVE = PROJECT_ROOT / "outputs" / "dependence-paths-v1.8.npz"
+REPRESENTATIVE_PATH_PATH = PROJECT_ROOT / "outputs" / "dependence-representative-path-v1.8.csv"
+RETURN_DISTRIBUTION_PATH = PROJECT_ROOT / "outputs" / "dependence-return-distribution-v1.8.csv"
+RETURN_QQ_PATH = PROJECT_ROOT / "outputs" / "dependence-return-qq-v1.8.csv"
 FIGURE_STEM = PROJECT_ROOT / "figures" / "figure-11-mid-price-trade-sign-autocorrelations-v2"
 CONVENTIONS = ("ground_truth_aggressor", "quote_midpoint", "legacy_tick_rule")
 
@@ -631,6 +635,113 @@ def _run_experiment(configuration: dict[str, object]) -> dict[str, object]:
         operational_prices[:, sample_indices, :], axis=1
     )
     calendar_sampled_increments = np.diff(calendar_prices[:, sample_indices, :], axis=1)
+    operational_rms = np.sqrt(np.mean(operational_sampled_increments**2, axis=(1, 2)))
+    median_rms = float(np.median(operational_rms))
+    representative_path_index = min(
+        range(paths),
+        key=lambda path_index: (
+            abs(float(operational_rms[path_index]) - median_rms),
+            path_index,
+        ),
+    )
+    path_rows: list[dict[str, object]] = []
+    for operational_step, time_seconds in enumerate(operational_times_seconds):
+        operational_pair_centre = float(
+            np.mean(operational_prices[representative_path_index, operational_step])
+        )
+        calendar_pair_centre = float(
+            np.mean(calendar_prices[representative_path_index, operational_step])
+        )
+        path_rows.append(
+            {
+                "path_index": representative_path_index,
+                "selection_policy": "operational_return_rms_nearest_cross_path_median",
+                "selected_path_operational_return_rms": operational_rms[representative_path_index],
+                "cross_path_median_operational_return_rms": median_rms,
+                "operational_step": operational_step,
+                "time_seconds": time_seconds,
+                "operational_book_1_log_mid": operational_prices[representative_path_index, operational_step, 0],
+                "operational_book_2_log_mid": operational_prices[representative_path_index, operational_step, 1],
+                "operational_pair_centre_log_mid": operational_pair_centre,
+                "calendar_book_1_log_mid": calendar_prices[representative_path_index, operational_step, 0],
+                "calendar_book_2_log_mid": calendar_prices[representative_path_index, operational_step, 1],
+                "calendar_pair_centre_log_mid": calendar_pair_centre,
+                "software_version": VERSION,
+            }
+        )
+
+    standardized_returns: dict[str, np.ndarray] = {}
+    return_moments: dict[str, tuple[float, float]] = {}
+    for domain_name, increments in (
+        ("operational", operational_sampled_increments),
+        ("calendar_previous_refresh", calendar_sampled_increments),
+    ):
+        flattened = np.asarray(increments, dtype=float).ravel()
+        mean = float(np.mean(flattened))
+        standard_deviation = float(np.std(flattened, ddof=1))
+        if not np.isfinite(standard_deviation) or standard_deviation <= 0.0:
+            raise ValueError("return standard deviation must be finite and positive")
+        standardized_returns[domain_name] = (flattened - mean) / standard_deviation
+        return_moments[domain_name] = (mean, standard_deviation)
+
+    histogram_edges = np.linspace(-6.0, 6.0, 42)
+    if max(
+        float(np.max(np.abs(values))) for values in standardized_returns.values()
+    ) >= float(histogram_edges[-1]):
+        raise ValueError("standardized return lies outside the declared histogram support")
+    histogram_centres = 0.5 * (histogram_edges[:-1] + histogram_edges[1:])
+    histogram_width = float(histogram_edges[1] - histogram_edges[0])
+    normal_density = np.exp(-0.5 * histogram_centres**2) / np.sqrt(2.0 * np.pi)
+    distribution_rows: list[dict[str, object]] = []
+    histogram_densities: dict[str, np.ndarray] = {}
+    for domain_name, values in standardized_returns.items():
+        counts, _ = np.histogram(values, bins=histogram_edges)
+        density = counts.astype(float) / (values.size * histogram_width)
+        histogram_densities[domain_name] = density
+        mean, standard_deviation = return_moments[domain_name]
+        for bin_index, centre in enumerate(histogram_centres):
+            distribution_rows.append(
+                {
+                    "measurement_domain": domain_name,
+                    "bin_index": bin_index,
+                    "standardized_return_lower": histogram_edges[bin_index],
+                    "standardized_return_upper": histogram_edges[bin_index + 1],
+                    "standardized_return_centre": centre,
+                    "estimated_density": density[bin_index],
+                    "fixed_standard_normal_density": normal_density[bin_index],
+                    "sample_count": values.size,
+                    "unstandardized_sample_mean": mean,
+                    "unstandardized_sample_standard_deviation": standard_deviation,
+                    "reference_status": "fixed_standard_normal_not_fitted",
+                    "software_version": VERSION,
+                }
+            )
+
+    probabilities = np.linspace(0.01, 0.99, 51)
+    normal_quantiles = np.asarray(
+        [NormalDist().inv_cdf(float(probability)) for probability in probabilities]
+    )
+    empirical_quantiles: dict[str, np.ndarray] = {}
+    qq_rows: list[dict[str, object]] = []
+    for domain_name, values in standardized_returns.items():
+        quantiles = np.quantile(values, probabilities, method="linear")
+        empirical_quantiles[domain_name] = quantiles
+        for quantile_index, probability in enumerate(probabilities):
+            qq_rows.append(
+                {
+                    "measurement_domain": domain_name,
+                    "quantile_index": quantile_index,
+                    "probability": probability,
+                    "fixed_standard_normal_quantile": normal_quantiles[quantile_index],
+                    "empirical_standardized_return_quantile": quantiles[quantile_index],
+                    "sample_count": values.size,
+                    "reference_status": "fixed_standard_normal_not_fitted",
+                    "software_version": VERSION,
+                }
+            )
+    write_csv(REPRESENTATIVE_PATH_PATH, list(path_rows[0]), path_rows)
+    write_csv(RETURN_DISTRIBUTION_PATH, list(distribution_rows[0]), distribution_rows)
+    write_csv(RETURN_QQ_PATH, list(qq_rows[0]), qq_rows)
     return {
         "base_inputs": base_inputs,
         "declared_signs": declared_signs,
@@ -640,6 +751,7 @@ def _run_experiment(configuration: dict[str, object]) -> dict[str, object]:
         "operational_prices": operational_prices,
         "calendar_prices": calendar_prices,
         "calendar_indices": calendar_indices,
+        "operational_times_seconds": operational_times_seconds,
         "price_acf": price_acf,
         "price_path": price_path,
         "price_mean": price_mean,
@@ -655,6 +767,19 @@ def _run_experiment(configuration: dict[str, object]) -> dict[str, object]:
         "price_lags_seconds": price_lags_seconds,
         "event_lags": event_lags,
         "sample_indices": sample_indices,
+        "diagnostic_interval_seconds": diagnostic_interval_seconds,
+        "operational_sampled_increments": operational_sampled_increments,
+        "calendar_sampled_increments": calendar_sampled_increments,
+        "representative_path_index": representative_path_index,
+        "representative_path_rows": path_rows,
+        "standardized_returns": standardized_returns,
+        "histogram_centres": histogram_centres,
+        "histogram_densities": histogram_densities,
+        "normal_density": normal_density,
+        "distribution_rows": distribution_rows,
+        "normal_quantiles": normal_quantiles,
+        "empirical_quantiles": empirical_quantiles,
+        "qq_rows": qq_rows,
         "agreement_rows": agreement_rows,
         "event_rows": event_rows,
         "clock_rows": clock_rows,
@@ -683,9 +808,124 @@ def _run_experiment(configuration: dict[str, object]) -> dict[str, object]:
 
 
 def _plot(result: dict[str, object]) -> None:
-    figure, axes = plt.subplots(2, 2, figsize=(10.8, 8.2), sharey=True)
+    figure, axes = plt.subplots(3, 3, figsize=(13.2, 12.6))
     colors = ("#2166ac", "#b35806", "#1b7837")
     all_bounds: list[np.ndarray] = []
+
+    path_index = int(result["representative_path_index"])
+    times = result["operational_times_seconds"]
+    for book, color in enumerate(("#2166ac", "#b2182b")):
+        axes[0, 0].plot(
+            times,
+            result["operational_prices"][path_index, :, book],
+            color=color,
+            lw=1.25,
+            label=f"Book {book + 1}",
+        )
+        axes[0, 1].plot(
+            times,
+            result["calendar_prices"][path_index, :, book],
+            color=color,
+            lw=1.25,
+            label=f"Book {book + 1}",
+        )
+    axes[0, 0].set_title("(a) Uniform-operational log-mid path")
+    axes[0, 1].set_title("(b) Previous-refresh calendar path")
+    for axis in (axes[0, 0], axes[0, 1]):
+        axis.set_xlabel("Time [s]")
+        axis.set_ylabel("Log-mid price")
+        axis.legend(frameon=False, fontsize=7.0)
+        axis.grid(alpha=0.18, linewidth=0.5)
+
+    sampled_times = times[result["sample_indices"]][1:]
+    operational_pair_increments = np.mean(
+        result["operational_sampled_increments"][path_index], axis=1
+    )
+    calendar_pair_increments = np.mean(
+        result["calendar_sampled_increments"][path_index], axis=1
+    )
+    axes[0, 2].plot(
+        sampled_times,
+        operational_pair_increments,
+        color="#2166ac",
+        lw=1.1,
+        label="Uniform operational",
+    )
+    axes[0, 2].plot(
+        sampled_times,
+        calendar_pair_increments,
+        color="#b35806",
+        lw=1.1,
+        label="Previous-refresh calendar",
+    )
+    axes[0, 2].axhline(0.0, color="#777777", lw=0.7)
+    axes[0, 2].set_title("(c) Five-second pair-centre increments")
+    axes[0, 2].set_xlabel("Time [s]")
+    axes[0, 2].set_ylabel("Log-mid increment")
+    axes[0, 2].legend(frameon=False, fontsize=6.8)
+    axes[0, 2].grid(alpha=0.18, linewidth=0.5)
+
+    axes[1, 0].plot(
+        result["histogram_centres"],
+        result["normal_density"],
+        color="#111111",
+        lw=1.9,
+        label=r"Fixed $N(0,1)$ reference",
+    )
+    for domain_name, color, label in (
+        ("operational", "#2166ac", "Uniform operational"),
+        ("calendar_previous_refresh", "#b35806", "Previous-refresh calendar"),
+    ):
+        axes[1, 0].plot(
+            result["histogram_centres"],
+            result["histogram_densities"][domain_name],
+            color=color,
+            lw=1.5,
+            drawstyle="steps-mid",
+            label=label,
+        )
+    axes[1, 0].set_xlim(-6.0, 6.0)
+    axes[1, 0].set_title("(d) Standardized return distribution")
+    axes[1, 0].set_xlabel("Standardized five-second return")
+    axes[1, 0].set_ylabel("Density")
+    axes[1, 0].legend(frameon=False, fontsize=6.6)
+    axes[1, 0].grid(alpha=0.18, linewidth=0.5)
+
+    qq_minimum = float(
+        min(
+            np.min(result["normal_quantiles"]),
+            *(np.min(values) for values in result["empirical_quantiles"].values()),
+        )
+    )
+    qq_maximum = float(
+        max(
+            np.max(result["normal_quantiles"]),
+            *(np.max(values) for values in result["empirical_quantiles"].values()),
+        )
+    )
+    qq_padding = 0.08 * (qq_maximum - qq_minimum)
+    qq_limits = (qq_minimum - qq_padding, qq_maximum + qq_padding)
+    axes[1, 1].plot(qq_limits, qq_limits, color="#111111", lw=1.6, label="Identity")
+    for domain_name, color, label in (
+        ("operational", "#2166ac", "Uniform operational"),
+        ("calendar_previous_refresh", "#b35806", "Previous-refresh calendar"),
+    ):
+        axes[1, 1].plot(
+            result["normal_quantiles"],
+            result["empirical_quantiles"][domain_name],
+            color=color,
+            lw=1.3,
+            marker="o",
+            markersize=2.2,
+            label=label,
+        )
+    axes[1, 1].set_xlim(*qq_limits)
+    axes[1, 1].set_ylim(*qq_limits)
+    axes[1, 1].set_title("(e) Normal quantile comparison")
+    axes[1, 1].set_xlabel("Fixed standard-normal quantile")
+    axes[1, 1].set_ylabel("Empirical standardized quantile")
+    axes[1, 1].legend(frameon=False, fontsize=6.6)
+    axes[1, 1].grid(alpha=0.18, linewidth=0.5)
 
     price_labels = ("Uniform operational", "Previous-refresh calendar")
     for domain in range(2):
@@ -694,10 +934,10 @@ def _plot(result: dict[str, object]) -> None:
         lower = mean - 1.96 * error
         upper = mean + 1.96 * error
         all_bounds.extend((lower, upper))
-        axes[0, 0].fill_between(
+        axes[1, 2].fill_between(
             result["price_lags_seconds"], lower, upper, color=colors[domain], alpha=0.14
         )
-        axes[0, 0].plot(
+        axes[1, 2].plot(
             result["price_lags_seconds"],
             mean,
             color=colors[domain],
@@ -716,10 +956,10 @@ def _plot(result: dict[str, object]) -> None:
         lower = mean - 1.96 * error
         upper = mean + 1.96 * error
         all_bounds.extend((lower, upper))
-        axes[0, 1].fill_between(
+        axes[2, 0].fill_between(
             result["event_lags"], lower, upper, color=colors[convention], alpha=0.12
         )
-        axes[0, 1].plot(
+        axes[2, 0].plot(
             result["event_lags"],
             mean,
             color=colors[convention],
@@ -732,14 +972,14 @@ def _plot(result: dict[str, object]) -> None:
         calendar_lower = calendar_mean - 1.96 * calendar_error
         calendar_upper = calendar_mean + 1.96 * calendar_error
         all_bounds.extend((calendar_lower, calendar_upper))
-        axes[1, 0].fill_between(
+        axes[2, 1].fill_between(
             result["price_lags_seconds"],
             calendar_lower,
             calendar_upper,
             color=colors[convention],
             alpha=0.12,
         )
-        axes[1, 0].plot(
+        axes[2, 1].plot(
             result["price_lags_seconds"],
             calendar_mean,
             color=colors[convention],
@@ -752,43 +992,45 @@ def _plot(result: dict[str, object]) -> None:
     )
     disagreement = 1.0 - agreement
     positions = np.arange(3, dtype=float)
-    axes[1, 1].bar(
+    axes[2, 2].bar(
         positions - 0.18, agreement, width=0.36, color="#4d9221", label="Agreement"
     )
-    axes[1, 1].bar(
+    axes[2, 2].bar(
         positions + 0.18, disagreement, width=0.36, color="#c51b7d", label="Disagreement"
     )
-    axes[1, 1].set_xticks(
+    axes[2, 2].set_xticks(
         positions,
-        ("Truth–quote", "Truth–tick", "Quote–tick"),
+        ("Truth-quote", "Truth-tick", "Quote-tick"),
         rotation=12,
     )
     all_bounds.extend((agreement, disagreement))
 
     minimum = min(float(np.min(values)) for values in all_bounds)
     lower_limit = min(-0.08, minimum - 0.08 * max(1.0 - minimum, 0.1))
-    for axis in axes.flat:
+    for axis in (axes[1, 2], axes[2, 0], axes[2, 1], axes[2, 2]):
         axis.axhline(0.0, color="#777777", lw=0.7)
         axis.set_ylim(lower_limit, 1.06)
         axis.grid(alpha=0.18, linewidth=0.5)
         axis.set_ylabel("Correlation or fraction")
-    axes[0, 0].set_title("Log-mid increment autocorrelation")
-    axes[0, 0].set_xlabel("Lag [s]")
-    axes[0, 0].legend(frameon=False, fontsize=7.5)
-    axes[0, 1].set_title("Trade-sign autocorrelation in event time")
-    axes[0, 1].set_xlabel("Same-book event lag")
-    axes[0, 1].legend(frameon=False, fontsize=7.5)
-    axes[1, 0].set_title("Subordinated signed-flow autocorrelation")
-    axes[1, 0].set_xlabel("Calendar lag [s]")
-    axes[1, 0].legend(frameon=False, fontsize=7.5)
-    axes[1, 1].set_title("Sign-convention agreement")
-    axes[1, 1].set_xlabel("Convention pair")
-    axes[1, 1].legend(frameon=False, fontsize=7.5)
+    axes[1, 2].set_title("(f) Log-mid increment autocorrelation")
+    axes[1, 2].set_xlabel("Lag [s]")
+    axes[1, 2].legend(frameon=False, fontsize=6.8)
+    axes[2, 0].set_title("(g) Trade-sign autocorrelation in event time")
+    axes[2, 0].set_xlabel("Same-book event lag")
+    axes[2, 0].legend(frameon=False, fontsize=6.7)
+    axes[2, 1].set_title("(h) Subordinated signed-flow autocorrelation")
+    axes[2, 1].set_xlabel("Calendar lag [s]")
+    axes[2, 1].legend(frameon=False, fontsize=6.7)
+    axes[2, 2].set_title("(i) Sign-convention agreement")
+    axes[2, 2].set_xlabel("Convention pair")
+    axes[2, 2].legend(frameon=False, fontsize=6.8)
+    for axis in axes.flat:
+        axis.set_box_aspect(1)
     figure.suptitle(
         "Mid-price and trade-sign dependence: event time, operational time, and explicit subordination"
     )
     figure.subplots_adjust(
-        left=0.09, right=0.98, bottom=0.09, top=0.91, wspace=0.18, hspace=0.25
+        left=0.065, right=0.985, bottom=0.06, top=0.94, wspace=0.28, hspace=0.31
     )
     metadata = {
         "Creator": "correlation-emergence-v1.8.3",
@@ -890,7 +1132,25 @@ def main() -> int:
         _check("S8D-40", "calendar sign-flow member rows", len(result["calendar_sign_member_rows"]), f"equals {output['calendar_sign_member_rows']}", len(result["calendar_sign_member_rows"]) == int(output["calendar_sign_member_rows"])),
         _check("S8D-41", "agreement rows", len(result["agreement_rows"]), f"equals {output['agreement_rows']}", len(result["agreement_rows"]) == int(output["agreement_rows"])),
         _check("S8D-42", "clock rows", len(result["clock_rows"]), f"equals {output['clock_rows']}", len(result["clock_rows"]) == int(output["clock_rows"])),
-        _check("S8D-43", "path archive", PATH_ARCHIVE.is_file() and PATH_ARCHIVE.stat().st_size > 0, "nonempty NPZ", PATH_ARCHIVE.is_file() and PATH_ARCHIVE.stat().st_size > 0),
+        _check(
+            "S8D-43",
+            "path and return-diagnostic outputs",
+            (
+                PATH_ARCHIVE.is_file(),
+                len(result["representative_path_rows"]),
+                len(result["distribution_rows"]),
+                len(result["qq_rows"]),
+            ),
+            "nonempty NPZ, 1401 path rows, 82 distribution rows and 102 QQ rows",
+            PATH_ARCHIVE.is_file()
+            and PATH_ARCHIVE.stat().st_size > 0
+            and len(result["representative_path_rows"]) == 1401
+            and len(result["distribution_rows"]) == 82
+            and len(result["qq_rows"]) == 102
+            and REPRESENTATIVE_PATH_PATH.is_file()
+            and RETURN_DISTRIBUTION_PATH.is_file()
+            and RETURN_QQ_PATH.is_file(),
+        ),
         _check("S8D-44", "Figure 11 pair", all(FIGURE_STEM.with_suffix(suffix).is_file() for suffix in (".pdf", ".png")), "PDF and PNG", all(FIGURE_STEM.with_suffix(suffix).is_file() for suffix in (".pdf", ".png"))),
         _check("S8D-45", "accepted inputs unchanged", input_end_errors, "all start/end hashes exact", not input_end_errors),
         _check("S8D-46", "declared persistence qualification", configuration["scientific_qualification"]["declared_sign_persistence_is_input_not_result"], "true", configuration["scientific_qualification"]["declared_sign_persistence_is_input_not_result"] is True),

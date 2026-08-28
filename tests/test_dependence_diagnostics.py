@@ -32,6 +32,9 @@ EVENT_PATH = ROOT / "outputs" / "dependence-event-tape-v1.8.csv"
 CLOCK_PATH = ROOT / "outputs" / "dependence-clock-rates-v1.8.csv"
 SUMMARY_PATH = ROOT / "outputs" / "dependence-summary-v1.8.csv"
 ARCHIVE_PATH = ROOT / "outputs" / "dependence-paths-v1.8.npz"
+REPRESENTATIVE_PATH_PATH = ROOT / "outputs" / "dependence-representative-path-v1.8.csv"
+RETURN_DISTRIBUTION_PATH = ROOT / "outputs" / "dependence-return-distribution-v1.8.csv"
+RETURN_QQ_PATH = ROOT / "outputs" / "dependence-return-qq-v1.8.csv"
 PROVENANCE_PATH = ROOT / "provenance" / "MID-PRICE-TRADE-SIGN-DEPENDENCE-v1.8.md"
 SUPPLEMENT_PATH = ROOT / "source" / "source-v2" / "DEPENDENCE-DIAGNOSTICS-v1.8.tex"
 
@@ -148,6 +151,19 @@ class DependenceDiagnosticTests(unittest.TestCase):
         stem = ROOT / "figures" / "figure-11-mid-price-trade-sign-autocorrelations-v2"
         self.assertTrue(stem.with_suffix(".pdf").is_file())
         self.assertTrue(stem.with_suffix(".png").is_file())
+        paths = _rows(REPRESENTATIVE_PATH_PATH)
+        distributions = _rows(RETURN_DISTRIBUTION_PATH)
+        quantiles = _rows(RETURN_QQ_PATH)
+        self.assertEqual((len(paths), len(distributions), len(quantiles)), (1401, 82, 102))
+        self.assertEqual(len({row["path_index"] for row in paths}), 1)
+        self.assertEqual(
+            {row["selection_policy"] for row in paths},
+            {"operational_return_rms_nearest_cross_path_median"},
+        )
+        self.assertEqual(
+            {row["reference_status"] for row in distributions + quantiles},
+            {"fixed_standard_normal_not_fitted"},
+        )
 
     def test_provenance_and_supplement_state_scientific_boundaries(self) -> None:
         provenance = " ".join(PROVENANCE_PATH.read_text(encoding="utf-8").split())

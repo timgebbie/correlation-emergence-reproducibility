@@ -9,7 +9,7 @@ V2R-07,README key image,figures/figure-07-final-estimator-aware-epps-v2.png,figu
 V2R-08,README development lineage,True,complete version lineage present,Verified,2.0.0
 V2R-09,boundary representation documented,True,all correction terms present,Verified,2.0.0
 V2R-10,compact Bauer attribution retained,2683,non-executable provenance document,Verified,2.0.0
-V2R-11,Figure 11 mid-price ACF,True,explicit panel,Verified,2.0.0
+V2R-11,Figure 11 path and return diagnostics,True,three explicit panels,Verified,2.0.0
 V2R-12,Figure 11 trade-sign ACF,True,explicit panel,Verified,2.0.0
 V2R-13,Figure 11 price-level ACF excluded,True,explicit exclusion,Verified,2.0.0
 V2R-14,final curve inventory,20,20 registered lags,Verified,2.0.0

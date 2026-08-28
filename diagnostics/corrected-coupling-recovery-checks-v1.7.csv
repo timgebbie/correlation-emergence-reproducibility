@@ -36,4 +36,4 @@ S7CR-34,paper source-v1 freeze,True,accepted source-v1 hash exact,Verified,1.7.7
 S7CR-35,theory qualification recorded,reduced_response_retained_regularized_source_to_rate_bridge_requires_qualification,reduced response retained and source-to-rate bridge qualified,Verified,1.7.7
 S7CR-36,combined prediction remains unfitted,forbidden,forbidden and not executed,Verified,1.7.7
 S7CR-37,pair-centre variance normalization stability,0.02758917352371155,relative range <= 0.05,Verified,1.7.7
-S7CR-38,Figure 8 and output contract,"(20, 11, 1288)","20 curve rows, 11 rate rows, 1288 response rows and figure pair",Verified,1.7.7
+S7CR-38,Figure 8 and output contract,"(20, 11, 1288, 603)","20 curve rows, 11 rate rows, 1288 response rows, 603 density rows and figure pair",Verified,1.7.7

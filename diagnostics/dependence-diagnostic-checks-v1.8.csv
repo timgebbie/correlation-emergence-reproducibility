@@ -41,7 +41,7 @@ S8D-39,calendar sign-flow curve rows,63,equals 63,Verified,1.8.3
 S8D-40,calendar sign-flow member rows,1008,equals 1008,Verified,1.8.3
 S8D-41,agreement rows,3,equals 3,Verified,1.8.3
 S8D-42,clock rows,16,equals 16,Verified,1.8.3
-S8D-43,path archive,True,nonempty NPZ,Verified,1.8.3
+S8D-43,path and return-diagnostic outputs,"[true, 1401, 82, 102]","nonempty NPZ, 1401 path rows, 82 distribution rows and 102 QQ rows",Verified,1.8.3
 S8D-44,Figure 11 pair,True,PDF and PNG,Verified,1.8.3
 S8D-45,accepted inputs unchanged,{},all start/end hashes exact,Verified,1.8.3
 S8D-46,declared persistence qualification,True,true,Verified,1.8.3

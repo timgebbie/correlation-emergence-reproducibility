@@ -56,6 +56,7 @@ RATE_PATH = PROJECT_ROOT / "outputs" / "corrected-coupling-rate-summary-v1.7.csv
 RESPONSE_PATH = PROJECT_ROOT / "outputs" / "corrected-coupling-response-v1.7.csv"
 SUMMARY_PATH = PROJECT_ROOT / "outputs" / "corrected-coupling-recovery-summary-v1.7.csv"
 PATH_ARCHIVE = PROJECT_ROOT / "outputs" / "corrected-coupling-validation-paths-v1.7.npz"
+DENSITY_PATH = PROJECT_ROOT / "outputs" / "corrected-coupling-density-snapshots-v1.7.csv"
 FIGURE_STEM = PROJECT_ROOT / "figures" / "figure-08-corrected-translation-mode-coupling-v2"
 
 
@@ -405,6 +406,89 @@ def _deterministic_recovery(configuration: dict[str, object]) -> dict[str, objec
     }
 
 
+def _density_snapshot_diagnostic(
+    configuration: dict[str, object],
+) -> dict[str, object]:
+    """Record local density relaxation for the accepted deterministic probe."""
+
+    points = int(configuration["model"]["primary_grid_points"])
+    grid, diffusion, sources, stationary, kernels, specification = _model(
+        configuration, points
+    )
+    displacement = max(
+        float(value)
+        for value in configuration["deterministic_recovery"]["book_displacements"]
+    )
+    densities, prices = _perturbed_initial_state(
+        grid,
+        stationary,
+        displacement,
+        float(configuration["model"]["minimum_abs_boundary_slope"]),
+    )
+    step_seconds = float(configuration["model"]["operational_step_seconds"])
+    capture_steps = np.asarray((0, 40, 160), dtype=int)
+    capture_times_seconds = capture_steps.astype(float) * step_seconds
+    snapshots = np.empty((capture_steps.size, 2, grid.size), dtype=float)
+    boundary_prices = np.empty((capture_steps.size, 2), dtype=float)
+    snapshots[0] = densities
+    boundary_prices[0] = prices
+
+    histories = densities[:, :, None].copy()
+    capture_lookup = {int(step): index for index, step in enumerate(capture_steps)}
+    history_capacity = max(kernel.size for kernel in kernels)
+    for step in range(1, int(capture_steps[-1]) + 1):
+        result = operational_translation_two_book_step(
+            grid,
+            histories,
+            prices,
+            sources,
+            _coupling_matrix(configuration),
+            kernels,
+            (0.0, 0.0),
+            specification,
+        )
+        densities = result.densities
+        prices = result.prices
+        histories = np.concatenate((histories, densities[:, :, None]), axis=2)
+        if histories.shape[2] > history_capacity:
+            histories = histories[:, :, -history_capacity:]
+        if step in capture_lookup:
+            index = capture_lookup[step]
+            snapshots[index] = densities
+            boundary_prices[index] = prices
+
+    rows: list[dict[str, object]] = []
+    for snapshot_index, step in enumerate(capture_steps):
+        for grid_index, coordinate in enumerate(grid):
+            rows.append(
+                {
+                    "snapshot_index": snapshot_index,
+                    "operational_step": int(step),
+                    "operational_time_model_units": step * specification.delta_u,
+                    "time_seconds": capture_times_seconds[snapshot_index],
+                    "grid_index": grid_index,
+                    "log_price_coordinate": coordinate,
+                    "book_1_density": snapshots[snapshot_index, 0, grid_index],
+                    "book_2_density": snapshots[snapshot_index, 1, grid_index],
+                    "book_1_boundary_log_price": boundary_prices[snapshot_index, 0],
+                    "book_2_boundary_log_price": boundary_prices[snapshot_index, 1],
+                    "initial_book_displacement": displacement,
+                    "clock": "identity",
+                    "software_version": VERSION,
+                }
+            )
+    write_csv(DENSITY_PATH, list(rows[0]), rows)
+    return {
+        "grid": grid,
+        "snapshots": snapshots,
+        "boundary_prices": boundary_prices,
+        "capture_steps": capture_steps,
+        "capture_times_seconds": capture_times_seconds,
+        "displacement": displacement,
+        "rows": rows,
+    }
+
+
 def _ensemble(
     configuration: dict[str, object],
     paths: int,
@@ -660,12 +744,47 @@ def _check(
 def _plot(
     deterministic: dict[str, object],
     stochastic: dict[str, object],
+    density: dict[str, object],
     configuration: dict[str, object],
 ) -> None:
     lags = stochastic["lags_seconds"]
-    figure, axes = plt.subplots(2, 2, figsize=(11.0, 7.8))
+    figure, axes = plt.subplots(2, 3, figsize=(13.2, 8.5))
 
-    axis = axes[0, 0]
+    grid = density["grid"]
+    snapshots = density["snapshots"]
+    boundary_prices = density["boundary_prices"]
+    times = density["capture_times_seconds"]
+    density_colors = ("#2166ac", "#b2182b")
+    for snapshot_index in range(3):
+        axis = axes[0, snapshot_index]
+        for book in range(2):
+            axis.plot(
+                grid,
+                snapshots[snapshot_index, book],
+                color=density_colors[book],
+                lw=1.7,
+                label=f"Book {book + 1}" if snapshot_index == 0 else None,
+            )
+            axis.axvline(
+                boundary_prices[snapshot_index, book],
+                color=density_colors[book],
+                lw=1.0,
+                ls="--",
+                alpha=0.85,
+            )
+        axis.axhline(0.0, color="#777777", lw=0.7)
+        axis.set_xlim(-1.0, 1.0)
+        axis.set_ylim(-0.78, 0.78)
+        axis.set_xlabel("Log-price coordinate")
+        axis.set_ylabel("Order density")
+        axis.set_title(
+            rf"({chr(97 + snapshot_index)}) Local density at $t={times[snapshot_index]:.0f}$ s"
+        )
+        axis.grid(alpha=0.18, linewidth=0.5)
+        axis.set_box_aspect(1)
+    axes[0, 0].legend(frameon=False, fontsize=7.3, loc="upper right")
+
+    axis = axes[1, 0]
     axis.fill_between(
         lags,
         stochastic["covariance_curve"] - 1.96 * stochastic["covariance_se"],
@@ -679,11 +798,12 @@ def _plot(
     axis.set_ylim(0.0, 1.05)
     axis.set_xlabel(r"Identity-clock aggregation scale $\Delta t$ [s]")
     axis.set_ylabel("Normalized covariance response")
-    axis.set_title("Paper envelope and translation-mode simulation")
+    axis.set_title("(d) Normalized covariance")
     axis.grid(alpha=0.18, linewidth=0.5)
     axis.legend(frameon=False, fontsize=7.5, loc="lower right")
+    axis.set_box_aspect(1)
 
-    axis = axes[0, 1]
+    axis = axes[1, 1]
     axis.fill_between(
         lags,
         stochastic["correlation_curve"] - 1.96 * stochastic["correlation_se"],
@@ -697,11 +817,12 @@ def _plot(
     axis.set_ylim(0.0, 1.05)
     axis.set_xlabel(r"Identity-clock aggregation scale $\Delta t$ [s]")
     axis.set_ylabel("Realised return correlation")
-    axis.set_title("Correlation estimand kept distinct")
+    axis.set_title("(e) Return correlation")
     axis.grid(alpha=0.18, linewidth=0.5)
     axis.legend(frameon=False, fontsize=7.5, loc="lower right")
+    axis.set_box_aspect(1)
 
-    axis = axes[1, 0]
+    axis = axes[1, 2]
     selected = (1, 3, 5, 7)
     for index in selected:
         result = deterministic["primary"][index]
@@ -719,31 +840,21 @@ def _plot(
         np.exp(-float(configuration["coupling"]["target_total_rate_per_second"]) * time_seconds),
         color="#111111",
         lw=2.0,
-        ls="--",
         label=r"$e^{-0.025t}$",
     )
     axis.set_xlim(0.0, 80.0)
     axis.set_ylim(0.1, 1.02)
     axis.set_xlabel("Deterministic response time [s]")
     axis.set_ylabel(r"Paired spread ratio $z_\kappa/z_0$")
-    axis.set_title("Signed thick-front relaxation")
+    axis.set_title("(f) Signed spread relaxation")
     axis.grid(alpha=0.18, linewidth=0.5)
     axis.legend(frameon=False, fontsize=7.4, loc="upper right")
-
-    axis = axes[1, 1]
-    covariance_residual = stochastic["covariance_curve"] - stochastic["covariance_theory"]
-    correlation_residual = stochastic["correlation_curve"] - stochastic["correlation_theory"]
-    axis.axhline(0.0, color="#777777", lw=0.7)
-    axis.plot(lags, covariance_residual, color="#2166ac", lw=1.5, label="Normalized covariance residual")
-    axis.plot(lags, correlation_residual, color="#b2182b", lw=1.5, label="Return-correlation residual")
-    axis.set_xlabel(r"Identity-clock aggregation scale $\Delta t$ [s]")
-    axis.set_ylabel("Simulation minus theory")
-    axis.set_title("Holdout conformity residuals")
-    axis.grid(alpha=0.18, linewidth=0.5)
-    axis.legend(frameon=False, fontsize=7.5, loc="best")
+    axis.set_box_aspect(1)
 
     figure.suptitle("Translation-mode coupling on uniform operational time")
-    figure.subplots_adjust(left=0.08, right=0.98, bottom=0.09, top=0.92, wspace=0.24, hspace=0.29)
+    figure.subplots_adjust(
+        left=0.065, right=0.985, bottom=0.075, top=0.92, wspace=0.27, hspace=0.31
+    )
     metadata = {
         "Creator": "correlation-emergence-v1.7.7",
         "CreationDate": None,
@@ -762,6 +873,7 @@ def main() -> int:
     accepted_hashes = _accepted_hashes_valid(configuration)
     input_start_hashes = snapshot_hashes(configuration["accepted_inputs"])
     deterministic = _deterministic_recovery(configuration)
+    density = _density_snapshot_diagnostic(configuration)
     primary = deterministic["primary"]
     maximum_exponential_error = max(
         float(row["exponential_relative_error"]) for row in primary
@@ -855,19 +967,26 @@ def main() -> int:
         _check("S7CR-36", "combined prediction remains unfitted", configuration["architecture"]["combined_curve_refit"], "forbidden and not executed", configuration["architecture"]["combined_curve_refit"] == "forbidden" and configuration["stage_boundary"]["combined_prediction_executed"] is False),
         _check("S7CR-37", "pair-centre variance normalization stability", stochastic["calibration_scale_relative_range"], f"relative range <= {configuration['stochastic_recovery']['calibration_variance_rate_relative_range_maximum']}", stochastic["calibration_scale_relative_range"] <= float(configuration["stochastic_recovery"]["calibration_variance_rate_relative_range_maximum"])),
     ]
-    _plot(deterministic, stochastic, configuration)
+    _plot(deterministic, stochastic, density, configuration)
     output_contract = configuration["output_contract"]
     checks.append(
         _check(
             "S7CR-38",
             "Figure 8 and output contract",
-            (len(stochastic["curve_rows"]), len(deterministic["rate_rows"]), len(deterministic["response_rows"])),
-            "20 curve rows, 11 rate rows, 1288 response rows and figure pair",
+            (
+                len(stochastic["curve_rows"]),
+                len(deterministic["rate_rows"]),
+                len(deterministic["response_rows"]),
+                len(density["rows"]),
+            ),
+            "20 curve rows, 11 rate rows, 1288 response rows, 603 density rows and figure pair",
             len(stochastic["curve_rows"]) == int(output_contract["curve_rows"])
             and len(deterministic["rate_rows"])
             == int(output_contract["deterministic_primary_rate_rows"])
             + int(output_contract["grid_convergence_rows"])
             and len(deterministic["response_rows"]) == 1288
+            and len(density["rows"]) == 603
+            and DENSITY_PATH.is_file()
             and FIGURE_STEM.with_suffix(".pdf").is_file()
             and FIGURE_STEM.with_suffix(".png").is_file()
             and PATH_ARCHIVE.is_file(),

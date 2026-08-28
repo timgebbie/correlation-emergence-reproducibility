@@ -20,6 +20,7 @@ RATE_PATH = ROOT / "outputs" / "corrected-coupling-rate-summary-v1.7.csv"
 RESPONSE_PATH = ROOT / "outputs" / "corrected-coupling-response-v1.7.csv"
 SUMMARY_PATH = ROOT / "outputs" / "corrected-coupling-recovery-summary-v1.7.csv"
 ARCHIVE_PATH = ROOT / "outputs" / "corrected-coupling-validation-paths-v1.7.npz"
+DENSITY_PATH = ROOT / "outputs" / "corrected-coupling-density-snapshots-v1.7.csv"
 SCRIPT_PATH = ROOT / "scripts" / "29_run_corrected_coupling_recovery.py"
 SOURCE_PATH = ROOT / "source" / "source-v2" / "CORRECTED-COUPLING-RECOVERY-v1.7.tex"
 
@@ -37,6 +38,7 @@ class CorrectedCouplingRecoveryTests(unittest.TestCase):
         cls.curves = _rows(CURVE_PATH)
         cls.rates = _rows(RATE_PATH)
         cls.responses = _rows(RESPONSE_PATH)
+        cls.densities = _rows(DENSITY_PATH)
         cls.summary = _rows(SUMMARY_PATH)
 
     def test_accepted_v176_inputs_are_exact(self) -> None:
@@ -152,6 +154,21 @@ class CorrectedCouplingRecoveryTests(unittest.TestCase):
             self.assertEqual(archive["validation_lag_steps"].shape, (20,))
             self.assertEqual(archive["calibration_lag_steps"].shape, (4,))
             self.assertGreater(float(archive["frozen_covariance_scale"]), 0.0)
+        self.assertEqual(len(self.densities), 603)
+        self.assertEqual(
+            {float(row["time_seconds"]) for row in self.densities},
+            {0.0, 20.0, 80.0},
+        )
+        for time in (0.0, 20.0, 80.0):
+            rows = [row for row in self.densities if float(row["time_seconds"]) == time]
+            self.assertEqual(len(rows), 201)
+            self.assertEqual([int(row["grid_index"]) for row in rows], list(range(201)))
+        initial = [row for row in self.densities if float(row["time_seconds"]) == 0.0][0]
+        final = [row for row in self.densities if float(row["time_seconds"]) == 80.0][0]
+        self.assertLess(
+            abs(float(final["book_1_boundary_log_price"])),
+            abs(float(initial["book_1_boundary_log_price"])),
+        )
         source = SOURCE_PATH.read_text(encoding="utf-8")
         self.assertIn(r"\ell_T^{(j,k)}", source)
         self.assertIn("closure assumption", source)
