@@ -1,0 +1,66 @@
+{
+  "schema_version": "2.1.0",
+  "scope": "fixed_time_order_book_shock_recovery",
+  "public_parent_tag": "v2.0.0",
+  "public_parent_commit": "3107bacecb407f2b90c13c5f9f1c52136aa0184c",
+  "doi_bearing_parent_commit": "02341b6be05e375b176d8865ba8f6ccdcebfe1dc",
+  "accepted_r1_r2_commit": "24becbb6517f928bd9b87e6619604d4abaf84976",
+  "accepted_inputs": [
+    {"path": "README.md", "sha256": "9aefcb40a71014b1c8a6bf575c9e7ad7a11d8daec2ad31f7b8d90bf00f413b5a", "role": "doi_bearing_public_readme"},
+    {"path": "RELEASE-NOTES-v2.0.0.md", "sha256": "6e5d20ebd0d30afc8cbf56b63c188f18c9a98b136e27aee17bbee8dd64355ff0", "role": "frozen_v2_release_notes"},
+    {"path": "SUPPLEMENTARY-MATERIAL-v2.0.0.tex", "sha256": "960400980ae7224eca072f71ec9e69ead8bc0c9cc11024a4d48a66d55f403bf4", "role": "frozen_v2_supplement_source"},
+    {"path": "supplementary-materials/SUPPLEMENTARY-MATERIAL-v2.0.0.pdf", "sha256": "5152ab809b9826feb24915fcc9c7aa414ab98052b3fedb085315311498bf3b6f", "role": "frozen_v2_supplement_pdf"},
+    {"path": "source/source-v1/CATG-RD2Epps-v3-arXiv.tex", "sha256": "48eea98a6fb084d6ecc397bede4c107a44cae947e16271d66a7041e2997afb5a", "role": "frozen_target_paper"},
+    {"path": "figures/figure-08-corrected-translation-mode-coupling-v2.png", "sha256": "43b906b67894005673af38884d87a8858c36e65fb4af097610d241bd88c0b905", "role": "accepted_figure_8"},
+    {"path": "figures/figure-11-mid-price-trade-sign-autocorrelations-v2.png", "sha256": "d9fd5931dd1b2fea925ecccd80f03222c7b15821f8810f228d11475a0c09eff8", "role": "accepted_figure_11"}
+  ],
+  "model": {
+    "grid_lower": -10.0,
+    "grid_upper": 10.0,
+    "grid_points": 201,
+    "diffusion": [0.5, 0.5],
+    "transport_probability": 0.5,
+    "cancellation_rates": [0.0, 0.0],
+    "operational_orders": [1.0, 1.0],
+    "kernel_terms": [1, 1],
+    "source_lambda": [1.0, 1.0],
+    "source_mu": [0.1, 0.1],
+    "minimum_abs_boundary_slope": 1e-6,
+    "ordered_coupling_rates_per_model_time_unit": [1.25, 1.25],
+    "operational_step_model_units": 0.005,
+    "seconds_per_model_time_unit": 100.0
+  },
+  "experiment": {
+    "displayed_book": 0,
+    "event_book": 0,
+    "event_side": 1,
+    "event_type": "market_order",
+    "event_quantity": 0.05,
+    "event_operational_step": 301,
+    "pre_event_steps": 300,
+    "evolved_snapshot_lag_steps": [1, 4, 10, 20, 40, 80, 160],
+    "innovations": "identically_zero",
+    "matched_control": true
+  },
+  "figure": {
+    "number": 12,
+    "layout": [3, 3],
+    "canvas_inches": [12.0, 12.0],
+    "png_pixels": [3600, 3600],
+    "png_dpi": 300,
+    "density_colour": "#009BFA",
+    "arrival_colour": "#3EA44D",
+    "removal_colour": "#AD8F1B",
+    "impulse_colour": "#C371D3",
+    "output_stem": "figures/figure-12-order-book-shock-recovery-v2"
+  },
+  "scientific_boundary": {
+    "structural_reference": "Bauer et al. arXiv:2408.03181v2 Figure 2",
+    "pointwise_replication_claimed": false,
+    "zero_cancellation_retained": true,
+    "post_event_zero_interval_allowed": true,
+    "positive_cancellation_sensitivity": false,
+    "legacy_executable_used": false,
+    "source_v1_changed": false
+  }
+}

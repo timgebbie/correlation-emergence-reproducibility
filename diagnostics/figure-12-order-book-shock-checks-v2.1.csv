@@ -1,0 +1,38 @@
+check_id,claim,observed,criterion,status,software_version
+F12-01,accepted inputs,0,zero errors,Verified,2.1.0
+F12-02,fixed uniform grid,"[np.float64(-10.0), np.float64(10.0), 201, 0.09999999999999964]","[-10,10], 201 points, dx=0.1",Verified,2.1.0
+F12-03,fixed operational step,0.005,0.005 model-time units,Verified,2.1.0
+F12-04,nine snapshot states,"(9, 2, 201)","(9,2,201)",Verified,2.1.0
+F12-05,registered snapshot lags,"[0.0, 0.0, 0.5, 2.0, 5.0, 10.0, 20.0, 40.0, 80.0]","[0.0, 0.0, 0.5, 2.0, 5.0, 10.0, 20.0, 40.0, 80.0]",Verified,2.1.0
+F12-06,event step,301,301,Verified,2.1.0
+F12-07,full market-order fill,0.05,0.05,Verified,2.1.0
+F12-08,event-density integral,0.05000000000000001,0.05,Verified,2.1.0
+F12-09,buy event uses ask-side support,"[0.10000000000000142, 0.20000000000000107, 0.3000000000000007, 0.40000000000000036]",all x>p^-,Verified,2.1.0
+F12-10,event delta has buy sign,0.0,>=0,Verified,2.1.0
+F12-11,event affects only book 1,0.0,0,Verified,2.1.0
+F12-12,execution proxy on aggressor side,0.2563223369986921,>p^-,Verified,2.1.0
+F12-13,pre-event stationary identity,4.034966805122053e-15,<=2e-12,Verified,2.1.0
+F12-14,matched control remains stationary,0.0,<=2e-12,Verified,2.1.0
+F12-15,corrected source contribution,0.0,<=2e-15,Verified,2.1.0
+F12-16,zero-cancellation contribution,0.0,exactly 0,Verified,2.1.0
+F12-17,event impulse appears once,1,one panel,Verified,2.1.0
+F12-18,post-event cleared interval,3,>=3 interior zero cells,Verified,2.1.0
+F12-19,post-event simple-boundary status,False,false; p^- retained,Verified,2.1.0
+F12-20,evolved boundaries registered,True,all true,Verified,2.1.0
+F12-21,positive initial buy response,0.09972310899045939,>0,Verified,2.1.0
+F12-22,translation-mode coupling active after spread,0.0008186070273184107,>0,Verified,2.1.0
+F12-23,complete density ledger,2.220446049250313e-16,<=5e-15,Verified,2.1.0
+F12-24,outer boundary condition,0.0,<=1e-14,Verified,2.1.0
+F12-25,unique evolved zero crossings,"[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]",all one,Verified,2.1.0
+F12-26,"late displacement is computed, not predeclared",0.015964446256698787,finite,Verified,2.1.0
+F12-27,legacy executable excluded,False,false,Verified,2.1.0
+F12-28,pointwise replication excluded,False,false,Verified,2.1.0
+F12-29,frozen target paper,48eea98a6fb084d6ecc397bede4c107a44cae947e16271d66a7041e2997afb5a,accepted hash,Verified,2.1.0
+F12-30,frozen v2.0.0 supplement,960400980ae7224eca072f71ec9e69ead8bc0c9cc11024a4d48a66d55f403bf4,accepted hash,Verified,2.1.0
+F12-31,machine-readable archive,True,present,Verified,2.1.0
+F12-32,vector figure,True,present,Verified,2.1.0
+F12-33,PNG dimensions,"(3600, 3600)",3600x3600,Verified,2.1.0
+F12-34,PNG colour mode,RGBA,RGB or RGBA,Verified,2.1.0
+F12-35,PNG resolution metadata,"(299.9994, 299.9994)",approximately 300 dpi,Verified,2.1.0
+F12-36,three-by-three visual contract,"[3, 3]","[3,3]",Verified,2.1.0
+F12-37,fixed semantic palette,"['#009BFA', '#3EA44D', '#AD8F1B', '#C371D3']","['#009BFA', '#3EA44D', '#AD8F1B', '#C371D3']",Verified,2.1.0

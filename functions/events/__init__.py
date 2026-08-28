@@ -26,11 +26,16 @@ from functions.events.tape import (
     OperationalEventTapeResult,
     operational_translation_event_tape_path,
 )
+from functions.events.shock_recovery import (
+    FixedTimeShockRecoveryResult,
+    fixed_time_order_book_shock_recovery,
+)
 
 __all__ = [
     "EVENT_LIMIT_ORDER",
     "EVENT_MARKET_ORDER",
     "EventApplication",
+    "FixedTimeShockRecoveryResult",
     "InsufficientLiquidityError",
     "MetaOrderSchedule",
     "OrderEvent",
@@ -41,6 +46,7 @@ __all__ = [
     "apply_market_order",
     "apply_order_event",
     "ground_truth_aggressor_sign",
+    "fixed_time_order_book_shock_recovery",
     "operational_translation_single_event_pair",
     "operational_translation_meta_order_pair",
     "operational_translation_event_tape_path",
