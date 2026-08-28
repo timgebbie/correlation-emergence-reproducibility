@@ -261,7 +261,7 @@ The Git tag is `v2.0.0`. The GitHub Release title is
 
 ## DOI, citation and license
 
-ZivaHub/Figshare DOI: pending deposit.
+ZivaHub/Figshare DOI: https://doi.org/10.25375/uct.33368986
 
 Suggested paper citation:
 
@@ -273,7 +273,7 @@ Suggested paper citation:
 | Associated paper | [arXiv:2606.14182](https://arxiv.org/abs/2606.14182) |
 | Supplementary PDF | [SUPPLEMENTARY-MATERIAL-v2.0.0.pdf](supplementary-materials/SUPPLEMENTARY-MATERIAL-v2.0.0.pdf) |
 | GitHub repository | `https://github.com/timgebbie/correlation-emergence-reproducibility` |
-| ZivaHub/Figshare DOI | Pending deposit |
+| ZivaHub/Figshare DOI | https://doi.org/10.25375/uct.33368986 |
 | Code license | MIT License |
 | Supplement, text, figures and tables | CC BY 4.0 |
 
