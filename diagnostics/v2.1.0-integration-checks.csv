@@ -16,3 +16,10 @@ V21I-14,active Figure 12 route,True,present,Verified,2.1.0
 V21I-15,active Figure 13 route,True,present,Verified,2.1.0
 V21I-16,active integration verification,True,present,Verified,2.1.0
 V21I-17,R7C governance excluded,[],no repository files,Verified,2.1.0
+V21I-18,README Figure 12 image,True,embedded,Verified,2.1.0
+V21I-19,README Figure 13 image,True,embedded,Verified,2.1.0
+V21I-20,audited algorithm source integration,True,included source-v2 insert,Verified,2.1.0
+V21I-21,operational coupling algorithm,True,receiving-front translation field,Verified,2.1.0
+V21I-22,previous-refresh conditional algorithm,True,nested previous-refresh map and conditional moments,Verified,2.1.0
+V21I-23,autocorrelation estimator equation,slice-specific Pearson product form,separate lagged-slice means and product of variance factors,Verified,2.1.0
+V21I-24,stable representative paths,Figure 11 path 4; Figure 13 path 2,predeclared paths with ULP validation,Verified,2.1.0

@@ -62,6 +62,7 @@ def main() -> int:
         (PROJECT_ROOT / relative).read_text(encoding="utf-8")
         for relative in (
             "SUPPLEMENTARY-MATERIAL-v2.1.0.tex",
+            "source/source-v2/NUMERICAL-ALGORITHMS-v2.1.tex",
             "source/source-v2/ORDER-BOOK-SHOCK-RECOVERY-v2.1.tex",
             "source/source-v2/STYLISED-FACTS-RECOVERY-v2.1.tex",
         )
@@ -71,6 +72,9 @@ def main() -> int:
     supplement_normalized = re.sub(r"\s+", " ", supplement)
     active_paths = [path for _, path in ACTIVE_STEPS]
     panel_rows = _rows(PANEL_MANIFEST_PATH)
+    representative_policy = (
+        PROJECT_ROOT / "config/config-v2.1.0-representative-paths.json"
+    ).read_text(encoding="utf-8")
 
     figure_numbers = {
         int(match.group(1))
@@ -136,6 +140,13 @@ def main() -> int:
         _check("V21I-15", "active Figure 13 route", "scripts/41_run_stylised_facts_recovery.py" in active_paths, "present", "scripts/41_run_stylised_facts_recovery.py" in active_paths),
         _check("V21I-16", "active integration verification", "scripts/42_run_v2_1_integration_verification.py" in active_paths, "present", "scripts/42_run_v2_1_integration_verification.py" in active_paths),
         _check("V21I-17", "R7C governance excluded", governance_paths, "no repository files", not governance_paths),
+        _check("V21I-18", "README Figure 12 image", "figures/figure-12-order-book-shock-recovery-v2.png" in readme, "embedded", "![Figure 12:" in readme and "figures/figure-12-order-book-shock-recovery-v2.png" in readme),
+        _check("V21I-19", "README Figure 13 image", "figures/figure-13-stylised-facts-recovery-v2.png" in readme, "embedded", "![Figure 13:" in readme and "figures/figure-13-stylised-facts-recovery-v2.png" in readme),
+        _check("V21I-20", "audited algorithm source integration", "NUMERICAL-ALGORITHMS-v2.1.tex" in supplement, "included source-v2 insert", "NUMERICAL-ALGORITHMS-v2.1.tex" in supplement),
+        _check("V21I-21", "operational coupling algorithm", "-\\kappa_{jk}z_{jk,n}" in supplement, "receiving-front translation field", "-\\kappa_{jk}z_{jk,n}" in supplement and "frozen histories" in supplement),
+        _check("V21I-22", "previous-refresh conditional algorithm", "nested map" in supplement, "nested previous-refresh map and conditional moments", "nested map" in supplement and "\\Theta_{q,r}-\\frac{K_{q,r}}{2\\kappa}" in supplement and "e^{-\\kappa(b_j-a_j)}-1" in supplement),
+        _check("V21I-23", "autocorrelation estimator equation", "slice-specific Pearson product form" if "\\bar X_{L,k}" in supplement and "\\bar X_{R,k}" in supplement and "\\left[\\sum" in supplement and "\\right] \\left[\\sum" in supplement_normalized else "missing or malformed", "separate lagged-slice means and product of variance factors", "\\bar X_{L,k}" in supplement and "\\bar X_{R,k}" in supplement and "\\left[\\sum" in supplement and "\\right] \\left[\\sum" in supplement_normalized and "\\widehat\\rho_X(0)=1" in supplement),
+        _check("V21I-24", "stable representative paths", "Figure 11 path 4; Figure 13 path 2", "predeclared paths with ULP validation", '"predeclared_path_index": 4' in representative_policy and '"predeclared_master_path_index": 2' in representative_policy and '"distance_tolerance_ulps": 64' in representative_policy),
     ]
 
     write_csv(

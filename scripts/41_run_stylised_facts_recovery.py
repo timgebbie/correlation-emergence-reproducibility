@@ -69,6 +69,10 @@ from functions.stylised_facts import (
     member_autocorrelations,
     standardize_sample,
 )
+from functions.representative import (
+    stable_nearest_median_index,
+    validated_predeclared_nearest_median_index,
+)
 
 
 VERSION = "2.1.0"
@@ -82,6 +86,9 @@ SENSITIVITY_PATH = PROJECT_ROOT / "outputs/figure-13-order-flow-sensitivities-v2
 ARCHIVE_PATH = PROJECT_ROOT / "outputs/figure-13-stylised-facts-recovery-v2.1.npz"
 PANEL_MANIFEST_PATH = PROJECT_ROOT / "outputs/figure-13-panel-manifest-v2.1.csv"
 FIGURE_STEM = PROJECT_ROOT / "figures/figure-13-stylised-facts-recovery-v2"
+REPRESENTATIVE_POLICY_PATH = (
+    PROJECT_ROOT / "config/config-v2.1.0-representative-paths.json"
+)
 DOMAINS = ("uniform_operational", "previous_refresh_calendar")
 CONVENTIONS = ("ground_truth_aggressor", "quote_midpoint", "legacy_tick_rule")
 LAYOUT_RESULTS: dict[str, tuple[bool, int]] = {}
@@ -554,9 +561,28 @@ def _analyse_design(
 
     operational_rms = np.sqrt(np.mean(returns[0] ** 2, axis=(1, 2)))
     median_rms = float(np.median(operational_rms))
-    local_representative = min(
-        range(paths), key=lambda index: (abs(float(operational_rms[index]) - median_rms), index)
+    representative_policy = json.loads(
+        REPRESENTATIVE_POLICY_PATH.read_text(encoding="utf-8")
     )
+    tolerance_ulps = int(representative_policy["distance_tolerance_ulps"])
+    if str(design["design_id"]) == "extended_both":
+        predeclared_master_index = int(
+            representative_policy["figure_13"]["predeclared_master_path_index"]
+        )
+        local_matches = np.flatnonzero(selected_paths == predeclared_master_index)
+        if local_matches.size != 1:
+            raise ValueError(
+                "predeclared Figure 13 path is absent from the production ensemble"
+            )
+        local_representative = validated_predeclared_nearest_median_index(
+            operational_rms,
+            predeclared_index=int(local_matches[0]),
+            distance_tolerance_ulps=tolerance_ulps,
+        )
+    else:
+        local_representative = stable_nearest_median_index(
+            operational_rms, distance_tolerance_ulps=tolerance_ulps
+        )
     input_subset = np.asarray(master["inputs"])[selected_paths, :steps]
     input_correlation = float(np.corrcoef(input_subset.reshape(-1, 2).T)[0, 1])
     selected_arrivals = np.asarray(master["arrivals"])[selected_paths, :, : steps + 1]

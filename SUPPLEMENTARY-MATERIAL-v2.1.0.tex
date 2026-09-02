@@ -17,6 +17,15 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.55em}
 
+\newcounter{suppalgorithm}
+\newenvironment{suppalgorithm}[1]{%
+  \refstepcounter{suppalgorithm}%
+  \par\medskip\noindent\hrule\smallskip
+  \noindent\textbf{Algorithm \thesuppalgorithm. #1}\par\smallskip
+}{%
+  \par\smallskip\noindent\hrule\medskip
+}
+
 \title{Computational Supplement:\\Correlation Emergence and the Epps Effect}
 \author{Chris Angstmann \and Tim Gebbie}
 \date{Software development v2.1.0 --- 2026}
@@ -231,16 +240,21 @@ Eq.~\eqref{eq:translation-mode}, and labelled order events modify the density
 state at declared operational steps. The boundary price is the accepted unique
 interior zero crossing of the signed density field.
 
-For book \(j\), let \(U_{j,m}\) be its completed operational refresh indices
-and define
+For book \(j\), let \(\tau_{j,m}\) be its completed calendar refresh events.
+The software first selects the latest event at or before \(t\), then the latest
+uniform operational node at or before that event:
 \begin{equation}
-N_j(t)=\max\{m: T_{j,m}\leq t\},
+m_j(t)=\max\{m:\tau_{j,m}\leq t\},
 \qquad
-P_j^{\rm cal}(t)=P_j^{\rm op}(U_{j,N_j(t)}).
+n_j(t)=\max\{n:u_n\leq\tau_{j,m_j(t)}\},
+\qquad
+P_j^{\rm cal}(t)=P_j^{\rm op}(u_{n_j(t)}).
 \label{eq:subordination}
 \end{equation}
 Equation~\eqref{eq:subordination} is previous-refresh subordination. It selects
 an already completed state and never changes an operational update interval.
+
+\input{source/source-v2/NUMERICAL-ALGORITHMS-v2.1.tex}
 
 \subsection{Final theory-to-simulation Epps comparison}
 
@@ -301,12 +315,18 @@ volume not present in this model.
 \label{fig:meta-order}
 \end{figure}
 
-For a centered sequence \(X_n\), the registered sample autocorrelation at lag
-\(k\) is
+For a sequence \(X_n\), let \(\bar X_{L,k}\) and \(\bar X_{R,k}\) denote the
+separate sample means of \(\{X_n\}_{n=1}^{N-k}\) and
+\(\{X_{n+k}\}_{n=1}^{N-k}\).  The registered positive-lag statistic is the
+Pearson correlation of those two overlapping slices,
 \begin{equation}
 \widehat\rho_X(k)=
-\frac{\sum_{n=1}^{N-k}(X_n-\bar X)(X_{n+k}-\bar X)}
-{\sum_{n=1}^{N}(X_n-\bar X)^2}.
+\frac{\sum_{n=1}^{N-k}\bigl(X_n-\bar X_{L,k}\bigr)
+\bigl(X_{n+k}-\bar X_{R,k}\bigr)}
+{\sqrt{\left[\sum_{n=1}^{N-k}\bigl(X_n-\bar X_{L,k}\bigr)^2\right]
+\left[\sum_{n=1}^{N-k}\bigl(X_{n+k}-\bar X_{R,k}\bigr)^2\right]}},
+\qquad \widehat\rho_X(0)=1.
+\label{eq:pearson-slice-acf}
 \end{equation}
 The price statistic is applied to log-mid increments, never to price levels.
 Trade-sign diagnostics distinguish ground-truth aggressor signs, a
@@ -322,6 +342,7 @@ and calendar-binned signed flow are separate estimands.
 
 \input{source/source-v2/ORDER-BOOK-SHOCK-RECOVERY-v2.1.tex}
 
+\clearpage
 \input{source/source-v2/STYLISED-FACTS-RECOVERY-v2.1.tex}
 
 \clearpage

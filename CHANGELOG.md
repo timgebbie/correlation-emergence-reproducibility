@@ -21,6 +21,12 @@ This project uses numeric semantic versions only. Pre-release labels such as
   finalization helper. Windows performs complete staged-file readback before
   atomic replacement because both CRT and native forced-flush paths can fail
   for valid completed files; POSIX retains `fsync`.
+- Add implementation-audited operational-evolution and previous-refresh
+  algorithms to the v2.1.0 computational supplement.
+- Present Figures 12 and 13 directly in the README, including the distinction
+  between uniform-operational and previous-refresh calendar rows.
+- Make representative-path choices explicit and validate that each remains in
+  the numerical nearest-median class, preventing roundoff-dependent drift.
 
 ## `v2.0.0` — 2026-08-26 — untagged public repository state
 

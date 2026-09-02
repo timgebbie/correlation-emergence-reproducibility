@@ -1,0 +1,16 @@
+{
+  "schema_version": "2.1.0",
+  "scope": "stable_representative_path_selection",
+  "selection_policy": "predeclared_nearest_cross_path_median_with_64ulp_validation",
+  "distance_tolerance_ulps": 64,
+  "figure_11": {
+    "predeclared_path_index": 4,
+    "selection_statistic": "operational_five_second_return_rms",
+    "ensemble": "eight_paths_from_four_primitive_paths_and_antithetic_partners"
+  },
+  "figure_13": {
+    "predeclared_master_path_index": 2,
+    "selection_statistic": "operational_five_second_return_rms",
+    "ensemble": "sixteen_paths_from_eight_primitive_paths_and_antithetic_partners"
+  }
+}

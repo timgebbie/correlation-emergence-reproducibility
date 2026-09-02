@@ -1,0 +1,203 @@
+% Audited numerical-algorithm insert for the v2.1.0 computational supplement.
+
+\subsection{Executable numerical algorithms}
+\label{app:numerical-algorithms}
+
+The two algorithms below state the implemented separation between operational
+evolution and calendar observation.  They are deliberately more explicit than
+the schematic model equations: all coupling fields are formed from one frozen
+pre-step state, and all calendar observations select states from an already
+completed operational path.  The notation follows the code rather than
+introducing a second numerical scheme.
+
+\begin{suppalgorithm}{Coupled operational-time reaction-boundary evolution}
+\label{alg:operational-translation-simulation}
+\emph{Required:} a uniform price grid $x_i$, operational step $\Delta u$,
+density histories $\{\varphi_m^{i(j)}\}_{m\le n}$, registered boundaries
+$p_n^{(j)}$, source fields $s_n^{i(j)}$, external event fields
+$\delta_n^{i(j)}$, and ordered rates $\kappa_{jk}\geq0$.
+
+\emph{Returned:} the next densities and boundaries, every directed coupling
+field, the net source field, and the term-level diagnostics.
+
+\begin{enumerate}
+\item Freeze the current densities and boundaries before either book is
+updated:
+\begin{equation}
+\varphi_{n,\mathrm{pre}}^{i(j)}=\varphi_n^{i(j)},
+\qquad p_{n,\mathrm{pre}}^{(j)}=p_n^{(j)}.
+\end{equation}
+
+\item For every ordered pair $j\leftarrow k$, compute the spread and the
+receiving-front translation mode from that same snapshot:
+\begin{equation}
+z_{jk,n}=p_{n,\mathrm{pre}}^{(j)}-p_{n,\mathrm{pre}}^{(k)},
+\qquad
+v_{j,n}^{\Delta x}(x_i)=-\partial_x^{\Delta x}
+\varphi_{n,\mathrm{pre}}^{i(j)}.
+\end{equation}
+The implementation uses the second-order finite-difference gradient and sets
+the two outer values of $v_{j,n}^{\Delta x}$ to zero.
+
+\item Form and sum the directed coupling fields received by book $j$:
+\begin{equation}
+\ell_{T,n}^{i(j,k)}=-\kappa_{jk}z_{jk,n}
+v_{j,n}^{\Delta x}(x_i),
+\qquad
+\ell_{T,n}^{i(j)}=\sum_{k\ne j}\ell_{T,n}^{i(j,k)}.
+\label{eq:algorithm-translation-field}
+\end{equation}
+Thus either $\kappa_{jk}=0$ or $z_{jk,n}=0$ makes the corresponding directed
+field exactly zero.
+
+\item Assemble the field supplied to the source-input channel of the fixed
+operational recurrence,
+\begin{equation}
+c_n^{i(j)}=s_n^{i(j)}+\delta_n^{i(j)}+\ell_{T,n}^{i(j)},
+\end{equation}
+while retaining its three components separately in the diagnostic record.
+
+\item Advance both books from the frozen histories:
+\begin{equation}
+\varphi_{n+1,\mathrm{raw}}^{i(j)}
+=\mathcal U_{\Delta u}^{(j)}
+\!\left[\{\varphi_m^{(j)}\}_{m\le n},c_n^{(j)}\right].
+\end{equation}
+The operator $\mathcal U_{\Delta u}^{(j)}$ is the implemented fixed-step DTRW
+recurrence and owns the history, survivor, transport, cancellation and source
+increments.  The additive field $c_n^{(j)}$ is its source input, not a separate
+state update.
+
+\item Impose the declared zero Dirichlet condition on the raw field:
+\begin{equation}
+\varphi_{n+1}^{0(j)}=\varphi_{n+1}^{I(j)}=0.
+\end{equation}
+
+\item Form the admissible exact-grid zeros and strict adjacent sign crossings,
+\begin{align}
+\mathcal Z_{n+1,\mathrm{exact}}^{(j)}
+&=\left\{x_i:1\leq i\leq I-1,\ \varphi_{n+1}^{i(j)}=0,\
+\varphi_{n+1}^{i-1(j)}\varphi_{n+1}^{i+1(j)}<0,\
+|L_i^{(j)}|\geq L_{\min}\right\},\\
+\mathcal Z_{n+1,\mathrm{cross}}^{(j)}
+&=\left\{x_i-\frac{\varphi_{n+1}^{i(j)}}{L_{i+1/2}^{(j)}}:\
+\varphi_{n+1}^{i(j)}\varphi_{n+1}^{i+1(j)}<0,\
+|L_{i+1/2}^{(j)}|\geq L_{\min}\right\},
+\end{align}
+where
+\begin{equation}
+L_i^{(j)}=\frac{\varphi_{n+1}^{i+1(j)}-\varphi_{n+1}^{i-1(j)}}{2\Delta x},
+\qquad
+L_{i+1/2}^{(j)}=\frac{\varphi_{n+1}^{i+1(j)}-\varphi_{n+1}^{i(j)}}{\Delta x}.
+\end{equation}
+
+\item Set $\mathcal Z_{n+1}^{(j)}=\mathcal
+Z_{n+1,\mathrm{exact}}^{(j)}\cup\mathcal
+Z_{n+1,\mathrm{cross}}^{(j)}$ and require it to be non-empty.  Unique
+selection requires exactly one candidate.  Nearest-previous selection requires
+a unique minimum distance from $p_n^{(j)}$ and rejects distance ties.
+
+\item Return
+\begin{equation}
+p_{n+1}^{(j)}=\mathcal B_j
+\!\left[\mathcal Z_{n+1}^{(j)};p_n^{(j)}\right]
+\end{equation}
+together with the complete candidate count, selected slope, distance to the
+domain edge, fields, sources and recurrence contributions.
+\end{enumerate}
+\end{suppalgorithm}
+
+\begin{suppalgorithm}{Book-specific previous-refresh calendar observation}
+\label{alg:previous-refresh-observation}
+\emph{Required:} completed operational prices $p^{(j)}(u_n)$ on the uniform
+grid, finite strictly increasing refresh-event times
+$0=\tau_{j,0}<\tau_{j,1}<\cdots<\tau_{j,M_j}$ for each book, a finite
+nondecreasing query grid $t_r$, and integer lags $h_q$.
+
+\emph{Returned:} subordinated prices, selected refresh events and operational
+indices, return-component sums, optional exact conditional-reference
+components, and support records.
+
+\begin{enumerate}
+\item Restrict the query grid to the common realised support,
+\begin{equation}
+0\leq t_0\leq\cdots\leq t_R\leq
+\min\{u_N,\tau_{1,M_1},\tau_{2,M_2}\}.
+\end{equation}
+No extrapolation or terminal-state clamping is permitted.
+
+\item At each query time select first the previous refresh event and then the
+previous uniform operational state:
+\begin{equation}
+m_j(t_r)=\max\{m:\tau_{j,m}\leq t_r\},
+\qquad
+n_j(t_r)=\max\{n:u_n\leq\tau_{j,m_j(t_r)}\}.
+\label{eq:algorithm-previous-refresh-index}
+\end{equation}
+This nested map is the exact software realisation of the previous-completed-
+state inverse; it performs no interpolation.
+
+\item Construct the calendar observation
+\begin{equation}
+P_\Delta^{(j)}(t_r)=p^{(j)}\!\left(u_{n_j(t_r)}\right).
+\end{equation}
+
+\item For every lag $h_q$, form returns and their pathwise sufficient
+statistics:
+\begin{align}
+R_{q,r}^{(j)}&=P_\Delta^{(j)}(t_{r+h_q})-P_\Delta^{(j)}(t_r),\\
+S_q^{12}&=\sum_rR_{q,r}^{(1)}R_{q,r}^{(2)},
+&S_q^{jj}&=\sum_r\bigl(R_{q,r}^{(j)}\bigr)^2,\\
+\widehat\rho_q&=\frac{S_q^{12}}{\sqrt{S_q^{11}S_q^{22}}}.
+\end{align}
+
+\item Record the selected operational intervals
+$J_{j,q,r}=(a_j,b_j]$, where
+\begin{equation}
+(a_1,b_1,a_2,b_2)=
+\Delta u\,\bigl(n_1(t_r),n_1(t_{r+h_q}),
+n_2(t_r),n_2(t_{r+h_q})\bigr),
+\end{equation}
+and their realised overlap
+\begin{equation}
+\Theta_{q,r}=\max\{0,\min(b_1,b_2)-\max(a_1,a_2)\}.
+\end{equation}
+
+\item When the symmetric reduced conditional reference is requested, use
+$\kappa=\kappa_{12}+\kappa_{21}>0$ and evaluate
+\begin{align}
+K_{q,r}&=e^{-\kappa|b_1-b_2|}-e^{-\kappa|b_1-a_2|}
+-e^{-\kappa|a_1-b_2|}+e^{-\kappa|a_1-a_2|},\\
+C_{q,r}^{12}&=\Theta_{q,r}-\frac{K_{q,r}}{2\kappa},
+\label{eq:algorithm-conditional-cross}\\
+V_{q,r}^{(j)}&=(b_j-a_j)
+-\frac{e^{-\kappa(b_j-a_j)}-1}{\kappa}.
+\label{eq:algorithm-conditional-variance}
+\end{align}
+The minus sign before the exponential increment in
+Eq.~\eqref{eq:algorithm-conditional-variance} is intentional: because
+$e^{-\kappa d}-1\leq0$, the Ornstein--Uhlenbeck spread contribution adds to
+each marginal variance and subtracts from the cross-covariance.  Under identity
+clocks these components recover the implemented coupling-only covariance and
+correlation exactly to the registered numerical tolerance.
+
+\item Pool component triples across the $G$ independent path groups before
+taking a ratio.  For uncertainty, form each delete-one-group ratio
+\begin{equation}
+\widehat\rho_q^{(-g)}=
+\frac{S_q^{12}-S_{gq}^{12}}
+{\sqrt{(S_q^{11}-S_{gq}^{11})(S_q^{22}-S_{gq}^{22})}}
+\end{equation}
+and the path-group jackknife standard error
+\begin{equation}
+\operatorname{se}_{\mathrm{JK}}(\widehat\rho_q)=
+\left[\frac{G-1}{G}\sum_{g=1}^{G}
+\left(\widehat\rho_q^{(-g)}-\overline\rho_q^{(-)}\right)^2\right]^{1/2}.
+\end{equation}
+\end{enumerate}
+\end{suppalgorithm}
+
+The first algorithm owns the density dynamics and boundary extraction.  The
+second owns only observation and estimator construction.  Identity clocks
+recover the stored operational prices at matching nodes; distinct clocks alter
+only the calendar image of the completed paths.

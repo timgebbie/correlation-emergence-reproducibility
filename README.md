@@ -92,11 +92,30 @@ agreement. Price-level autocorrelation is intentionally excluded. Its
 operational five-second ACF is a registered finite periodic-schedule
 diagnostic, and the detailed curve is phase-sensitive to that schedule.
 
+### Figure 12: fixed-time shock recovery
+
+![Figure 12: nine-panel fixed-time order-book shock recovery](figures/figure-12-order-book-shock-recovery-v2.png)
+
+Figure 12 follows a buy market order from the pre-event density through the
+post-consumption state and 80 seconds of fixed operational-time relaxation.
+All density contributions use one common scale. The zero cancellation curve is
+retained because the accepted model sets both cancellation rates to zero; it is
+not inflated for visibility. The high-resolution PNG is 4500 by 3600 pixels.
+
+### Figure 13: operational and calendar stylised facts
+
+![Figure 13: operational and previous-refresh calendar stylised facts](figures/figure-13-stylised-facts-recovery-v2.png)
+
 Figure 13 uses irregular background market-order arrivals and compares the
 same completed model paths before and after previous-refresh observation. Its
 baseline uses ordinary operational order, `alpha_u=1`, zero cancellation and
 a Poisson refresh clock. It does not claim fractional operational memory, a
-non-Markovian calendar clock or empirical calibration.
+non-Markovian calendar clock or empirical calibration. The top row is the
+uniform operational path and is therefore smoother and closer to Gaussian.
+The bottom row observes those same paths through book-specific previous refresh;
+held prices create a 60.49% zero-return atom, a sharp central spike, an extended
+QQ plateau and stronger apparent tails. The lower-row leptokurtosis is an
+observation-clock effect, not a change in the underlying operational dynamics.
 
 ### Legacy Julia implementation from [arXiv:2408.03181](https://arxiv.org/abs/2408.03181)
 

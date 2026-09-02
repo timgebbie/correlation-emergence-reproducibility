@@ -48,6 +48,7 @@ from functions.operational import (
     stationary_density,
 )
 from functions.path_diagnostics import increment_autocorrelation
+from functions.representative import validated_predeclared_nearest_median_index
 
 
 VERSION = "1.8.3"
@@ -68,6 +69,9 @@ REPRESENTATIVE_PATH_PATH = PROJECT_ROOT / "outputs" / "dependence-representative
 RETURN_DISTRIBUTION_PATH = PROJECT_ROOT / "outputs" / "dependence-return-distribution-v1.8.csv"
 RETURN_QQ_PATH = PROJECT_ROOT / "outputs" / "dependence-return-qq-v1.8.csv"
 FIGURE_STEM = PROJECT_ROOT / "figures" / "figure-11-mid-price-trade-sign-autocorrelations-v2"
+REPRESENTATIVE_POLICY_PATH = (
+    PROJECT_ROOT / "config" / "config-v2.1.0-representative-paths.json"
+)
 CONVENTIONS = ("ground_truth_aggressor", "quote_midpoint", "legacy_tick_rule")
 
 
@@ -637,11 +641,16 @@ def _run_experiment(configuration: dict[str, object]) -> dict[str, object]:
     calendar_sampled_increments = np.diff(calendar_prices[:, sample_indices, :], axis=1)
     operational_rms = np.sqrt(np.mean(operational_sampled_increments**2, axis=(1, 2)))
     median_rms = float(np.median(operational_rms))
-    representative_path_index = min(
-        range(paths),
-        key=lambda path_index: (
-            abs(float(operational_rms[path_index]) - median_rms),
-            path_index,
+    representative_policy = json.loads(
+        REPRESENTATIVE_POLICY_PATH.read_text(encoding="utf-8")
+    )
+    representative_path_index = validated_predeclared_nearest_median_index(
+        operational_rms,
+        predeclared_index=int(
+            representative_policy["figure_11"]["predeclared_path_index"]
+        ),
+        distance_tolerance_ulps=int(
+            representative_policy["distance_tolerance_ulps"]
         ),
     )
     path_rows: list[dict[str, object]] = []
