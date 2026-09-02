@@ -1,0 +1,13 @@
+design_id,measurement_domain,paths,operational_steps,minimum_events_per_path_book,mean_events_per_path_book,maximum_events_per_path_book,terminal_event_margin_steps,five_second_return_count,maximum_lag,effective_pairs_per_book_at_maximum_lag,extreme_tail_count_abs_z_gt_3,extreme_tail_claim,operational_input_correlation,selected_for_production,software_version
+baseline,uniform_operational,8,1400,41,49.375,55,149,1744,40,69,2,omitted_insufficient_count,8.46545056276682e-18,False,2.1.0
+baseline,previous_refresh_calendar,8,1400,41,49.375,55,149,1744,40,69,45,eligible,8.46545056276682e-18,False,2.1.0
+longer_paths,uniform_operational,8,2800,112,123.875,132,149,3984,40,209,2,omitted_insufficient_count,0.007012070505123981,False,2.1.0
+longer_paths,previous_refresh_calendar,8,2800,112,123.875,132,149,3984,40,209,109,eligible,0.007012070505123981,False,2.1.0
+more_paths,uniform_operational,16,1400,33,46.8125,60,149,3488,40,69,10,omitted_insufficient_count,-1.68912503032256e-17,False,2.1.0
+more_paths,previous_refresh_calendar,16,1400,33,46.8125,60,149,3488,40,69,97,eligible,-1.68912503032256e-17,False,2.1.0
+both_doubled,uniform_operational,16,2800,100,116.125,132,149,7968,40,209,10,omitted_insufficient_count,-1.2529659849341052e-17,False,2.1.0
+both_doubled,previous_refresh_calendar,16,2800,100,116.125,132,149,7968,40,209,220,eligible,-1.2529659849341052e-17,False,2.1.0
+extended_horizon,uniform_operational,8,5600,239,267.0,285,149,8464,40,489,16,omitted_insufficient_count,0.007517831324902584,False,2.1.0
+extended_horizon,previous_refresh_calendar,8,5600,239,267.0,285,149,8464,40,489,220,eligible,0.007517831324902584,False,2.1.0
+extended_both,uniform_operational,16,5600,233,257.8125,285,149,16928,40,489,42,eligible,-5.1942577223534116e-18,True,2.1.0
+extended_both,previous_refresh_calendar,16,5600,233,257.8125,285,149,16928,40,489,446,eligible,-5.1942577223534116e-18,True,2.1.0

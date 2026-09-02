@@ -1,0 +1,7 @@
+{
+  "panel_id": "c",
+  "measurement_domain": "uniform_operational",
+  "panel_type": "acf_nested",
+  "output_stem": "figures/figure-13c-operational-acf-v2",
+  "data_path": "outputs/figure-13c-operational-acf-v2.1.csv"
+}

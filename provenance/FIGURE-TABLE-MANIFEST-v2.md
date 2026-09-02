@@ -1,4 +1,4 @@
-# Figure and table manifest - v2.0.0
+# Figure and table manifest - v2.1.0
 
 All captions are in `captions/caption-register-v2.md`.
 
@@ -15,9 +15,11 @@ All captions are in `captions/caption-register-v2.md`.
 | F9 | `figures/figure-09-single-trade-impact-v2.pdf` | `python scripts/33_run_single_trade_impact.py` | single-trade curves, events and summary CSVs |
 | F10 | `figures/figure-10-meta-order-impact-v2.pdf` | `python scripts/34_run_meta_order_impact.py` | meta-order trajectory, relaxation, schedules, events and summary CSVs |
 | F11 | `figures/figure-11-mid-price-trade-sign-autocorrelations-v2.pdf` | `python scripts/35_run_dependence_diagnostics.py` | mid-price, event-sign, signed-flow, agreement and summary CSVs |
+| F12 | `figures/figure-12-order-book-shock-recovery-v2.pdf` | `python scripts/40_run_order_book_shock_recovery.py` | shock summary, density ledger and accepted NPZ archive |
+| F13 | `figures/figure-13-stylised-facts-recovery-v2.pdf` | `python scripts/41_run_stylised_facts_recovery.py` | six panel CSVs, sampling/stability audits, panel manifest and accepted NPZ archive |
 | T1 | `tables/table-01-parameter-timescale-identifiability-v1.tex` | `python scripts/02_make_tables.py` | matching CSV |
 | T2 | `tables/table-02-numerical-benchmarks-v1.tex` | same | matching CSV and `diagnostics/diagnostic-results-v1.csv` |
-| S1 | `supplementary-materials/SUPPLEMENTARY-MATERIAL-v2.0.0.pdf` | local LaTeX compilation | root TeX, F1--F11 and T1--T2 |
+| S1 | `supplementary-materials/SUPPLEMENTARY-MATERIAL-v2.1.0.pdf` | local LaTeX compilation | root TeX, F1--F13 and T1--T2 |
 
 The active route regenerates or scientifically verifies every claim-bearing
 computational result. Accepted version suffixes on curve CSVs are retained as

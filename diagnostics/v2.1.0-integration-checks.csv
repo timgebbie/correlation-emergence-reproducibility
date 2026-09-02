@@ -1,0 +1,18 @@
+check_id,claim,observed,criterion,status,software_version
+V21I-01,frozen v2.0.0 and source-v1 inputs,{},no errors,Verified,2.1.0
+V21I-02,README version,True,v2.1.0 development identity,Verified,2.1.0
+V21I-03,public figure sequence,"[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]",Figures 1 through 13,Verified,2.1.0
+V21I-04,public figure pairs,[],all Figure 1--13 PDF/PNG pairs,Verified,2.1.0
+V21I-05,Figure 11 qualification in README,"('registered finite periodic-schedule diagnostic', 'phase-sensitive')",both accepted terms,Verified,2.1.0
+V21I-06,Figure 11 qualification in caption register,"('registered finite periodic-schedule diagnostic', 'phase-sensitive')",both accepted terms,Verified,2.1.0
+V21I-07,Figure 11 qualification in supplement,"('registered finite periodic-schedule diagnostic', 'phase-sensitive')",both accepted terms,Verified,2.1.0
+V21I-08,Figure 12 supplement integration,True,accepted source-v2 insert,Verified,2.1.0
+V21I-09,Figure 13 supplement integration,True,accepted source-v2 insert,Verified,2.1.0
+V21I-10,Figure 13 scope in README,"('alpha_u=1', 'zero cancellation', 'Poisson refresh clock')",all accepted limits,Verified,2.1.0
+V21I-11,Figure 13 scope in supplement source,"('\\alpha_u=1', 'zero cancellation', 'Poisson refresh clock')",all accepted limits,Verified,2.1.0
+V21I-12,Figure 13 panel manifest,"[6, []]",six rows and no hash errors,Verified,2.1.0
+V21I-13,Figure 13 assembled pair,"[True, True]",both present,Verified,2.1.0
+V21I-14,active Figure 12 route,True,present,Verified,2.1.0
+V21I-15,active Figure 13 route,True,present,Verified,2.1.0
+V21I-16,active integration verification,True,present,Verified,2.1.0
+V21I-17,R7C governance excluded,[],no repository files,Verified,2.1.0

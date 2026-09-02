@@ -1,0 +1,7 @@
+{
+  "panel_id": "f",
+  "measurement_domain": "previous_refresh_calendar",
+  "panel_type": "acf_nested",
+  "output_stem": "figures/figure-13f-calendar-acf-v2",
+  "data_path": "outputs/figure-13f-calendar-acf-v2.1.csv"
+}

@@ -155,21 +155,29 @@ def fixed_time_order_book_shock_recovery(
 
     post_event_prices = pre_event_prices.copy()
     post_registered = np.ones(2, dtype=bool)
-    try:
-        post_boundary = extract_reaction_boundary(
-            grid,
-            post_event_density[event.book_index],
-            selection=solver_spec.boundary_selection,
-            previous_price=float(pre_event_prices[event.book_index]),
-            minimum_abs_slope=solver_spec.minimum_abs_boundary_slope,
-        )
-    except ReactionBoundaryError:
+    event_density = post_event_density[event.book_index]
+    near_zero = np.isclose(event_density[1:-1], 0.0, rtol=0.0, atol=1e-14)
+    has_cleared_interval = bool(np.any(near_zero[:-1] & near_zero[1:]))
+    if has_cleared_interval:
         # Boundary-outward market-order consumption can create a zero-density
-        # interval.  The last registered boundary remains the state variable
-        # until the ordinary operational step restores a simple zero crossing.
+        # interval.  Detect it directly instead of relying on the boundary
+        # extractor to reject every platform-level near-zero representation.
+        # The last registered boundary remains the state variable until the
+        # ordinary operational step restores a simple zero crossing.
         post_registered[event.book_index] = False
     else:
-        post_event_prices[event.book_index] = post_boundary.price
+        try:
+            post_boundary = extract_reaction_boundary(
+                grid,
+                event_density,
+                selection=solver_spec.boundary_selection,
+                previous_price=float(pre_event_prices[event.book_index]),
+                minimum_abs_slope=solver_spec.minimum_abs_boundary_slope,
+            )
+        except ReactionBoundaryError:
+            post_registered[event.book_index] = False
+        else:
+            post_event_prices[event.book_index] = post_boundary.price
 
     control_histories = histories.copy()
     control_prices_state = pre_event_prices.copy()

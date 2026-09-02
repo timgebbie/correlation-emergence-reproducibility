@@ -10,6 +10,7 @@ import sys
 EXPECTED_PACKAGE_VERSIONS = {
     "numpy": "2.3.5",
     "matplotlib": "3.10.8",
+    "pypdf": "6.10.0",
 }
 SUPPORTED_PYTHON_MINORS = {(3, 12), (3, 13)}
 

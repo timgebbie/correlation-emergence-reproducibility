@@ -7,7 +7,9 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
+import functions.io_utils as io_utils
 from functions.io_utils import (
     OUTPUT_STAGING_DIRECTORY,
     remove_orphaned_output_staging_files,
@@ -62,6 +64,22 @@ class AtomicTabularPublicationTests(unittest.TestCase):
             target = Path(directory) / "values.csv"
             write_csv(target, ["value"], [{"value": 1}, {"value": 2}])
             self.assertEqual(target.read_bytes(), b"value\n1\n2\n")
+
+    def test_publication_uses_shared_platform_durability_helper(self) -> None:
+        with tempfile.TemporaryDirectory(dir=ROOT) as directory:
+            target = Path(directory) / "values.csv"
+            with patch.object(io_utils, "sync_completed_file") as sync:
+                write_csv(target, ["value"], [{"value": 1}])
+        sync.assert_called_once()
+
+        for relative in (
+            "functions/io_utils.py",
+            "scripts/40_run_order_book_shock_recovery.py",
+            "scripts/41_run_stylised_facts_recovery.py",
+        ):
+            text = (ROOT / relative).read_text(encoding="utf-8")
+            self.assertNotIn("os.fsync", text, relative)
+            self.assertIn("sync_completed_file", text, relative)
 
 
 if __name__ == "__main__":

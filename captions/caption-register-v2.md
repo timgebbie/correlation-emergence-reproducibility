@@ -1,4 +1,4 @@
-# Caption register - v2.0.0
+# Caption register - v2.1.0
 
 ## Figure 1 - Ordinary Epps components
 
@@ -83,7 +83,26 @@ previous-refresh calendar observations, same-book event-time trade-sign
 autocorrelation for three sign conventions, subordinated calendar signed-flow
 autocorrelation, and pairwise sign-convention agreement. Price-level
 autocorrelation is excluded. The declared finite Markov persistence is an
-estimator fixture, not empirical calibration or a long-memory claim.
+estimator fixture, not empirical calibration or a long-memory claim. The
+operational five-second ACF is a registered finite periodic-schedule
+diagnostic, and its detailed curve is phase-sensitive to that schedule.
+
+## Figure 12 - Fixed-time order-book shock recovery
+
+Nine snapshots follow one buy market order in book 1 from the pre-event state,
+through the post-consumption state, to 80 seconds of fixed operational-time
+evolution. All density and contribution curves use one scale. Zero cancellation
+is retained, translation-mode coupling remains active, and the result recovers
+the earlier panel structure without claiming pointwise replication.
+
+## Figure 13 - Current-model stylised facts under operational and calendar observation
+
+Panels (a)--(c) use five-second increments on the uniform operational grid;
+panels (d)--(f) use previous-refresh calendar observations of the same paths.
+Price/return, density/QQ and the nested return, absolute-return and signed-flow
+ACFs preserve the accepted source-panel hierarchy. The baseline uses
+`alpha_u=1`, zero cancellation and a Poisson refresh clock. Signed-flow
+persistence is a declared finite-persistence input, not an endogenous result.
 
 ## Table 1 - Parameter, timescale and identifiability register
 

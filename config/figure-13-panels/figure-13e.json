@@ -1,0 +1,7 @@
+{
+  "panel_id": "e",
+  "measurement_domain": "previous_refresh_calendar",
+  "panel_type": "distribution_qq",
+  "output_stem": "figures/figure-13e-calendar-distribution-qq-v2",
+  "data_path": "outputs/figure-13e-calendar-distribution-qq-v2.1.csv"
+}

@@ -1,4 +1,4 @@
-"""Run the single active v2.0.0 reproducibility and release-surface route.
+"""Run the single active v2.1.0 reproducibility and integration route.
 
 The default mode is the strict fresh-archive gate. ``--rerun`` repeats the
 same retained scientific route in an already-used tree while retaining
@@ -49,7 +49,9 @@ ACTIVE_STEPS = (
     ("scheduled meta-order own and cross impact", "scripts/34_run_meta_order_impact.py"),
     ("mid-price and trade-sign dependence", "scripts/35_run_dependence_diagnostics.py"),
     ("final estimator-aware combined Epps integration", "scripts/36_generate_final_epps_integration.py"),
-    ("v2.0.0 release-surface verification", "scripts/39_run_release_verification.py"),
+    ("fixed-time order-book shock recovery", "scripts/40_run_order_book_shock_recovery.py"),
+    ("current-model stylised-facts recovery", "scripts/41_run_stylised_facts_recovery.py"),
+    ("v2.1.0 integration verification", "scripts/42_run_v2_1_integration_verification.py"),
 )
 
 
@@ -122,7 +124,7 @@ def main(arguments: list[str] | None = None) -> int:
     except subprocess.CalledProcessError as error:
         print(f"\nActive route stopped after an unsuccessful command (exit code {error.returncode}).")
         return error.returncode or 1
-    print("\nActive v2.0.0 reproducibility route completed successfully.")
+    print("\nActive v2.1.0 reproducibility route completed successfully.")
     return 0
 
 

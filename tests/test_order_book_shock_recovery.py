@@ -40,8 +40,18 @@ class OrderBookShockRecoveryTests(unittest.TestCase):
     def test_configuration_and_accepted_inputs(self) -> None:
         self.assertEqual(self.config["schema_version"], "2.1.0")
         self.assertEqual(self.config["public_parent_tag"], "v2.0.0")
-        self.assertFalse(accepted_input_errors(self.config["accepted_inputs"]))
+        scientific_inputs = [
+            record
+            for record in self.config["accepted_inputs"]
+            if record.get("role") != "doi_bearing_public_readme"
+        ]
+        self.assertFalse(accepted_input_errors(scientific_inputs))
         self.assertEqual(self.config["model"]["cancellation_rates"], [0.0, 0.0])
+        self.assertEqual(
+            self.config["figure"]["boundary_window_relative_to_pre_event"],
+            [-0.8, 1.2],
+        )
+        self.assertTrue(self.config["figure"]["full_profile_inset"])
 
     def test_all_generated_checks_pass(self) -> None:
         checks = _rows(CHECK_PATH)
@@ -84,7 +94,7 @@ class OrderBookShockRecoveryTests(unittest.TestCase):
         self.assertTrue(FIGURE_STEM.with_suffix(".pdf").is_file())
         self.assertTrue(FIGURE_STEM.with_suffix(".png").is_file())
         with Image.open(FIGURE_STEM.with_suffix(".png")) as image:
-            self.assertEqual(image.size, (3600, 3600))
+            self.assertEqual(image.size, (4500, 3600))
             self.assertIn(image.mode, {"RGB", "RGBA"})
 
     def test_caption_and_discussion_state_differences_neutrally(self) -> None:

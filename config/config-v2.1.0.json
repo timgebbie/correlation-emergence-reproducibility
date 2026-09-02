@@ -45,9 +45,11 @@
   "figure": {
     "number": 12,
     "layout": [3, 3],
-    "canvas_inches": [12.0, 12.0],
-    "png_pixels": [3600, 3600],
+    "canvas_inches": [15.0, 12.0],
+    "png_pixels": [4500, 3600],
     "png_dpi": 300,
+    "boundary_window_relative_to_pre_event": [-0.8, 1.2],
+    "full_profile_inset": true,
     "density_colour": "#009BFA",
     "arrival_colour": "#3EA44D",
     "removal_colour": "#AD8F1B",

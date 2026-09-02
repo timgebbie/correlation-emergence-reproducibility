@@ -1,0 +1,7 @@
+{
+  "panel_id": "b",
+  "measurement_domain": "uniform_operational",
+  "panel_type": "distribution_qq",
+  "output_stem": "figures/figure-13b-operational-distribution-qq-v2",
+  "data_path": "outputs/figure-13b-operational-distribution-qq-v2.1.csv"
+}

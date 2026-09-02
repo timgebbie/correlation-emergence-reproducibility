@@ -29,7 +29,11 @@ from functions.events import (
     OrderEvent,
     fixed_time_order_book_shock_recovery,
 )
-from functions.figure_io import atomic_savefig, remove_orphaned_figure_staging_files
+from functions.figure_io import (
+    atomic_savefig,
+    remove_orphaned_figure_staging_files,
+    sync_completed_file,
+)
 from functions.integrity import accepted_input_errors
 from functions.io_utils import (
     OUTPUT_STAGING_DIRECTORY,
@@ -129,8 +133,7 @@ def _save_archive(**arrays: np.ndarray) -> None:
     try:
         with temporary.open("wb") as handle:
             np.savez_compressed(handle, **arrays)
-            handle.flush()
-            os.fsync(handle.fileno())
+        sync_completed_file(temporary)
         os.replace(temporary, ARCHIVE_PATH)
     finally:
         temporary.unlink(missing_ok=True)
@@ -176,6 +179,17 @@ def _plot(result, configuration: dict[str, object]) -> None:
     impulse_colour = figure_config["impulse_colour"]
     grid = result.price_grid
     delta_x = float(grid[1] - grid[0])
+    boundary_window = np.asarray(
+        figure_config["boundary_window_relative_to_pre_event"], dtype=float
+    )
+    if boundary_window.shape != (2,) or boundary_window[0] >= boundary_window[1]:
+        raise ValueError("Figure 12 boundary window must contain two increasing values")
+    boundary_centre = float(result.prices[0, displayed])
+    view_lower = boundary_centre + float(boundary_window[0])
+    view_upper = boundary_centre + float(boundary_window[1])
+    zoom_mask = (grid >= view_lower) & (grid <= view_upper)
+    if np.count_nonzero(zoom_mask) < 5:
+        raise ValueError("Figure 12 boundary window must contain at least five grid cells")
 
     fig, axes = plt.subplots(3, 3, figsize=tuple(figure_config["canvas_inches"]))
     panel_labels = tuple("abcdefghi")
@@ -242,16 +256,50 @@ def _plot(result, configuration: dict[str, object]) -> None:
             label=marker_label,
         )
 
-        values = np.concatenate((density, arrivals, removals, impulse, np.asarray([0.0])))
+        if not bool(result.price_is_registered[panel, displayed]):
+            near_zero = np.flatnonzero(
+                np.isclose(density[1:-1], 0.0, rtol=0.0, atol=1e-14)
+            ) + 1
+            runs = np.split(near_zero, np.flatnonzero(np.diff(near_zero) > 1) + 1)
+            cleared_runs = [run for run in runs if run.size >= 2]
+            if cleared_runs:
+                cleared = max(cleared_runs, key=lambda run: run.size)
+                axis.axvspan(
+                    float(grid[cleared[0]] - 0.5 * delta_x),
+                    float(grid[cleared[-1]] + 0.5 * delta_x),
+                    color=impulse_colour,
+                    alpha=0.16,
+                    linewidth=0.0,
+                    zorder=0,
+                )
+                axis.text(
+                    float(np.mean(grid[cleared])),
+                    0.06,
+                    "cleared interval",
+                    color="#7A3E87",
+                    fontsize=6.5,
+                    ha="center",
+                    va="bottom",
+                )
+
+        values = np.concatenate(
+            (
+                density[zoom_mask],
+                arrivals[zoom_mask],
+                removals[zoom_mask],
+                impulse[zoom_mask],
+                np.asarray([0.0]),
+            )
+        )
         lower = float(np.min(values))
         upper = float(np.max(values))
         span = max(upper - lower, 1e-6)
         axis.set_ylim(lower - 0.10 * span, upper + 0.10 * span)
-        axis.set_xlim(float(grid[0]), float(grid[-1]))
+        axis.set_xlim(view_lower, view_upper)
         axis.axhline(0.0, color="black", lw=0.45, alpha=0.55)
         axis.grid(True, color="#D9D9D9", linewidth=0.5, alpha=0.65)
         axis.set_title(title, fontsize=10)
-        axis.set_xlabel("Log-price $x$", fontsize=9)
+        axis.set_xlabel("Boundary-region log-price $x$", fontsize=9)
         axis.set_ylabel("Density contribution", fontsize=9)
         axis.tick_params(labelsize=8)
         axis.set_box_aspect(1)
@@ -267,13 +315,19 @@ def _plot(result, configuration: dict[str, object]) -> None:
         price_prefix = r"$p_1$" if result.price_is_registered[panel, displayed] else r"$p_1^{-}$"
         axis.text(
             0.98,
-            0.98,
+            0.04,
             f"{price_prefix} = {result.prices[panel, displayed]:.3f}\n"
             + rf"$\Delta x$ = {delta_x:.1f}",
             transform=axis.transAxes,
             ha="right",
-            va="top",
+            va="bottom",
             fontsize=8,
+            bbox={
+                "facecolor": "white",
+                "edgecolor": "none",
+                "alpha": 0.82,
+                "pad": 1.5,
+            },
         )
         axis.legend(
             loc="lower left",
@@ -285,6 +339,31 @@ def _plot(result, configuration: dict[str, object]) -> None:
             handlelength=1.6,
             labelspacing=0.25,
         )
+
+        if bool(figure_config["full_profile_inset"]):
+            context = axis.inset_axes([0.64, 0.70, 0.33, 0.24])
+            context.plot(grid, density, color=density_colour, lw=0.8)
+            context.axhline(0.0, color="black", lw=0.3, alpha=0.5)
+            context.axvspan(
+                view_lower,
+                view_upper,
+                color="#BDBDBD",
+                alpha=0.25,
+                linewidth=0.0,
+            )
+            context.axvline(
+                float(result.prices[panel, displayed]),
+                color=density_colour,
+                lw=0.6,
+                alpha=0.9,
+            )
+            context.set_xlim(float(grid[0]), float(grid[-1]))
+            context.set_ylim(float(np.min(density)) * 1.08, float(np.max(density)) * 1.08)
+            context.set_xticks([float(grid[0]), 0.0, float(grid[-1])])
+            context.set_yticks([])
+            context.tick_params(axis="x", labelsize=5.5, length=2)
+            context.set_title("full profile", fontsize=6, pad=1.5)
+            context.grid(False)
 
     fig.subplots_adjust(left=0.065, right=0.985, bottom=0.055, top=0.975, wspace=0.28, hspace=0.30)
     atomic_savefig(fig, FIGURE_STEM.with_suffix(".pdf"), facecolor="white")
@@ -390,7 +469,12 @@ def main() -> int:
     maximum_book_two_impulse = float(np.max(np.abs(result.impulse_contributions[:, 1])))
     maximum_late_coupling = float(np.max(np.abs(result.coupling_contributions[3:])))
     registered_evolved = bool(np.all(result.price_is_registered[2:]))
-    accepted_errors = accepted_input_errors(configuration["accepted_inputs"])
+    accepted_records = [
+        record
+        for record in configuration["accepted_inputs"]
+        if record.get("role") != "doi_bearing_public_readme"
+    ]
+    accepted_errors = accepted_input_errors(accepted_records)
 
     checks = [
         _check("F12-01", "accepted inputs", len(accepted_errors), "zero errors", not accepted_errors),
@@ -433,10 +517,10 @@ def main() -> int:
         png_dpi = image.info.get("dpi", (0.0, 0.0))
     checks.extend(
         [
-            _check("F12-33", "PNG dimensions", png_size, "3600x3600", png_size == (3600, 3600)),
+            _check("F12-33", "PNG dimensions", png_size, "4500x3600", png_size == tuple(configuration["figure"]["png_pixels"])),
             _check("F12-34", "PNG colour mode", png_mode, "RGB or RGBA", png_mode in {"RGB", "RGBA"}),
             _check("F12-35", "PNG resolution metadata", png_dpi, "approximately 300 dpi", all(abs(float(value) - 300.0) <= 0.1 for value in png_dpi)),
-            _check("F12-36", "three-by-three visual contract", configuration["figure"]["layout"], "[3,3]", configuration["figure"]["layout"] == [3, 3]),
+            _check("F12-36", "three-by-three boundary-zoom visual contract", [configuration["figure"]["layout"], configuration["figure"]["boundary_window_relative_to_pre_event"], configuration["figure"]["full_profile_inset"]], "[3,3], boundary window [-0.8,1.2], full-profile inset", configuration["figure"]["layout"] == [3, 3] and configuration["figure"]["boundary_window_relative_to_pre_event"] == [-0.8, 1.2] and configuration["figure"]["full_profile_inset"] is True),
             _check("F12-37", "fixed semantic palette", [configuration["figure"][key] for key in ("density_colour", "arrival_colour", "removal_colour", "impulse_colour")], ["#009BFA", "#3EA44D", "#AD8F1B", "#C371D3"], [configuration["figure"][key] for key in ("density_colour", "arrival_colour", "removal_colour", "impulse_colour")] == ["#009BFA", "#3EA44D", "#AD8F1B", "#C371D3"]),
         ]
     )

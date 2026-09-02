@@ -63,18 +63,17 @@ class FigurePublicationTests(unittest.TestCase):
         self.assertNotIn("rb", modes)
         self.assertFalse(STAGING_DIRECTORY.exists())
 
-    def test_windows_uses_native_handle_flush_instead_of_crt_commit(self) -> None:
+    def test_windows_uses_complete_readback_instead_of_crt_commit(self) -> None:
         with tempfile.TemporaryDirectory(dir=PROJECT_ROOT) as directory:
             target = Path(directory) / "figure.pdf"
             with (
                 patch.object(figure_io.os, "name", "nt"),
-                patch.object(figure_io, "_flush_windows_file_descriptor") as flush,
                 patch.object(figure_io.os, "fsync") as fsync,
             ):
                 atomic_savefig(_FakeFigure(b"windows-complete"), target)
 
-        flush.assert_called_once()
-        fsync.assert_not_called()
+            fsync.assert_not_called()
+            self.assertEqual(target.read_bytes(), b"windows-complete")
         self.assertFalse(STAGING_DIRECTORY.exists())
 
     def test_posix_uses_fsync_instead_of_windows_handle_flush(self) -> None:
@@ -82,13 +81,11 @@ class FigurePublicationTests(unittest.TestCase):
             target = Path(directory) / "figure.pdf"
             with (
                 patch.object(figure_io.os, "name", "posix"),
-                patch.object(figure_io, "_flush_windows_file_descriptor") as flush,
                 patch.object(figure_io.os, "fsync") as fsync,
             ):
                 atomic_savefig(_FakeFigure(b"posix-complete"), target)
 
         fsync.assert_called_once()
-        flush.assert_not_called()
         self.assertFalse(STAGING_DIRECTORY.exists())
 
     def test_render_failure_preserves_target_and_cleans_staging(self) -> None:

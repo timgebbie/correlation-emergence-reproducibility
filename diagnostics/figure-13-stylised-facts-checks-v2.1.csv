@@ -1,0 +1,163 @@
+check_id,claim,observed,criterion,status,software_version
+F13-01,accepted inputs,{},no errors,Verified,2.1.0
+F13-02,master path count,16,16,Verified,2.1.0
+F13-03,market-order mass error,2.710505431213761e-20,<= 1e-14,Verified,2.1.0
+F13-04,execution price side,0.002816247861273366,> 0,Verified,2.1.0
+F13-05,boundary candidates,1,1,Verified,2.1.0
+F13-06,minimum boundary edge,9.892560033561184,> 7,Verified,2.1.0
+F13-07,background event quantity,0.0002,0.00020,Verified,2.1.0
+F13-08,pooled realised arrival rate,0.10010192195690157,within 5% of 0.1 s^-1,Verified,2.1.0
+F13-09,five-second arrival-count Fano factor,0.965449764056391,"within [0.75,1.15]",Verified,2.1.0
+F13-10,event move to background innovation scale,1.0275782465109649,"within [0.5,2.0]",Verified,2.1.0
+F13-11,uniform_operational return ACF lags 2-8,0.03618511953489003,maximum <= 0.15,Verified,2.1.0
+F13-12,uniform_operational even/odd alias difference,0.0034501969059603822,<= 0.10,Verified,2.1.0
+F13-13,previous_refresh_calendar return ACF lags 2-8,0.026318589134550326,maximum <= 0.15,Verified,2.1.0
+F13-14,previous_refresh_calendar even/odd alias difference,0.004185983463091082,<= 0.10,Verified,2.1.0
+F13-15,previous-refresh observation never looks ahead,0,<= 0,Verified,2.1.0
+F13-16,baseline pooled return count,1744,1744,Verified,2.1.0
+F13-17,baseline terminal event margin,149,149,Verified,2.1.0
+F13-18,baseline input correlation,8.46545056276682e-18,absolute <= 0.05,Verified,2.1.0
+F13-19,baseline uniform_operational standardized mean,1.6296851737616978e-17,absolute <= 1e-14,Verified,2.1.0
+F13-20,baseline uniform_operational standardized variance,1.0,within 1e-14 of 1,Verified,2.1.0
+F13-21,baseline uniform_operational histogram mass,0.9999999999999999,within 1e-14 of 1,Verified,2.1.0
+F13-22,baseline uniform_operational QQ monotonic,True,true,Verified,2.1.0
+F13-23,baseline uniform_operational return ACF C0,1.0,1,Verified,2.1.0
+F13-24,baseline uniform_operational absolute-return ACF C0,1.0,1,Verified,2.1.0
+F13-25,baseline uniform_operational signed-flow ACF C0,1.0,1,Verified,2.1.0
+F13-26,baseline previous_refresh_calendar standardized mean,0.0,absolute <= 1e-14,Verified,2.1.0
+F13-27,baseline previous_refresh_calendar standardized variance,1.0000000000000002,within 1e-14 of 1,Verified,2.1.0
+F13-28,baseline previous_refresh_calendar histogram mass,0.9999999999999999,within 1e-14 of 1,Verified,2.1.0
+F13-29,baseline previous_refresh_calendar QQ monotonic,True,true,Verified,2.1.0
+F13-30,baseline previous_refresh_calendar return ACF C0,1.0,1,Verified,2.1.0
+F13-31,baseline previous_refresh_calendar absolute-return ACF C0,1.0,1,Verified,2.1.0
+F13-32,baseline previous_refresh_calendar signed-flow ACF C0,1.0,1,Verified,2.1.0
+F13-33,longer_paths pooled return count,3984,3984,Verified,2.1.0
+F13-34,longer_paths terminal event margin,149,149,Verified,2.1.0
+F13-35,longer_paths input correlation,0.007012070505123981,absolute <= 0.05,Verified,2.1.0
+F13-36,longer_paths uniform_operational standardized mean,1.9618398828717626e-17,absolute <= 1e-14,Verified,2.1.0
+F13-37,longer_paths uniform_operational standardized variance,0.9999999999999998,within 1e-14 of 1,Verified,2.1.0
+F13-38,longer_paths uniform_operational histogram mass,0.9999999999999999,within 1e-14 of 1,Verified,2.1.0
+F13-39,longer_paths uniform_operational QQ monotonic,True,true,Verified,2.1.0
+F13-40,longer_paths uniform_operational return ACF C0,1.0,1,Verified,2.1.0
+F13-41,longer_paths uniform_operational absolute-return ACF C0,1.0,1,Verified,2.1.0
+F13-42,longer_paths uniform_operational signed-flow ACF C0,1.0,1,Verified,2.1.0
+F13-43,longer_paths previous_refresh_calendar standardized mean,2.853585284177109e-17,absolute <= 1e-14,Verified,2.1.0
+F13-44,longer_paths previous_refresh_calendar standardized variance,0.9999999999999999,within 1e-14 of 1,Verified,2.1.0
+F13-45,longer_paths previous_refresh_calendar histogram mass,0.9999999999999999,within 1e-14 of 1,Verified,2.1.0
+F13-46,longer_paths previous_refresh_calendar QQ monotonic,True,true,Verified,2.1.0
+F13-47,longer_paths previous_refresh_calendar return ACF C0,1.0,1,Verified,2.1.0
+F13-48,longer_paths previous_refresh_calendar absolute-return ACF C0,1.0,1,Verified,2.1.0
+F13-49,longer_paths previous_refresh_calendar signed-flow ACF C0,1.0,1,Verified,2.1.0
+F13-50,more_paths pooled return count,3488,3488,Verified,2.1.0
+F13-51,more_paths terminal event margin,149,149,Verified,2.1.0
+F13-52,more_paths input correlation,-1.68912503032256e-17,absolute <= 0.05,Verified,2.1.0
+F13-53,more_paths uniform_operational standardized mean,-4.0742129344042444e-18,absolute <= 1e-14,Verified,2.1.0
+F13-54,more_paths uniform_operational standardized variance,0.9999999999999999,within 1e-14 of 1,Verified,2.1.0
+F13-55,more_paths uniform_operational histogram mass,0.9999999999999999,within 1e-14 of 1,Verified,2.1.0
+F13-56,more_paths uniform_operational QQ monotonic,True,true,Verified,2.1.0
+F13-57,more_paths uniform_operational return ACF C0,1.0,1,Verified,2.1.0
+F13-58,more_paths uniform_operational absolute-return ACF C0,1.0,1,Verified,2.1.0
+F13-59,more_paths uniform_operational signed-flow ACF C0,1.0,1,Verified,2.1.0
+F13-60,more_paths previous_refresh_calendar standardized mean,-1.782468158801857e-17,absolute <= 1e-14,Verified,2.1.0
+F13-61,more_paths previous_refresh_calendar standardized variance,1.0,within 1e-14 of 1,Verified,2.1.0
+F13-62,more_paths previous_refresh_calendar histogram mass,1.0000000000000002,within 1e-14 of 1,Verified,2.1.0
+F13-63,more_paths previous_refresh_calendar QQ monotonic,True,true,Verified,2.1.0
+F13-64,more_paths previous_refresh_calendar return ACF C0,1.0,1,Verified,2.1.0
+F13-65,more_paths previous_refresh_calendar absolute-return ACF C0,1.0,1,Verified,2.1.0
+F13-66,more_paths previous_refresh_calendar signed-flow ACF C0,1.0,1,Verified,2.1.0
+F13-67,both_doubled pooled return count,7968,7968,Verified,2.1.0
+F13-68,both_doubled terminal event margin,149,149,Verified,2.1.0
+F13-69,both_doubled input correlation,-1.2529659849341052e-17,absolute <= 0.05,Verified,2.1.0
+F13-70,both_doubled uniform_operational standardized mean,-6.242217809137426e-18,absolute <= 1e-14,Verified,2.1.0
+F13-71,both_doubled uniform_operational standardized variance,1.0,within 1e-14 of 1,Verified,2.1.0
+F13-72,both_doubled uniform_operational histogram mass,0.9999999999999999,within 1e-14 of 1,Verified,2.1.0
+F13-73,both_doubled uniform_operational QQ monotonic,True,true,Verified,2.1.0
+F13-74,both_doubled uniform_operational return ACF C0,1.0,1,Verified,2.1.0
+F13-75,both_doubled uniform_operational absolute-return ACF C0,1.0,1,Verified,2.1.0
+F13-76,both_doubled uniform_operational signed-flow ACF C0,1.0,1,Verified,2.1.0
+F13-77,both_doubled previous_refresh_calendar standardized mean,-5.261297867701545e-17,absolute <= 1e-14,Verified,2.1.0
+F13-78,both_doubled previous_refresh_calendar standardized variance,0.9999999999999998,within 1e-14 of 1,Verified,2.1.0
+F13-79,both_doubled previous_refresh_calendar histogram mass,0.9999999999999999,within 1e-14 of 1,Verified,2.1.0
+F13-80,both_doubled previous_refresh_calendar QQ monotonic,True,true,Verified,2.1.0
+F13-81,both_doubled previous_refresh_calendar return ACF C0,1.0,1,Verified,2.1.0
+F13-82,both_doubled previous_refresh_calendar absolute-return ACF C0,1.0,1,Verified,2.1.0
+F13-83,both_doubled previous_refresh_calendar signed-flow ACF C0,1.0,1,Verified,2.1.0
+F13-84,extended_horizon pooled return count,8464,8464,Verified,2.1.0
+F13-85,extended_horizon terminal event margin,149,149,Verified,2.1.0
+F13-86,extended_horizon input correlation,0.007517831324902584,absolute <= 0.05,Verified,2.1.0
+F13-87,extended_horizon uniform_operational standardized mean,1.6789762187147925e-18,absolute <= 1e-14,Verified,2.1.0
+F13-88,extended_horizon uniform_operational standardized variance,1.0000000000000002,within 1e-14 of 1,Verified,2.1.0
+F13-89,extended_horizon uniform_operational histogram mass,1.0000000000000002,within 1e-14 of 1,Verified,2.1.0
+F13-90,extended_horizon uniform_operational QQ monotonic,True,true,Verified,2.1.0
+F13-91,extended_horizon uniform_operational return ACF C0,1.0,1,Verified,2.1.0
+F13-92,extended_horizon uniform_operational absolute-return ACF C0,1.0,1,Verified,2.1.0
+F13-93,extended_horizon uniform_operational signed-flow ACF C0,1.0,1,Verified,2.1.0
+F13-94,extended_horizon previous_refresh_calendar standardized mean,-1.091334542164615e-17,absolute <= 1e-14,Verified,2.1.0
+F13-95,extended_horizon previous_refresh_calendar standardized variance,1.0,within 1e-14 of 1,Verified,2.1.0
+F13-96,extended_horizon previous_refresh_calendar histogram mass,0.9999999999999999,within 1e-14 of 1,Verified,2.1.0
+F13-97,extended_horizon previous_refresh_calendar QQ monotonic,True,true,Verified,2.1.0
+F13-98,extended_horizon previous_refresh_calendar return ACF C0,1.0,1,Verified,2.1.0
+F13-99,extended_horizon previous_refresh_calendar absolute-return ACF C0,1.0,1,Verified,2.1.0
+F13-100,extended_horizon previous_refresh_calendar signed-flow ACF C0,1.0,1,Verified,2.1.0
+F13-101,extended_both pooled return count,16928,16928,Verified,2.1.0
+F13-102,extended_both terminal event margin,149,149,Verified,2.1.0
+F13-103,extended_both input correlation,-5.1942577223534116e-18,absolute <= 0.05,Verified,2.1.0
+F13-104,extended_both uniform_operational standardized mean,1.4691041913754433e-17,absolute <= 1e-14,Verified,2.1.0
+F13-105,extended_both uniform_operational standardized variance,1.0,within 1e-14 of 1,Verified,2.1.0
+F13-106,extended_both uniform_operational histogram mass,1.0,within 1e-14 of 1,Verified,2.1.0
+F13-107,extended_both uniform_operational QQ monotonic,True,true,Verified,2.1.0
+F13-108,extended_both uniform_operational return ACF C0,1.0,1,Verified,2.1.0
+F13-109,extended_both uniform_operational absolute-return ACF C0,1.0,1,Verified,2.1.0
+F13-110,extended_both uniform_operational signed-flow ACF C0,1.0,1,Verified,2.1.0
+F13-111,extended_both previous_refresh_calendar standardized mean,-1.804899435118402e-17,absolute <= 1e-14,Verified,2.1.0
+F13-112,extended_both previous_refresh_calendar standardized variance,1.0,within 1e-14 of 1,Verified,2.1.0
+F13-113,extended_both previous_refresh_calendar histogram mass,0.9999999999999999,within 1e-14 of 1,Verified,2.1.0
+F13-114,extended_both previous_refresh_calendar QQ monotonic,True,true,Verified,2.1.0
+F13-115,extended_both previous_refresh_calendar return ACF C0,1.0,1,Verified,2.1.0
+F13-116,extended_both previous_refresh_calendar absolute-return ACF C0,1.0,1,Verified,2.1.0
+F13-117,extended_both previous_refresh_calendar signed-flow ACF C0,1.0,1,Verified,2.1.0
+F13-118,registered stability comparisons,0,0 failures; extension triggers retained,Verified,2.1.0
+F13-119,production design,extended_both,registered sufficient design,Verified,2.1.0
+F13-120,standalone panel count,6,6,Verified,2.1.0
+F13-121,unique panel identities,6,6,Verified,2.1.0
+F13-122,unique source_config_sha256,6,6,Verified,2.1.0
+F13-123,unique data_sha256,6,6,Verified,2.1.0
+F13-124,unique pdf_sha256,6,6,Verified,2.1.0
+F13-125,unique png_sha256,6,6,Verified,2.1.0
+F13-126,panel a PNG dimensions,"[1200, 1200]",1200 x 1200,Verified,2.1.0
+F13-127,panel a PDF page,"[288, 288]",288 x 288 points,Verified,2.1.0
+F13-128,panel a data,True,present,Verified,2.1.0
+F13-129,panel a text lies inside canvas,True,true,Verified,2.1.0
+F13-130,panel a inter-axis text collisions,0,0,Verified,2.1.0
+F13-131,panel b PNG dimensions,"[1200, 1200]",1200 x 1200,Verified,2.1.0
+F13-132,panel b PDF page,"[288, 288]",288 x 288 points,Verified,2.1.0
+F13-133,panel b data,True,present,Verified,2.1.0
+F13-134,panel b text lies inside canvas,True,true,Verified,2.1.0
+F13-135,panel b inter-axis text collisions,0,0,Verified,2.1.0
+F13-136,panel c PNG dimensions,"[1200, 1200]",1200 x 1200,Verified,2.1.0
+F13-137,panel c PDF page,"[288, 288]",288 x 288 points,Verified,2.1.0
+F13-138,panel c data,True,present,Verified,2.1.0
+F13-139,panel c text lies inside canvas,True,true,Verified,2.1.0
+F13-140,panel c inter-axis text collisions,0,0,Verified,2.1.0
+F13-141,panel d PNG dimensions,"[1200, 1200]",1200 x 1200,Verified,2.1.0
+F13-142,panel d PDF page,"[288, 288]",288 x 288 points,Verified,2.1.0
+F13-143,panel d data,True,present,Verified,2.1.0
+F13-144,panel d text lies inside canvas,True,true,Verified,2.1.0
+F13-145,panel d inter-axis text collisions,0,0,Verified,2.1.0
+F13-146,panel e PNG dimensions,"[1200, 1200]",1200 x 1200,Verified,2.1.0
+F13-147,panel e PDF page,"[288, 288]",288 x 288 points,Verified,2.1.0
+F13-148,panel e data,True,present,Verified,2.1.0
+F13-149,panel e text lies inside canvas,True,true,Verified,2.1.0
+F13-150,panel e inter-axis text collisions,0,0,Verified,2.1.0
+F13-151,panel f PNG dimensions,"[1200, 1200]",1200 x 1200,Verified,2.1.0
+F13-152,panel f PDF page,"[288, 288]",288 x 288 points,Verified,2.1.0
+F13-153,panel f data,True,present,Verified,2.1.0
+F13-154,panel f text lies inside canvas,True,true,Verified,2.1.0
+F13-155,panel f inter-axis text collisions,0,0,Verified,2.1.0
+F13-156,assembled PNG dimensions,"[3600, 2400]",3600 x 2400,Verified,2.1.0
+F13-157,assembled PDF page,"[864, 576]",864 x 576 points,Verified,2.1.0
+F13-158,legacy raster used as data,False,false,Verified,2.1.0
+F13-159,empirical row claimed,False,false,Verified,2.1.0
+F13-160,micro-price constructed,False,false,Verified,2.1.0
+F13-161,model parameter refit,False,false,Verified,2.1.0
+F13-162,accepted inputs unchanged after run,{},no errors,Verified,2.1.0

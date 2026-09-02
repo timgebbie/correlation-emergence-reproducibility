@@ -1,4 +1,4 @@
-"""Focused tests for the untagged v2.0.0 public release surface."""
+"""Focused tests for the active v2.1.0 development release surface."""
 
 from __future__ import annotations
 
@@ -67,7 +67,7 @@ class ReleaseSurfaceTests(unittest.TestCase):
             for path in archive_paths
             if (match := re.match(r"figures/figure-(\d{2})-.*\.png$", path))
         }
-        self.assertEqual(numbers, set(range(1, 12)))
+        self.assertEqual(numbers, set(range(1, 14)))
 
     def test_single_trade_and_meta_order_figures_are_retained(self) -> None:
         for stem in (
@@ -109,6 +109,13 @@ class ReleaseSurfaceTests(unittest.TestCase):
         self.assertFalse(_parse_args([]).rerun)
         self.assertTrue(_parse_args(["--rerun"]).rerun)
         self.assertTrue(all((ROOT / path).is_file() for _, path in ACTIVE_STEPS))
+
+    def test_cross_platform_line_endings_are_controlled(self) -> None:
+        attributes = (ROOT / ".gitattributes").read_text(encoding="utf-8").splitlines()
+        self.assertIn("* text=auto eol=lf", attributes)
+        for pattern in ("*.png binary", "*.pdf binary", "*.npz binary", "*.zip binary", "*.bundle binary"):
+            self.assertIn(pattern, attributes)
+        self.assertIn("normalized to LF", self.readme)
 
     def test_publication_remains_deferred_until_inspection(self) -> None:
         publication = self.config["publication_contract"]

@@ -1,0 +1,7 @@
+{
+  "panel_id": "d",
+  "measurement_domain": "previous_refresh_calendar",
+  "panel_type": "price_returns",
+  "output_stem": "figures/figure-13d-calendar-price-returns-v2",
+  "data_path": "outputs/figure-13d-calendar-price-returns-v2.1.csv"
+}

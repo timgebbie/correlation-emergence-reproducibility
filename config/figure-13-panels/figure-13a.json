@@ -1,0 +1,7 @@
+{
+  "panel_id": "a",
+  "measurement_domain": "uniform_operational",
+  "panel_type": "price_returns",
+  "output_stem": "figures/figure-13a-operational-price-returns-v2",
+  "data_path": "outputs/figure-13a-operational-price-returns-v2.1.csv"
+}

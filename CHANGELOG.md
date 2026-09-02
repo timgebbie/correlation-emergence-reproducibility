@@ -3,6 +3,25 @@
 This project uses numeric semantic versions only. Pre-release labels such as
 `alpha`, `beta`, and `rc` are not used.
 
+## `v2.1.0` — 2026-08-30 — development integration candidate
+
+- Add the accepted fixed-time order-book shock recovery as Figure 12.
+- Add the accepted six-panel operational/calendar stylised-facts comparison as
+  Figure 13, using irregular background arrivals and the unchanged R7B design.
+- Qualify Figure 11's operational five-second ACF as a registered finite
+  periodic-schedule diagnostic whose detailed curve is phase-sensitive.
+- Retain the Figure 13 scope as ordinary operational order (`alpha_u=1`), zero
+  cancellation and Poisson previous-refresh observation; no fractional-memory,
+  non-Markovian-clock or empirical-calibration claim is added.
+- Keep the v2.0.0 tag, release assets and frozen source paper unchanged. No
+  v2.1.0 tag or GitHub Release is created at this gate.
+- Add a repository-level LF policy with explicit binary exclusions so a
+  standard Windows checkout preserves manifest-relevant bytes.
+- Route tabular, archive and assembled-figure publication through one shared
+  finalization helper. Windows performs complete staged-file readback before
+  atomic replacement because both CRT and native forced-flush paths can fail
+  for valid completed files; POSIX retains `fsync`.
+
 ## `v2.0.0` — 2026-08-26 — untagged public repository state
 
 This promotion changes release identity and public presentation only. The

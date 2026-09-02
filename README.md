@@ -1,6 +1,6 @@
 # Correlation emergence reproducibility bundle
 
-Version: v2.0.0
+Version: v2.1.0 development candidate
 
 Supplementary code and materials for:
 
@@ -10,13 +10,13 @@ Supplementary code and materials for:
 
 The supplementary-materials document is included here:
 
-> [SUPPLEMENTARY-MATERIAL-v2.0.0.pdf](supplementary-materials/SUPPLEMENTARY-MATERIAL-v2.0.0.pdf)
+> [SUPPLEMENTARY-MATERIAL-v2.1.0.pdf](supplementary-materials/SUPPLEMENTARY-MATERIAL-v2.1.0.pdf)
 
 This repository is a quantitative-finance reproducibility bundle. It extends
 the analytical v1.0.0 materials with a Python implementation of two
 coupled order books, explicit separation of operational and calendar time, and
 event-impact and dependence diagnostics. The code regenerates or verifies the
-eleven selected figures, two publication tables, numerical diagnostics and
+thirteen selected figures, two publication tables, numerical diagnostics and
 machine-readable evidence used in the supplementary material.
 
 ## Key figure: theory and simulation
@@ -44,7 +44,7 @@ The [machine-readable curves](outputs/final-estimator-aware-epps-curves-v1.9.csv
 and [summary statistics](outputs/final-estimator-aware-epps-summary-v1.9.csv)
 retain their frozen development identifiers.
 
-## Current situation: v2.0.0
+## Current situation: v2.1.0
 
 The current bundle separates the model into three operations:
 
@@ -57,7 +57,7 @@ Calendar waiting intervals never enter the density recurrence. Calendar prices
 are previous-completed-state observations; no interpolation, extrapolation or
 nonuniform state update is used.
 
-The current v2.0.0 bundle contains:
+The current v2.1.0 development bundle contains:
 
 - the six analytical figures and two publication tables retained from v1.0.0;
 - clock-only, translation-mode coupling-only and combined no-refit
@@ -67,6 +67,9 @@ The current v2.0.0 bundle contains:
 - separate book-specific calendar clocks and previous-refresh subordination;
 - paired single-trade and scheduled meta-order own/cross-impact simulations;
 - log-mid increment and trade-sign autocorrelation diagnostics;
+- fixed-time order-book shock recovery on the operational grid;
+- operational/calendar stylised-facts diagnostics with six standalone square
+  panels and one assembled Figure 13;
 - the frozen target-paper source and the v2 computational supplement; and
 - one strict reproducibility entry point with a used-tree `--rerun` mode.
 
@@ -80,10 +83,20 @@ The public figure sequence is deliberately compact:
 | 9 | Paired single-trade own- and cross-impact simulation |
 | 10 | Scheduled meta-order own- and cross-impact simulation |
 | 11 | Log-mid increment and trade-sign autocorrelations across event, operational and calendar layers |
+| 12 | Fixed-time order-book shock recovery and reaction-boundary relaxation |
+| 13 | Operational and previous-refresh calendar stylised-facts comparison |
 
 Figure 11 includes log-mid increment autocorrelation, event-time trade-sign
 autocorrelation, subordinated signed-flow autocorrelation and sign-convention
-agreement. Price-level autocorrelation is intentionally excluded.
+agreement. Price-level autocorrelation is intentionally excluded. Its
+operational five-second ACF is a registered finite periodic-schedule
+diagnostic, and the detailed curve is phase-sensitive to that schedule.
+
+Figure 13 uses irregular background market-order arrivals and compares the
+same completed model paths before and after previous-refresh observation. Its
+baseline uses ordinary operational order, `alpha_u=1`, zero cancellation and
+a Poisson refresh clock. It does not claim fractional operational memory, a
+non-Markovian calendar clock or empirical calibration.
 
 ### Legacy Julia implementation from [arXiv:2408.03181](https://arxiv.org/abs/2408.03181)
 
@@ -152,7 +165,7 @@ scripts/                 Active reproduction and verification commands
 tests/                   Compact claim-bearing regression suite
 data/                    Data instructions; no empirical data are required
 outputs/                 Machine-readable curve and summary evidence
-figures/                 Eleven selected PDF/PNG figure pairs
+figures/                 Thirteen selected PDF/PNG figure pairs plus six Figure 13 panels
 tables/                  Two generated CSV/LaTeX publication tables
 captions/                Standalone captions for the selected evidence
 diagnostics/             Generated scientific acceptance checks
@@ -164,13 +177,18 @@ supplementary-materials/ Compiled computational supplement
 
 Scientific object versions such as `config-v1.7.7.json` and output suffixes
 such as `-v1.8.csv` are retained where they identify an accepted development
-object. Release-facing documentation and archive names use v2.0.0.
+object. The current development documentation uses v2.1.0. The public v2.0.0
+tag and its release assets remain unchanged.
 
 ## Installation
 
 Python 3.12 is the controlled release environment. The complete route was also
-verified on Windows with Python 3.13. NumPy and Matplotlib are pinned exactly
-by `requirements.txt`.
+verified on Windows with Python 3.13. NumPy, Matplotlib and pypdf are pinned
+exactly by `requirements.txt`.
+
+Tracked text files are normalized to LF by `.gitattributes`, including on
+Windows. Binary figures, archives and Git bundles are explicitly excluded from
+text conversion so a standard clone preserves manifest-relevant bytes.
 
 From a fresh clone:
 
@@ -215,7 +233,7 @@ cross-platform byte identity.
 
 ## Execution gates passed
 
-The accepted v2.0.0 candidate passed the complete strict route from a fresh
+The frozen v2.0.0 candidate passed the complete strict route from a fresh
 extraction:
 
 - 425 verified scientific and configuration checks;
@@ -228,6 +246,11 @@ PDF bytes can differ across platforms because of renderer metadata, font
 embedding or compression. Reproducibility is assessed from frozen inputs,
 machine-readable values, declared tolerances and claim-bearing tests rather
 than cross-platform PDF byte identity.
+
+The v2.1.0 Figure 12 and Figure 13 gates add fixed-time shock recovery and the
+accepted stylised-facts comparison without changing the frozen v2.0.0 tag or
+target-paper source. Figure 13 passed 162 registered checks and 11 independent
+reconstruction tests at its production gate.
 
 ## Version-control policy
 
@@ -244,7 +267,7 @@ v3.0.0        incompatible model, interface or scientific-scope change
 The development lineage within v2 is retained in filenames, the changelog and
 Git history:
 
-| Version | Established or changed | Status in v2.0.0 |
+| Version | Established or changed | Status in v2.1.0 |
 |---|---|---|
 | `v1.2.x` | Julia-to-Python conversion and declared-input reconstruction | Retired executable; audit retained |
 | `v1.4.x--v1.5.x` | Uniform operational dynamics and explicit calendar subordination | Retained core |
@@ -253,11 +276,13 @@ Git history:
 | `v1.9.0` | Final theory-to-simulation Epps integration | Retained as key Figure 7 |
 | `v1.9.2` | Slim public payload and claim-equivalence gate | Accepted parent stage |
 | `v1.9.3` | Legacy executable retirement and final public evidence map | Accepted final gate |
-| `v2.0.0` | Public promotion of the accepted v1.9.3 scientific payload | Current version |
+| `v2.0.0` | Public promotion of the accepted v1.9.3 scientific payload | Frozen public release |
+| `v2.1.0` | Fixed-time shock recovery and operational/calendar stylised-facts diagnostics | Current development candidate |
 
-The Git tag is `v2.0.0`. The GitHub Release title is
+The latest public Git tag remains `v2.0.0`. The GitHub Release title is
 **v2.0.0 — Reproducibility code for arXiv:2606.14182**, and its release asset is
 `correlation-emergence-reproducibility-v2.0.0.zip`.
+No v2.1.0 tag or GitHub Release has been created.
 
 ## DOI, citation and license
 
@@ -271,7 +296,7 @@ Suggested paper citation:
 | Item | Value |
 |---|---|
 | Associated paper | [arXiv:2606.14182](https://arxiv.org/abs/2606.14182) |
-| Supplementary PDF | [SUPPLEMENTARY-MATERIAL-v2.0.0.pdf](supplementary-materials/SUPPLEMENTARY-MATERIAL-v2.0.0.pdf) |
+| Supplementary PDF | [SUPPLEMENTARY-MATERIAL-v2.1.0.pdf](supplementary-materials/SUPPLEMENTARY-MATERIAL-v2.1.0.pdf) |
 | GitHub repository | `https://github.com/timgebbie/correlation-emergence-reproducibility` |
 | ZivaHub/Figshare DOI | https://doi.org/10.25375/uct.33368986 |
 | Code license | MIT License |

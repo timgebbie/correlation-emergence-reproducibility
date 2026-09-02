@@ -9,6 +9,8 @@ from pathlib import Path
 from typing import Iterable, Mapping
 import uuid
 
+from functions.figure_io import sync_completed_file
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 OUTPUT_STAGING_DIRECTORY = PROJECT_ROOT / ".output-staging"
@@ -37,8 +39,7 @@ def _staging_path(target: Path) -> Path:
 def _finish_publication(temporary: Path, target: Path) -> None:
     """Commit one complete same-filesystem staged output."""
 
-    with temporary.open("r+b") as handle:
-        os.fsync(handle.fileno())
+    sync_completed_file(temporary)
     os.replace(temporary, target)
 
 

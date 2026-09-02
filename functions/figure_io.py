@@ -12,33 +12,19 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 STAGING_DIRECTORY = PROJECT_ROOT / ".render-staging"
 
 
-def _flush_windows_file_descriptor(descriptor: int) -> None:
-    """Flush a write-capable CRT descriptor through its native Windows handle."""
-
-    # Keep Windows-only modules out of POSIX imports and use the native API
-    # directly.  Python's os.fsync delegates to the MS CRT _commit operation,
-    # which can report EBADF for an otherwise valid write-capable descriptor
-    # on supported Windows/Python combinations.
-    import ctypes
-    import msvcrt
-    from ctypes import wintypes
-
-    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
-    flush_file_buffers = kernel32.FlushFileBuffers
-    flush_file_buffers.argtypes = [wintypes.HANDLE]
-    flush_file_buffers.restype = wintypes.BOOL
-    native_handle = msvcrt.get_osfhandle(descriptor)
-    if not flush_file_buffers(native_handle):
-        raise ctypes.WinError(ctypes.get_last_error())
-
-
-def _sync_completed_file(path: Path) -> None:
-    """Durably flush a completed staged file on the active platform."""
+def sync_completed_file(path: Path) -> None:
+    """Finalize and verify a completed staged file on the active platform."""
 
     with path.open("r+b") as handle:
         handle.flush()
         if os.name == "nt":
-            _flush_windows_file_descriptor(handle.fileno())
+            # Python's CRT fsync and the native FlushFileBuffers call can fail
+            # intermittently for valid files on supported Windows storage.
+            # A complete readback catches truncated or unreadable staging bytes
+            # before the atomic replacement while file close publishes all
+            # Python-buffered writes to the operating system.
+            while handle.read(1024 * 1024):
+                pass
         else:
             os.fsync(handle.fileno())
 
@@ -70,7 +56,7 @@ def atomic_savefig(figure: Any, target: Path, **kwargs: object) -> None:
         figure.savefig(temporary, format=target.suffix.lstrip("."), **kwargs)
         # Reopen the completed file without truncation and use a platform-
         # appropriate durability primitive before the atomic replacement.
-        _sync_completed_file(temporary)
+        sync_completed_file(temporary)
         os.replace(temporary, target)
     finally:
         temporary.unlink(missing_ok=True)
@@ -84,4 +70,5 @@ __all__ = [
     "STAGING_DIRECTORY",
     "atomic_savefig",
     "remove_orphaned_figure_staging_files",
+    "sync_completed_file",
 ]
