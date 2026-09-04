@@ -1,0 +1,79 @@
+{
+  "schema_version": "2.1.0",
+  "gate": "R14",
+  "scope": "final_local_release_candidate_conformity_and_science_consistency",
+  "accepted_parent": {
+    "stage": "R13",
+    "commit": "d329b00d066c181ae416799688f41401e70c1a80",
+    "tree": "57a28c0789c5dda9a813228fe36db2c080fa9f05",
+    "stage_bundle_sha256": "57ea08936bbf3cd0aac2d497eab845e78b4789f6441620a0b03e57fd6a5aca16"
+  },
+  "frozen_inputs": [
+    {
+      "path": "config/config-v2.0.0.json",
+      "sha256": "493c17747f257dd1db482c73c585f7c4796502ca8e1e27b4a518bac11914d5df",
+      "role": "frozen_v2.0.0_release_contract"
+    },
+    {
+      "path": "RELEASE-NOTES-v2.0.0.md",
+      "sha256": "6e5d20ebd0d30afc8cbf56b63c188f18c9a98b136e27aee17bbee8dd64355ff0",
+      "role": "frozen_v2.0.0_release_notes"
+    },
+    {
+      "path": "source/source-v1/CATG-RD2Epps-v3-arXiv.tex",
+      "sha256": "48eea98a6fb084d6ecc397bede4c107a44cae947e16271d66a7041e2997afb5a",
+      "role": "unchanged_target_paper_source"
+    }
+  ],
+  "accepted_evidence": [
+    {
+      "path": "figures/figure-12-order-book-shock-recovery-v2.png",
+      "sha256": "7c7ee66f6d29506a453aa035b7e71c77b1750eec6d0a18022fcb175876f679c8"
+    },
+    {
+      "path": "figures/figure-13-stylised-facts-recovery-v2.png",
+      "sha256": "af545f6553128e2c6dcf8ecdbc42c51e93d2353be62085a29c7cf8f8a03a2229"
+    },
+    {
+      "path": "figures/figure-14-clock-subordinated-impact-v2.png",
+      "sha256": "30cc9dd5d18843e575a24601d1f39bfb80dcdfb1bf686cee4ad0a44419b46d27"
+    },
+    {
+      "path": "supplementary-materials/SUPPLEMENTARY-MATERIAL-v2.1.0.pdf",
+      "sha256": "b352d3c8fa8125a4570808ac321971f8709f0c286975ec8586288579f4fcfa88"
+    }
+  ],
+  "scientific_contract": {
+    "public_figure_numbers": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+    "long_memory_input": "declared_exogenous_heavy_tailed_order_splitting",
+    "observation_rule": "book_specific_previous_refresh",
+    "impact_estimand": "unconditional_common_input_shocked_minus_control",
+    "parameters_refitted": false,
+    "endogenous_memory_claim": false,
+    "empirical_calibration_claim": false,
+    "accepted_stage_7_qualifications": 6
+  },
+  "active_route": {
+    "entrypoints": ["scripts/run_all.py"],
+    "strict_fresh_archive_command": "python scripts/run_all.py",
+    "used_tree_rerun_command": "python scripts/run_all.py --rerun"
+  },
+  "runtime_contract": {
+    "controlled_python": "3.12",
+    "windows_compatibility_python": "3.13",
+    "numpy": "2.3.5",
+    "matplotlib": "3.10.8",
+    "pypdf": "6.10.0"
+  },
+  "publication_contract": {
+    "version": "v2.1.0",
+    "tag": "v2.1.0",
+    "release_title": "v2.1.0 — Recovery, long-memory clocks and impact extensions",
+    "archive_name": "correlation-emergence-reproducibility-v2.1.0.zip",
+    "repository_state": "untagged_v2.1.0_candidate",
+    "remote_git_authorized": false,
+    "tag_created": false,
+    "github_release_created": false,
+    "drive_upload_requires_gate_acceptance": true
+  }
+}

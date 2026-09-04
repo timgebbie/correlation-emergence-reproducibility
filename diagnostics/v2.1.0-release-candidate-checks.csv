@@ -1,0 +1,31 @@
+check_id,claim,observed,criterion,status,software_version
+R14-01,accepted R13 parent commit,d329b00d066c181ae416799688f41401e70c1a80,d329b00d066c181ae416799688f41401e70c1a80,Verified,2.1.0
+R14-02,accepted R13 tree,57a28c0789c5dda9a813228fe36db2c080fa9f05,57a28c0789c5dda9a813228fe36db2c080fa9f05,Verified,2.1.0
+R14-03,accepted R13 recovery bundle,57ea08936bbf3cd0aac2d497eab845e78b4789f6441620a0b03e57fd6a5aca16,57ea08936bbf3cd0aac2d497eab845e78b4789f6441620a0b03e57fd6a5aca16,Verified,2.1.0
+R14-04,frozen v2.0.0 and source-v1 inputs,{},no hash errors,Verified,2.1.0
+R14-05,accepted Figures 12--14 and supplement,{},no hash errors,Verified,2.1.0
+R14-06,README candidate identity,True,explicit v2.1.0 development candidate,Verified,2.1.0
+R14-07,changelog candidate identity,True,dated local release candidate,Verified,2.1.0
+R14-08,citation candidate version,"[True, False]",v2.1.0 and no release date,Verified,2.1.0
+R14-09,v2.1.0 release notes,"['Figure 12', 'Figure 13', 'Figure 14', 'not been tagged']",all candidate topics and deferred status,Verified,2.1.0
+R14-10,publication remains local and untagged,"{'version': 'v2.1.0', 'tag': 'v2.1.0', 'release_title': 'v2.1.0 — Recovery, long-memory clocks and impact extensions', 'archive_name': 'correlation-emergence-reproducibility-v2.1.0.zip', 'repository_state': 'untagged_v2.1.0_candidate', 'remote_git_authorized': False, 'tag_created': False, 'github_release_created': False, 'drive_upload_requires_gate_acceptance': True}","no remote Git, tag or GitHub Release",Verified,2.1.0
+R14-11,final candidate identity,"['v2.1.0', 'v2.1.0', 'correlation-emergence-reproducibility-v2.1.0.zip']",fixed v2.1.0 identity,Verified,2.1.0
+R14-12,public figure sequence,"[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]",Figures 1 through 14,Verified,2.1.0
+R14-13,public figure PDF/PNG pairs,[],all Figure 1--14 pairs,Verified,2.1.0
+R14-14,reader-facing image resolution,"{'12': (4500, 3600), '13': (3960, 4560), '14': (3600, 2580)}","F12 4500x3600, F13 3960x4560, F14 3600x2580",Verified,2.1.0
+R14-15,enriched supplement exists,2328840,nonempty compiled PDF,Verified,2.1.0
+R14-16,algorithmic supplement surface,"['algorithmicx', 'renewal-clock-construction', 'paired-clock-impact']",all three algorithm controls,Verified,2.1.0
+R14-17,README embeds Figures 12--14,"[True, True, True]",all embedded,Verified,2.1.0
+R14-18,exogenous-memory boundary,"{'public_figure_numbers': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], 'long_memory_input': 'declared_exogenous_heavy_tailed_order_splitting', 'observation_rule': 'book_specific_previous_refresh', 'impact_estimand': 'unconditional_common_input_shocked_minus_control', 'parameters_refitted': False, 'endogenous_memory_claim': False, 'empirical_calibration_claim': False, 'accepted_stage_7_qualifications': 6}",no endogenous or empirical claim and no refit,Verified,2.1.0
+R14-19,R13 science and mathematics checks,"[20, Counter({'Verified': 20})]","20 verified, zero failures",Verified,2.1.0
+R14-20,v2.1.0 integration checks,"[32, Counter({'Verified': 32})]","32 verified, zero failures",Verified,2.1.0
+R14-21,all retained diagnostics,"{'Verified': 678, 'Qualified': 5}",zero failed statuses,Verified,2.1.0
+R14-22,accepted Stage 7 qualifications,"[{'check_id': 'S7CL-15', 'check': 'qualified Stage 7 checks', 'observed': '6', 'criterion': 'equals 6', 'status': 'Verified', 'software_version': '1.7.12'}]",closure records exactly six,Verified,2.1.0
+R14-23,R14 is final active audit,scripts/44_run_v2_1_release_candidate_audit.py,scripts/44_run_v2_1_release_candidate_audit.py,Verified,2.1.0
+R14-24,single reproduction entry point,['scripts/run_all.py'],scripts/run_all.py only,Verified,2.1.0
+R14-25,R14 files in complete manifest,[],no missing paths,Verified,2.1.0
+R14-26,README local links,[],no missing local target,Verified,2.1.0
+R14-27,license surface,"[True, True, True]",code and content licenses declared,Verified,2.1.0
+R14-28,governance files excluded from scientific repository,[],none,Verified,2.1.0
+R14-29,cache and staging paths excluded,[],none,Verified,2.1.0
+R14-30,Drive upload requires acceptance,True,true,Verified,2.1.0

@@ -53,6 +53,7 @@ ACTIVE_STEPS = (
     ("current-model stylised-facts recovery", "scripts/41_run_stylised_facts_recovery.py"),
     ("R13 long-memory clocks and paired impact", "scripts/43_run_r13_long_memory_clock_impact.py"),
     ("v2.1.0 integration verification", "scripts/42_run_v2_1_integration_verification.py"),
+    ("v2.1.0 release-candidate conformity", "scripts/44_run_v2_1_release_candidate_audit.py"),
 )
 
 

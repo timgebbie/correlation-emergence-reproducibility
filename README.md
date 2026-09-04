@@ -12,6 +12,9 @@ The supplementary-materials document is included here:
 
 > [SUPPLEMENTARY-MATERIAL-v2.1.0.pdf](supplementary-materials/SUPPLEMENTARY-MATERIAL-v2.1.0.pdf)
 
+The candidate changes and their scientific boundary are summarized in
+[RELEASE-NOTES-v2.1.0.md](RELEASE-NOTES-v2.1.0.md).
+
 This repository is a quantitative-finance reproducibility bundle. It extends
 the analytical v1.0.0 materials with a Python implementation of two
 coupled order books, explicit separation of operational and calendar time, and
@@ -326,6 +329,10 @@ The latest public Git tag remains `v2.0.0`. The GitHub Release title is
 **v2.0.0 — Reproducibility code for arXiv:2606.14182**, and its release asset is
 `correlation-emergence-reproducibility-v2.0.0.zip`.
 No v2.1.0 tag or GitHub Release has been created.
+
+`CITATION.cff` identifies the checked-out candidate as v2.1.0 but deliberately
+omits `date-released` until publication. This does not alter the frozen public
+v2.0.0 tag or release metadata.
 
 ## DOI, citation and license
 
