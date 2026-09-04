@@ -3,7 +3,7 @@ V2R-01,accepted v1.9.3 scientific fingerprints,0,zero errors,Verified,2.0.0
 V2R-02,sealed v1.9.3 parent identity,122ebd1d81a181cd54f6aa827edafa9f18f898eeb2c6756a123a5a9cb5e55f85,accepted SHA-256,Verified,2.0.0
 V2R-03,Bauer executable paths removed,[],empty,Verified,2.0.0
 V2R-04,legacy implementation modules removed,[],empty,Verified,2.0.0
-V2R-05,public figure sequence,"[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]",Figures 1 through 11,Verified,2.0.0
+V2R-05,frozen public figure subset,"[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]",Figures 1 through 11 retained,Verified,2.0.0
 V2R-06,registered public figure pairs,[],all PDF/PNG pairs present,Verified,2.0.0
 V2R-07,README key image,figures/figure-07-final-estimator-aware-epps-v2.png,figures/figure-07-final-estimator-aware-epps-v2.png,Verified,2.0.0
 V2R-08,README development lineage,True,complete version lineage present,Verified,2.0.0
@@ -19,7 +19,7 @@ V2R-17,standardized RMSE,0.45513225399020835,0.455132 within 5e-6,Verified,2.0.0
 V2R-18,normal-band coverage,1.0,1.0,Verified,2.0.0
 V2R-19,no parameter refit,False,False,Verified,2.0.0
 V2R-20,single strict entrypoint,['scripts/run_all.py'],scripts/run_all.py only,Verified,2.0.0
-V2R-21,active route complete,19,all registered steps exist,Verified,2.0.0
+V2R-21,active route complete,23,all registered steps exist,Verified,2.0.0
 V2R-22,source-v1 remains frozen,True,true,Verified,2.0.0
 V2R-23,v2 supplement source,True,present,Verified,2.0.0
 V2R-24,v2 compiled supplement,True,present,Verified,2.0.0

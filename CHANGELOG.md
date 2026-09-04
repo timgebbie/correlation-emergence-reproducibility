@@ -3,9 +3,15 @@
 This project uses numeric semantic versions only. Pre-release labels such as
 `alpha`, `beta`, and `rc` are not used.
 
-## `v2.1.0` — 2026-09-04 — local release candidate
+## `v2.1.0` — 2026-09-04 — untagged release candidate
 
-- Add the R14 local release-candidate contract and conformity audit.  Candidate
+- Align the publication contract with the v2.0.0 structure: push the untagged
+  candidate first, inspect it before tagging, and publish one release archive.
+  Transient Git/Drive authorization state remains outside the scientific
+  repository.
+- Retain the frozen v2.0.0 verifier as a compatibility check for Figures 1--11
+  while the v2.1.0 audit owns the exact Figures 1--14 release surface.
+- Add the R14 release-candidate contract and conformity audit. Candidate
   metadata now identifies v2.1.0 consistently while the public v2.0.0 release,
   source-v1 paper, Git tags and GitHub releases remain unchanged.
 - Add v2.1.0 release notes covering Figures 12--14, the enriched algorithmic

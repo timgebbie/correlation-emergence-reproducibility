@@ -1,4 +1,4 @@
-"""Verify the untagged v2.0.0 public release surface and accepted claims."""
+"""Verify the frozen v2.0.0 claims retained in the current repository."""
 
 from __future__ import annotations
 
@@ -106,7 +106,7 @@ def main() -> int:
         _check("V2R-02", "sealed v1.9.3 parent identity", configuration["accepted_parent_archive_sha256"], "accepted SHA-256", configuration["accepted_parent_archive_sha256"] == "122ebd1d81a181cd54f6aa827edafa9f18f898eeb2c6756a123a5a9cb5e55f85"),
         _check("V2R-03", "Bauer executable paths removed", forbidden_present, "empty", not forbidden_present),
         _check("V2R-04", "legacy implementation modules removed", legacy_modules, "empty", not legacy_modules),
-        _check("V2R-05", "public figure sequence", sorted(figure_numbers), "Figures 1 through 11", figure_numbers == expected_figures),
+        _check("V2R-05", "frozen public figure subset", sorted(figure_numbers), "Figures 1 through 11 retained", expected_figures <= figure_numbers),
         _check("V2R-06", "registered public figure pairs", missing_pairs, "all PDF/PNG pairs present", not missing_pairs),
         _check("V2R-07", "README key image", first_image, configuration["public_figure_policy"]["key_readme_figure"], first_image == configuration["public_figure_policy"]["key_readme_figure"]),
         _check("V2R-08", "README development lineage", all(token in readme for token in ("v1.2.x", "v1.7.7", "v1.9.2", "v1.9.3", "v2.0.0")), "complete version lineage present", all(token in readme for token in ("v1.2.x", "v1.7.7", "v1.9.2", "v1.9.3", "v2.0.0"))),

@@ -36,13 +36,16 @@ class V21ReleaseCandidateTests(unittest.TestCase):
         self.assertNotIn("date-released:", citation)
         self.assertTrue((ROOT / "RELEASE-NOTES-v2.1.0.md").is_file())
 
-    def test_publication_is_deferred(self) -> None:
+    def test_publication_matches_v2_0_structure(self) -> None:
         publication = self.config["publication_contract"]
         self.assertEqual(publication["repository_state"], "untagged_v2.1.0_candidate")
-        self.assertFalse(publication["remote_git_authorized"])
+        self.assertTrue(publication["push_untagged_state_first"])
+        self.assertTrue(publication["inspect_and_correct_before_tag"])
         self.assertFalse(publication["tag_created"])
         self.assertFalse(publication["github_release_created"])
-        self.assertTrue(publication["drive_upload_requires_gate_acceptance"])
+        self.assertFalse(publication["separate_verification_only_archive"])
+        self.assertNotIn("remote_git_authorized", publication)
+        self.assertNotIn("drive_upload_requires_gate_acceptance", publication)
 
     def test_scientific_limits_are_explicit(self) -> None:
         scientific = self.config["scientific_contract"]

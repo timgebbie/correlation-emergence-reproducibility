@@ -297,6 +297,9 @@ R12 Figure 13 gate established the operational/Poisson comparison; the current
 R13 candidate extends it to exogenous long-memory order flow, untempered and
 tempered Mittag--Leffler observation, and paired clock-dependent impact in
 Figure 14. The frozen v2.0.0 tag and target-paper source remain unchanged.
+The retained v2.0.0 verifier checks that its frozen claims and Figures 1--11
+remain present; the v2.1.0 release-candidate audit owns the exact current
+Figures 1--14 surface.
 
 ## Version-control policy
 

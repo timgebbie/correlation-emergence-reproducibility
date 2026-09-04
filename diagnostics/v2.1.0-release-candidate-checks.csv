@@ -5,10 +5,10 @@ R14-03,accepted R13 recovery bundle,57ea08936bbf3cd0aac2d497eab845e78b4789f64416
 R14-04,frozen v2.0.0 and source-v1 inputs,{},no hash errors,Verified,2.1.0
 R14-05,accepted Figures 12--14 and supplement,{},no hash errors,Verified,2.1.0
 R14-06,README candidate identity,True,explicit v2.1.0 development candidate,Verified,2.1.0
-R14-07,changelog candidate identity,True,dated local release candidate,Verified,2.1.0
+R14-07,changelog candidate identity,True,dated untagged release candidate,Verified,2.1.0
 R14-08,citation candidate version,"[True, False]",v2.1.0 and no release date,Verified,2.1.0
 R14-09,v2.1.0 release notes,"['Figure 12', 'Figure 13', 'Figure 14', 'not been tagged']",all candidate topics and deferred status,Verified,2.1.0
-R14-10,publication remains local and untagged,"{'version': 'v2.1.0', 'tag': 'v2.1.0', 'release_title': 'v2.1.0 — Recovery, long-memory clocks and impact extensions', 'archive_name': 'correlation-emergence-reproducibility-v2.1.0.zip', 'repository_state': 'untagged_v2.1.0_candidate', 'remote_git_authorized': False, 'tag_created': False, 'github_release_created': False, 'drive_upload_requires_gate_acceptance': True}","no remote Git, tag or GitHub Release",Verified,2.1.0
+R14-10,publication remains untagged,"{'version': 'v2.1.0', 'tag': 'v2.1.0', 'release_title': 'v2.1.0 — Recovery, long-memory clocks and impact extensions', 'archive_name': 'correlation-emergence-reproducibility-v2.1.0.zip', 'push_untagged_state_first': True, 'inspect_and_correct_before_tag': True, 'repository_state': 'untagged_v2.1.0_candidate', 'tag_created': False, 'github_release_created': False, 'separate_verification_only_archive': False}",push untagged candidate; inspect before tag; no tag or GitHub Release,Verified,2.1.0
 R14-11,final candidate identity,"['v2.1.0', 'v2.1.0', 'correlation-emergence-reproducibility-v2.1.0.zip']",fixed v2.1.0 identity,Verified,2.1.0
 R14-12,public figure sequence,"[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]",Figures 1 through 14,Verified,2.1.0
 R14-13,public figure PDF/PNG pairs,[],all Figure 1--14 pairs,Verified,2.1.0
@@ -28,4 +28,4 @@ R14-26,README local links,[],no missing local target,Verified,2.1.0
 R14-27,license surface,"[True, True, True]",code and content licenses declared,Verified,2.1.0
 R14-28,governance files excluded from scientific repository,[],none,Verified,2.1.0
 R14-29,cache and staging paths excluded,[],none,Verified,2.1.0
-R14-30,Drive upload requires acceptance,True,true,Verified,2.1.0
+R14-30,single release archive policy,False,false,Verified,2.1.0

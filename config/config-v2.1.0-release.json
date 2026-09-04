@@ -1,7 +1,7 @@
 {
   "schema_version": "2.1.0",
   "gate": "R14",
-  "scope": "final_local_release_candidate_conformity_and_science_consistency",
+  "scope": "final_release_candidate_conformity_and_science_consistency",
   "accepted_parent": {
     "stage": "R13",
     "commit": "d329b00d066c181ae416799688f41401e70c1a80",
@@ -70,10 +70,11 @@
     "tag": "v2.1.0",
     "release_title": "v2.1.0 — Recovery, long-memory clocks and impact extensions",
     "archive_name": "correlation-emergence-reproducibility-v2.1.0.zip",
+    "push_untagged_state_first": true,
+    "inspect_and_correct_before_tag": true,
     "repository_state": "untagged_v2.1.0_candidate",
-    "remote_git_authorized": false,
     "tag_created": false,
     "github_release_created": false,
-    "drive_upload_requires_gate_acceptance": true
+    "separate_verification_only_archive": false
   }
 }

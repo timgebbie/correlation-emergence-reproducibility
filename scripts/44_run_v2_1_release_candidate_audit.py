@@ -1,4 +1,4 @@
-"""Audit the local v2.1.0 release-candidate and publication boundary."""
+"""Audit the untagged v2.1.0 release-candidate and publication boundary."""
 
 from __future__ import annotations
 
@@ -163,10 +163,10 @@ def main() -> int:
         _check("R14-04", "frozen v2.0.0 and source-v1 inputs", frozen_errors, "no hash errors", not frozen_errors),
         _check("R14-05", "accepted Figures 12--14 and supplement", evidence_errors, "no hash errors", not evidence_errors),
         _check("R14-06", "README candidate identity", "Version: v2.1.0 development candidate" in readme, "explicit v2.1.0 development candidate", "Version: v2.1.0 development candidate" in readme),
-        _check("R14-07", "changelog candidate identity", "`v2.1.0` — 2026-09-04 — local release candidate" in changelog, "dated local release candidate", "`v2.1.0` — 2026-09-04 — local release candidate" in changelog),
+        _check("R14-07", "changelog candidate identity", "`v2.1.0` — 2026-09-04 — untagged release candidate" in changelog, "dated untagged release candidate", "`v2.1.0` — 2026-09-04 — untagged release candidate" in changelog),
         _check("R14-08", "citation candidate version", ["version: \"2.1.0\"" in citation, "date-released:" in citation], "v2.1.0 and no release date", "version: \"2.1.0\"" in citation and "date-released:" not in citation),
         _check("R14-09", "v2.1.0 release notes", [token for token in ("Figure 12", "Figure 13", "Figure 14", "not been tagged") if token in release_notes], "all candidate topics and deferred status", all(token in release_notes for token in ("Figure 12", "Figure 13", "Figure 14", "not been tagged"))),
-        _check("R14-10", "publication remains local and untagged", publication, "no remote Git, tag or GitHub Release", publication["repository_state"] == "untagged_v2.1.0_candidate" and publication["remote_git_authorized"] is False and publication["tag_created"] is False and publication["github_release_created"] is False),
+        _check("R14-10", "publication remains untagged", publication, "push untagged candidate; inspect before tag; no tag or GitHub Release", publication["repository_state"] == "untagged_v2.1.0_candidate" and publication["push_untagged_state_first"] is True and publication["inspect_and_correct_before_tag"] is True and publication["tag_created"] is False and publication["github_release_created"] is False),
         _check("R14-11", "final candidate identity", [publication["version"], publication["tag"], publication["archive_name"]], "fixed v2.1.0 identity", publication["version"] == "v2.1.0" and publication["tag"] == "v2.1.0" and publication["archive_name"] == "correlation-emergence-reproducibility-v2.1.0.zip"),
         _check("R14-12", "public figure sequence", sorted(figure_numbers), "Figures 1 through 14", figure_numbers == set(range(1, 15))),
         _check("R14-13", "public figure PDF/PNG pairs", missing_pairs, "all Figure 1--14 pairs", not missing_pairs),
@@ -186,7 +186,7 @@ def main() -> int:
         _check("R14-27", "license surface", [(PROJECT_ROOT / "LICENSE").is_file(), (PROJECT_ROOT / "CONTENT-LICENSE.md").is_file(), "license: MIT" in citation], "code and content licenses declared", (PROJECT_ROOT / "LICENSE").is_file() and (PROJECT_ROOT / "CONTENT-LICENSE.md").is_file() and "license: MIT" in citation),
         _check("R14-28", "governance files excluded from scientific repository", governance_paths, "none", not governance_paths),
         _check("R14-29", "cache and staging paths excluded", cache_paths, "none", not cache_paths),
-        _check("R14-30", "Drive upload requires acceptance", publication["drive_upload_requires_gate_acceptance"], "true", publication["drive_upload_requires_gate_acceptance"] is True),
+        _check("R14-30", "single release archive policy", publication["separate_verification_only_archive"], "false", publication["separate_verification_only_archive"] is False),
     ]
 
     write_csv(

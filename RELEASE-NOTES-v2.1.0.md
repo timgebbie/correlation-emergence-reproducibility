@@ -1,6 +1,6 @@
 # v2.1.0 — Recovery, long-memory clocks and impact extensions
 
-Status: local release candidate. This version has not been tagged or published
+Status: untagged release candidate. This version has not been tagged or published
 as a GitHub Release.
 
 ## What changed
@@ -55,4 +55,4 @@ immutable inputs. In an already-used tree, use `python scripts/run_all.py
 
 The public v2.0.0 tag and release remain frozen. Creating or pushing a v2.1.0
 tag, creating a GitHub Release, or publishing a release asset requires a later
-explicit authorization after this local candidate is accepted.
+explicit authorization after this candidate is accepted.
