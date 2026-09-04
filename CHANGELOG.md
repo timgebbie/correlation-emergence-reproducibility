@@ -3,21 +3,16 @@
 This project uses numeric semantic versions only. Pre-release labels such as
 `alpha`, `beta`, and `rc` are not used.
 
-## `v2.1.0` — 2026-09-04 — untagged release candidate
+## `v2.1.0` — 2026-09-04
 
-- Align the publication contract with the v2.0.0 structure: push the untagged
-  candidate first, inspect it before tagging, and publish one release archive.
-  Transient Git/Drive authorization state remains outside the scientific
-  repository.
+- Export the accepted Figure 7 clock-only, coupling-only and combined results
+  as three standalone square PDF/PNG pairs, retaining the three-panel composite
+  only as the README overview. No accepted curve, estimator or parameter changes.
 - Retain the frozen v2.0.0 verifier as a compatibility check for Figures 1--11
-  while the v2.1.0 audit owns the exact Figures 1--14 release surface.
-- Add the R14 release-candidate contract and conformity audit. Candidate
-  metadata now identifies v2.1.0 consistently while the public v2.0.0 release,
-  source-v1 paper, Git tags and GitHub releases remain unchanged.
+  while the v2.1.0 release audit verifies the exact Figures 1--14 surface.
 - Add v2.1.0 release notes covering Figures 12--14, the enriched algorithmic
-  supplement, the accepted scientific limits and the strict archive test route.
-
-- Extend Figure 13 at R13 to four clock domains: the unchanged Gaussian-
+  supplement, the scientific limits and the strict archive test route.
+- Extend Figure 13 to four clock domains: the unchanged Gaussian-
   innovation operational path, Poisson previous refresh, Mittag--Leffler
   previous refresh with $\beta=0.8$, and its exact exponentially tempered law.
 - Replace the finite Markov Figure 13 sign fixture with a declared exogenous
@@ -33,18 +28,16 @@ This project uses numeric semantic versions only. Pre-release labels such as
   tilted renewal samplers, with Laplace-transform, finite-mean and
   previous-refresh regression controls.
 - Expand and streamline the algorithmicx supplement with explicit renewal-
-  clock and paired-impact algorithms. Preserve the accepted R12 commit as the
-  unmodified base; no tag, GitHub Release or remote upload is made at R13.
+  clock and paired-impact algorithms.
 - Add the accepted fixed-time order-book shock recovery as Figure 12.
 - Add the accepted six-panel operational/calendar stylised-facts comparison as
-  Figure 13, using irregular background arrivals and the unchanged R7B design.
+  Figure 13, using irregular background arrivals and the accepted design.
 - Qualify Figure 11's operational five-second ACF as a registered finite
   periodic-schedule diagnostic whose detailed curve is phase-sensitive.
 - Retain the Figure 13 scope as ordinary operational order (`alpha_u=1`), zero
   cancellation and Poisson previous-refresh observation; no fractional-memory,
   non-Markovian-clock or empirical-calibration claim is added.
-- Keep the v2.0.0 tag, release assets and frozen source paper unchanged. No
-  v2.1.0 tag or GitHub Release is created at this gate.
+- Keep the v2.0.0 tag, release assets and frozen source paper unchanged.
 - Add a repository-level LF policy with explicit binary exclusions so a
   standard Windows checkout preserves manifest-relevant bytes.
 - Route tabular, archive and assembled-figure publication through one shared

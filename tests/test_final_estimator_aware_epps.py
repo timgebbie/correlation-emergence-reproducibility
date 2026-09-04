@@ -4,6 +4,7 @@ import ast
 import csv
 import hashlib
 import json
+import struct
 import unittest
 from pathlib import Path
 
@@ -14,6 +15,12 @@ CURVE_PATH = ROOT / "outputs" / "final-estimator-aware-epps-curves-v1.9.csv"
 SUMMARY_PATH = ROOT / "outputs" / "final-estimator-aware-epps-summary-v1.9.csv"
 CHECK_PATH = ROOT / "diagnostics" / "final-estimator-aware-epps-checks-v1.9.csv"
 SCRIPT_PATH = ROOT / "scripts" / "36_generate_final_epps_integration.py"
+FIGURE_STEMS = (
+    "figure-07-final-estimator-aware-epps-v2",
+    "figure-07a-clock-only-epps-v2",
+    "figure-07b-coupling-only-epps-v2",
+    "figure-07c-combined-epps-v2",
+)
 
 
 def _rows(path: Path) -> list[dict[str, str]]:
@@ -97,9 +104,22 @@ class FinalEstimatorAwareEppsTests(unittest.TestCase):
         self.assertEqual(display["shared_x_scale_seconds"], [0.0, 410.0])
         self.assertEqual(display["shared_y_scale"], [0.0, 1.1])
         self.assertEqual(display["aggregation_axis"], "linear")
-        for suffix in ("pdf", "png"):
-            path = ROOT / "figures" / f"figure-07-final-estimator-aware-epps-v2.{suffix}"
-            self.assertGreater(path.stat().st_size, 1000)
+        self.assertEqual(
+            self.config["output_contract"]["standalone_figure_stems"],
+            list(FIGURE_STEMS[1:]),
+        )
+        for stem in FIGURE_STEMS:
+            for suffix in ("pdf", "png"):
+                path = ROOT / "figures" / f"{stem}.{suffix}"
+                self.assertGreater(path.stat().st_size, 1000)
+
+    def test_standalone_png_canvases_are_square(self) -> None:
+        for stem in FIGURE_STEMS[1:]:
+            payload = (ROOT / "figures" / f"{stem}.png").read_bytes()
+            self.assertEqual(payload[:8], b"\x89PNG\r\n\x1a\n")
+            width, height = struct.unpack(">II", payload[16:24])
+            self.assertEqual(width, height)
+            self.assertGreaterEqual(width, 1200)
 
     def test_route_is_assembly_only(self) -> None:
         source = SCRIPT_PATH.read_text(encoding="utf-8")

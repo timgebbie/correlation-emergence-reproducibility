@@ -1,13 +1,6 @@
 {
   "schema_version": "2.1.0",
-  "gate": "R14",
-  "scope": "final_release_candidate_conformity_and_science_consistency",
-  "accepted_parent": {
-    "stage": "R13",
-    "commit": "d329b00d066c181ae416799688f41401e70c1a80",
-    "tree": "57a28c0789c5dda9a813228fe36db2c080fa9f05",
-    "stage_bundle_sha256": "57ea08936bbf3cd0aac2d497eab845e78b4789f6441620a0b03e57fd6a5aca16"
-  },
+  "scope": "release_conformity_and_science_consistency",
   "frozen_inputs": [
     {
       "path": "config/config-v2.0.0.json",
@@ -40,7 +33,7 @@
     },
     {
       "path": "supplementary-materials/SUPPLEMENTARY-MATERIAL-v2.1.0.pdf",
-      "sha256": "b352d3c8fa8125a4570808ac321971f8709f0c286975ec8586288579f4fcfa88"
+      "sha256": "fa2ae0c32bf749e44b65aada32af1304d8962875eca44bb827ec610f3d3347c7"
     }
   ],
   "scientific_contract": {
@@ -70,11 +63,6 @@
     "tag": "v2.1.0",
     "release_title": "v2.1.0 — Recovery, long-memory clocks and impact extensions",
     "archive_name": "correlation-emergence-reproducibility-v2.1.0.zip",
-    "push_untagged_state_first": true,
-    "inspect_and_correct_before_tag": true,
-    "repository_state": "untagged_v2.1.0_candidate",
-    "tag_created": false,
-    "github_release_created": false,
-    "separate_verification_only_archive": false
+    "single_release_archive": true
   }
 }

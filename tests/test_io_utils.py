@@ -14,6 +14,7 @@ from functions.io_utils import (
     OUTPUT_STAGING_DIRECTORY,
     remove_orphaned_output_staging_files,
     write_csv,
+    write_csv_preserving_equivalent,
     write_json,
 )
 
@@ -64,6 +65,33 @@ class AtomicTabularPublicationTests(unittest.TestCase):
             target = Path(directory) / "values.csv"
             write_csv(target, ["value"], [{"value": 1}, {"value": 2}])
             self.assertEqual(target.read_bytes(), b"value\n1\n2\n")
+
+    def test_roundoff_equivalent_csv_preserves_accepted_bytes(self) -> None:
+        with tempfile.TemporaryDirectory(dir=ROOT) as directory:
+            target = Path(directory) / "values.csv"
+            target.write_bytes(b"label,value\naccepted,0.5438330397021032\n")
+            before = target.read_bytes()
+            published = write_csv_preserving_equivalent(
+                target,
+                ["label", "value"],
+                [{"label": "accepted", "value": 0.5438330397021031}],
+                absolute_tolerance=5e-13,
+            )
+            self.assertFalse(published)
+            self.assertEqual(target.read_bytes(), before)
+
+    def test_materially_different_csv_is_published(self) -> None:
+        with tempfile.TemporaryDirectory(dir=ROOT) as directory:
+            target = Path(directory) / "values.csv"
+            target.write_bytes(b"label,value\naccepted,0.5\n")
+            published = write_csv_preserving_equivalent(
+                target,
+                ["label", "value"],
+                [{"label": "accepted", "value": 0.6}],
+                absolute_tolerance=5e-13,
+            )
+            self.assertTrue(published)
+            self.assertEqual(target.read_bytes(), b"label,value\naccepted,0.6\n")
 
     def test_publication_uses_shared_platform_durability_helper(self) -> None:
         with tempfile.TemporaryDirectory(dir=ROOT) as directory:

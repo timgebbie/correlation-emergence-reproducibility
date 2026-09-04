@@ -107,7 +107,7 @@ def _load_configuration() -> dict[str, object]:
     if configuration.get("schema_version") != VERSION:
         raise ValueError("Figure 13 configuration version mismatch")
     if configuration["scientific_boundary"]["row_meaning"] != list(DOMAINS):
-        raise ValueError("Figure 13 row meaning differs from the accepted R6 gate")
+        raise ValueError("Figure 13 row meaning differs from the registered design")
     return configuration
 
 

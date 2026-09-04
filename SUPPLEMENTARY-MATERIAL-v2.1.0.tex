@@ -253,19 +253,50 @@ an already completed state and never changes an operational update interval.
 
 \subsection{Final theory-to-simulation Epps comparison}
 
-Figure~\ref{fig:final-epps} is the primary release result. The component inputs,
-clock paths, holdout structure and parameter values were fixed before the
-combined comparison. The leading-order product remains the analytical paper
-envelope. The same-clock conditional reference is the exact finite-step
-conditional moment evaluated at the operational indices selected by the same
-realised clocks as the simulation; it is not a fitted replacement.
+Figures~\ref{fig:final-epps-clock}--\ref{fig:final-epps-combined} are the
+primary release result. The component inputs, clock paths, holdout structure
+and parameter values were fixed before the combined comparison. The
+leading-order product remains the analytical paper envelope. The same-clock
+conditional reference is the exact finite-step conditional moment evaluated
+at the operational indices selected by the same realised clocks as the
+simulation; it is not a fitted replacement.
 
+\setcounter{figure}{6}
+\begingroup
+\renewcommand{\thefigure}{7a}
+\renewcommand{\theHfigure}{7a}
 \begin{figure}[p]
 \centering
-\includegraphics[width=\textwidth]{figures/figure-07-final-estimator-aware-epps-v2.pdf}
-\caption{\textbf{Clock, coupling and combined Epps curves: theory and simulation.} The three square panels share one linear 0--400 second and 0--1.1 normalized-covariance scale. Panel (a) compares the clock-only simulation with the exact equal-rate previous-refresh factor $F(\lambda^{\rm clk}\Delta)$, where each book has $\lambda^{\rm clk}=0.1\,\mathrm{s}^{-1}$ rather than the $0.2\,\mathrm{s}^{-1}$ pooled minimum-wait rate. Panel (b) compares the translation-mode coupling simulation with $F(\kappa\Delta)$, using $\kappa=0.025\,\mathrm{s}^{-1}$. Panel (c) compares the combined no-refit holdout with the paper's leading-order separable product $F(\lambda^{\rm clk}\Delta)F(\kappa\Delta)$ and the same-clock conditional reference. The latter evaluates the reduced finite-step conditional moment at the same realised previous-refresh indices as the simulation; it is not a fitted curve. Its combined RMSE is 0.039719, standardized RMSE is 0.455132, and pointwise normal-band coverage is complete. No parameter, normalization or time map is refitted.}
-\label{fig:final-epps}
+\includegraphics[width=0.82\textwidth]{figures/figure-07a-clock-only-epps-v2.pdf}
+\caption{\textbf{Clock-only Epps comparison.} The accepted simulation and its 95\% band are compared with the exact equal-rate previous-refresh factor $F(\lambda^{\rm clk}\Delta)$, where each book has $\lambda^{\rm clk}=0.1\,\mathrm{s}^{-1}$ rather than the $0.2\,\mathrm{s}^{-1}$ pooled minimum-wait rate.}
+\label{fig:final-epps-clock}
 \end{figure}
+\endgroup
+
+\setcounter{figure}{6}
+\begingroup
+\renewcommand{\thefigure}{7b}
+\renewcommand{\theHfigure}{7b}
+\begin{figure}[p]
+\centering
+\includegraphics[width=0.82\textwidth]{figures/figure-07b-coupling-only-epps-v2.pdf}
+\caption{\textbf{Translation-mode coupling-only Epps comparison.} The accepted simulation and its 95\% band are compared with $F(\kappa\Delta)$, using $\kappa=0.025\,\mathrm{s}^{-1}$.}
+\label{fig:final-epps-coupling}
+\end{figure}
+\endgroup
+
+\setcounter{figure}{6}
+\begingroup
+\renewcommand{\thefigure}{7c}
+\renewcommand{\theHfigure}{7c}
+\begin{figure}[p]
+\centering
+\includegraphics[width=0.82\textwidth]{figures/figure-07c-combined-epps-v2.pdf}
+\caption{\textbf{Combined estimator-aware Epps comparison.} The combined no-refit holdout and its 95\% band are compared with the paper's leading-order separable product $F(\lambda^{\rm clk}\Delta)F(\kappa\Delta)$ and the same-clock conditional reference. The latter evaluates the reduced finite-step conditional moment at the same realised previous-refresh indices as the simulation; it is not a fitted curve. Its combined RMSE is 0.039719, standardized RMSE is 0.455132, and pointwise normal-band coverage is complete. No parameter, normalization or time map is refitted.}
+\label{fig:final-epps-combined}
+\end{figure}
+\endgroup
+\setcounter{figure}{7}
 
 \subsection{Translation-mode component}
 

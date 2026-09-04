@@ -1,4 +1,4 @@
-"""Regression tests for the v2.1.0 R13 clock and impact extension."""
+"""Regression tests for the v2.1.0 long-memory clock and impact extension."""
 
 from __future__ import annotations
 
@@ -13,12 +13,12 @@ from PIL import Image
 
 
 ROOT = Path(__file__).resolve().parents[1]
-CONFIG_PATH = ROOT / "config/config-v2.1.0-r13.json"
-CHECK_PATH = ROOT / "diagnostics/r13-science-math-checks-v2.1.csv"
+CONFIG_PATH = ROOT / "config/config-v2.1.0-clock-impact.json"
+CHECK_PATH = ROOT / "diagnostics/clock-impact-science-math-checks-v2.1.csv"
 FIG13_ARCHIVE = ROOT / "outputs/figure-13-long-memory-clock-comparison-v2.1.npz"
 IMPACT_ARCHIVE = ROOT / "outputs/clock-subordinated-impact-v2.1.npz"
 CURVE_PATH = ROOT / "outputs/clock-subordinated-impact-curves-v2.1.csv"
-PANEL_MANIFEST = ROOT / "outputs/figure-13-r13-panel-manifest-v2.1.csv"
+PANEL_MANIFEST = ROOT / "outputs/figure-13-observation-clock-panel-manifest-v2.1.csv"
 
 
 def _rows(path: Path) -> list[dict[str, str]]:
@@ -34,17 +34,14 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-class R13LongMemoryClockImpactTests(unittest.TestCase):
+class LongMemoryClockImpactTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.config = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
 
     def test_registered_scope(self) -> None:
-        self.assertEqual(self.config["schema_version"], "2.1.0-r13")
-        self.assertEqual(
-            self.config["accepted_r12_commit"],
-            "cd4ff8abda45b4162c614f5e7627578aa71c46dc",
-        )
+        self.assertEqual(self.config["schema_version"], "2.1.0")
+        self.assertEqual(self.config["target_id"], "V210-CLOCK-IMPACT")
         rows = self.config["figure_13"]["rows"]
         self.assertEqual([row["clock"] for row in rows], [
             "none", "poisson", "mittag_leffler", "tempered_mittag_leffler"

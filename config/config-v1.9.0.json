@@ -74,6 +74,11 @@
     "summary_rows": 1,
     "generated_checks": 24,
     "figure_stem": "figure-07-final-estimator-aware-epps-v2",
+    "standalone_figure_stems": [
+      "figure-07a-clock-only-epps-v2",
+      "figure-07b-coupling-only-epps-v2",
+      "figure-07c-combined-epps-v2"
+    ],
     "next_stage": "v1.9.1_release_streamlining"
   },
   "stage_boundary": {

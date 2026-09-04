@@ -41,17 +41,25 @@ equal book refresh rates and explicit previous-refresh interpretation. The
 seconds scale is not fitted to data, and the survival inset is not a simulated
 path autocorrelation or spectrum.
 
-## Figure 7 - Final estimator-aware Epps integration
+## Figure 7a - Clock-only Epps comparison
 
-The three square panels share one linear 0--400 second, 0--1.1
-normalized-covariance scale. Figure 7(a) shows the clock-only comparison,
-Figure 7(b) shows the translation-mode coupling-only comparison, and Figure
-7(c) compares the combined no-refit holdout with the paper's leading-order
-product and with the exact finite-grid, finite-step conditional moment on the
-same realised clocks. The
-estimator-aware RMSE is `0.039719`, standardized RMSE is `0.455132`, and
-pointwise normal-band coverage is complete. No parameter or normalization is
-refitted.
+The exact equal-rate previous-refresh factor is compared with the accepted
+clock-only simulation and its 95% band on the common linear 0--400 second,
+0--1.1 normalized-covariance scale. No parameter or normalization is refitted.
+
+## Figure 7b - Translation-mode coupling-only Epps comparison
+
+The analytical translation-mode response is compared with the accepted
+coupling-only simulation and its 95% band on the same square display scale.
+No parameter or normalization is refitted.
+
+## Figure 7c - Combined estimator-aware Epps comparison
+
+The combined no-refit holdout and its 95% band are compared with the paper's
+leading-order product and the exact finite-grid, finite-step conditional
+moment on the same realised clocks. The estimator-aware RMSE is `0.039719`,
+standardized RMSE is `0.455132`, and pointwise normal-band coverage is
+complete. The three-panel composite is retained only as the README overview.
 
 ## Figure 8 - Translation-mode coupling
 

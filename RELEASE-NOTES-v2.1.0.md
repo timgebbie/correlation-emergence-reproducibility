@@ -1,10 +1,10 @@
 # v2.1.0 — Recovery, long-memory clocks and impact extensions
 
-Status: untagged release candidate. This version has not been tagged or published
-as a GitHub Release.
-
 ## What changed
 
+- Figure 7 is supplied as three standalone square PDF/PNG pairs for clock-only,
+  coupling-only and combined use. The accepted three-panel composite remains
+  the README overview; its source curves and all numerical logic are unchanged.
 - Figure 12 adds fixed-time order-book shock recovery from the pre-event state
   through market-order consumption and 80 seconds of operational relaxation.
 - Figure 13 holds the operational paths fixed while comparing direct
@@ -17,10 +17,12 @@ as a GitHub Release.
   clocks and paired clock-dependent impact.
 - The README presents Figures 12--14 and explains the distinction between the
   operational process and its observation-clock image.
+- No active `\\todo` commands remain in the release source. The unused
+  `todonotes` import is retained only in the byte-frozen v1 manuscript source.
 
 ## Scientific boundary
 
-The long-memory order flow in this candidate is a declared exogenous
+The long-memory order flow in this release is a declared exogenous
 heavy-tailed order-splitting input. It is not an endogenous result or an
 empirical calibration. The Gaussian description applies to the operational
 innovations, not to the waiting-time law. The lower-row central spike and
@@ -39,7 +41,7 @@ approximation/stability measures; none is a new v2.1.0 failure.
 ## Reproduction
 
 Python 3.12 is the controlled environment and Python 3.13 is the verified
-Windows compatibility environment. From a fresh extracted candidate archive,
+Windows compatibility environment. From a fresh extracted release archive,
 install `requirements.txt` and run:
 
 ```text
@@ -53,6 +55,5 @@ immutable inputs. In an already-used tree, use `python scripts/run_all.py
 
 ## Publication boundary
 
-The public v2.0.0 tag and release remain frozen. Creating or pushing a v2.1.0
-tag, creating a GitHub Release, or publishing a release asset requires a later
-explicit authorization after this candidate is accepted.
+The release archive is the sole versioned asset defined for publication. The
+public v2.0.0 tag and release remain frozen.

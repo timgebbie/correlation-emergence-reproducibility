@@ -19,7 +19,7 @@ S9E-17,estimator-aware RMSE improvement,"[0.039719091508260605, 0.06696349022251
 S9E-18,combined standardized RMSE,0.45513225399020835,at most 2.0,Verified,1.9.0
 S9E-19,combined pointwise coverage,1.0,at least 0.9,Verified,1.9.0
 S9E-20,common display scales,"{""aggregation_axis"": ""linear"", ""figure_number"": 26, ""optional_calibrated_curve"": ""excluded"", ""panels"": [""clock_only"", ""coupling_only"", ""combined""], ""shared_x_scale_seconds"": [0.0, 410.0], ""shared_y_scale"": [0.0, 1.1], ""simulation_uncertainty"": ""normal_95_percent_standard_error_band""}",three panels share linear x and y scales,Verified,1.9.0
-S9E-21,Figure 7 pair,True,PDF and PNG,Verified,1.9.0
+S9E-21,Figure 7 overview and standalone pairs,True,four PDF/PNG pairs,Verified,1.9.0
 S9E-22,curve output rows,20,20,Verified,1.9.0
 S9E-23,optional calibrated curve,excluded,excluded,Verified,1.9.0
 S9E-24,accepted inputs unchanged,True,all start/end hashes exact,Verified,1.9.0

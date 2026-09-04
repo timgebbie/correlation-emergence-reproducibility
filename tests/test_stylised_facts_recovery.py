@@ -313,9 +313,11 @@ class StylisedFactsRecoveryTests(unittest.TestCase):
             self.assertEqual(round(float(reader.pages[0].mediabox.height)), 288)
 
     def test_assembly_imports_standalone_pngs(self) -> None:
-        r13_manifest = ROOT / "outputs/figure-13-r13-panel-manifest-v2.1.csv"
-        if r13_manifest.is_file():
-            manifest = _rows(r13_manifest)
+        clock_manifest = (
+            ROOT / "outputs/figure-13-observation-clock-panel-manifest-v2.1.csv"
+        )
+        if clock_manifest.is_file():
+            manifest = _rows(clock_manifest)
             self.assertEqual(len(manifest), 12)
             self.assertEqual({row["panel_id"] for row in manifest}, set("abcdefghijkl"))
             with Image.open(FIGURE_STEM.with_suffix(".png")) as assembled_image:

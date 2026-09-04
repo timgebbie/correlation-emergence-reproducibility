@@ -33,7 +33,12 @@ COMBINED_PATH = PROJECT_ROOT / "outputs" / "combined-no-refit-curves-v1.7.csv"
 CURVE_PATH = PROJECT_ROOT / "outputs" / "final-estimator-aware-epps-curves-v1.9.csv"
 SUMMARY_PATH = PROJECT_ROOT / "outputs" / "final-estimator-aware-epps-summary-v1.9.csv"
 CHECK_PATH = PROJECT_ROOT / "diagnostics" / "final-estimator-aware-epps-checks-v1.9.csv"
-FIGURE_STEM = PROJECT_ROOT / "figures" / "figure-07-final-estimator-aware-epps-v2"
+FIGURE_STEMS = {
+    "overview": PROJECT_ROOT / "figures" / "figure-07-final-estimator-aware-epps-v2",
+    "clock_only": PROJECT_ROOT / "figures" / "figure-07a-clock-only-epps-v2",
+    "coupling_only": PROJECT_ROOT / "figures" / "figure-07b-coupling-only-epps-v2",
+    "combined": PROJECT_ROOT / "figures" / "figure-07c-combined-epps-v2",
+}
 VERSION = "1.9.0"
 
 
@@ -75,7 +80,100 @@ def _check(
     }
 
 
-def _save_figure(
+def _style_axis(axis: plt.Axes) -> None:
+    axis.set_box_aspect(1)
+    axis.set_xlim(0.0, 410.0)
+    axis.set_ylim(0.0, 1.1)
+    axis.set_xlabel(r"Calendar aggregation scale $\Delta t$ [s]")
+    axis.set_ylabel("Normalized covariance response")
+    axis.grid(alpha=0.18)
+    axis.legend(loc="lower right", fontsize=8.2, frameon=False)
+
+
+def _save_pair(figure: plt.Figure, stem: Path, *, square_canvas: bool = False) -> None:
+    save_options: dict[str, object] = {} if square_canvas else {"bbox_inches": "tight"}
+    atomic_savefig(figure, stem.with_suffix(".pdf"), **save_options)
+    atomic_savefig(figure, stem.with_suffix(".png"), dpi=220, **save_options)
+    plt.close(figure)
+
+
+def _plot_component(
+    lags: np.ndarray,
+    theory: np.ndarray,
+    simulation: np.ndarray,
+    standard_error: np.ndarray,
+    *,
+    title: str,
+    theory_label: str,
+    simulation_label: str,
+    colour: str,
+    stem: Path,
+) -> None:
+    figure, axis = plt.subplots(figsize=(6.4, 6.4), constrained_layout=True)
+    axis.fill_between(
+        lags,
+        simulation - 1.96 * standard_error,
+        simulation + 1.96 * standard_error,
+        color=colour,
+        alpha=0.17,
+        linewidth=0.0,
+        label="Simulation 95% band",
+    )
+    axis.plot(lags, theory, color="black", linewidth=2.1, label=theory_label)
+    axis.plot(lags, simulation, color=colour, linewidth=2.2, label=simulation_label)
+    axis.set_title(title)
+    _style_axis(axis)
+    _save_pair(figure, stem, square_canvas=True)
+
+
+def _plot_combined(
+    lags: np.ndarray,
+    product: np.ndarray,
+    estimator_theory: np.ndarray,
+    combined_simulation: np.ndarray,
+    combined_se: np.ndarray,
+    *,
+    title: str,
+    stem: Path,
+) -> None:
+    figure, axis = plt.subplots(figsize=(6.4, 6.4), constrained_layout=True)
+    axis.fill_between(
+        lags,
+        combined_simulation - 1.96 * combined_se,
+        combined_simulation + 1.96 * combined_se,
+        color="#b51f2e",
+        alpha=0.17,
+        linewidth=0.0,
+        label="Combined simulation 95% band",
+    )
+    axis.plot(
+        lags,
+        product,
+        color="black",
+        linewidth=2.1,
+        label=r"Leading-order product $F(\lambda^{\mathrm{clk}}\Delta)F(\kappa\Delta)$",
+    )
+    axis.plot(
+        lags,
+        estimator_theory,
+        color="#666666",
+        linewidth=2.0,
+        linestyle="--",
+        label="Same-clock conditional reference",
+    )
+    axis.plot(
+        lags,
+        combined_simulation,
+        color="#b51f2e",
+        linewidth=2.3,
+        label="Combined simulation",
+    )
+    axis.set_title(title)
+    _style_axis(axis)
+    _save_pair(figure, stem, square_canvas=True)
+
+
+def _save_figures(
     lags: np.ndarray,
     clock_theory: np.ndarray,
     clock_simulation: np.ndarray,
@@ -89,6 +187,45 @@ def _save_figure(
     combined_se: np.ndarray,
 ) -> None:
     remove_orphaned_figure_staging_files()
+    _plot_component(
+        lags,
+        clock_theory,
+        clock_simulation,
+        clock_se,
+        title="(a) Clock only",
+        theory_label=r"Equal-rate clock theory $F(\lambda^{\mathrm{clk}}\Delta)$",
+        simulation_label="Clock-only simulation",
+        colour="#1f77b4",
+        stem=FIGURE_STEMS["clock_only"],
+    )
+    _plot_component(
+        lags,
+        coupling_theory,
+        coupling_simulation,
+        coupling_se,
+        title="(b) Translation-mode coupling only",
+        theory_label=r"$F(\kappa\Delta)$ theory",
+        simulation_label="Coupling-only simulation",
+        colour="#2a9d55",
+        stem=FIGURE_STEMS["coupling_only"],
+    )
+    _plot_combined(
+        lags,
+        product,
+        estimator_theory,
+        combined_simulation,
+        combined_se,
+        title="(c) Clock and translation-mode coupling",
+        stem=FIGURE_STEMS["combined"],
+    )
+
+    # Retain the accepted three-panel overview for the README only. The
+    # standalone square exports above are the paper-insertion route.
+    if all(
+        FIGURE_STEMS["overview"].with_suffix(f".{suffix}").is_file()
+        for suffix in ("pdf", "png")
+    ):
+        return
     fig, axes = plt.subplots(1, 3, figsize=(15.2, 6.0), sharex=True, sharey=True)
     panels = (
         (
@@ -172,9 +309,7 @@ def _save_figure(
         fontsize=15,
     )
     fig.tight_layout(rect=(0.0, 0.0, 1.0, 0.94))
-    atomic_savefig(fig, FIGURE_STEM.with_suffix(".pdf"), bbox_inches="tight")
-    atomic_savefig(fig, FIGURE_STEM.with_suffix(".png"), dpi=220, bbox_inches="tight")
-    plt.close(fig)
+    _save_pair(fig, FIGURE_STEMS["overview"])
 
 
 def main() -> int:
@@ -280,7 +415,7 @@ def main() -> int:
     }
     write_csv(SUMMARY_PATH, list(summary), [summary])
 
-    _save_figure(
+    _save_figures(
         lags,
         clock_theory,
         clock_simulation,
@@ -296,8 +431,10 @@ def main() -> int:
 
     architecture = configuration["architecture"]
     policy = configuration["acceptance_policy"]
-    figure_pair = all(
-        FIGURE_STEM.with_suffix(f".{suffix}").is_file() for suffix in ("pdf", "png")
+    figure_pairs = all(
+        stem.with_suffix(f".{suffix}").is_file()
+        for stem in FIGURE_STEMS.values()
+        for suffix in ("pdf", "png")
     )
     checks = [
         _check("S9E-01", "accepted v1.8.3 input hashes", not input_errors, "all exact", not input_errors),
@@ -320,7 +457,7 @@ def main() -> int:
         _check("S9E-18", "combined standardized RMSE", standardized_rmse, f"at most {policy['combined_standardized_rmse_maximum']}", standardized_rmse <= float(policy["combined_standardized_rmse_maximum"])),
         _check("S9E-19", "combined pointwise coverage", coverage, f"at least {policy['minimum_combined_pointwise_coverage']}", coverage >= float(policy["minimum_combined_pointwise_coverage"])),
         _check("S9E-20", "common display scales", configuration["display_contract"], "three panels share linear x and y scales", configuration["display_contract"]["aggregation_axis"] == "linear"),
-        _check("S9E-21", "Figure 7 pair", figure_pair, "PDF and PNG", figure_pair),
+        _check("S9E-21", "Figure 7 overview and standalone pairs", figure_pairs, "four PDF/PNG pairs", figure_pairs),
         _check("S9E-22", "curve output rows", len(curve_rows), "20", len(curve_rows) == 20),
         _check("S9E-23", "optional calibrated curve", configuration["display_contract"]["optional_calibrated_curve"], "excluded", configuration["display_contract"]["optional_calibrated_curve"] == "excluded"),
         _check("S9E-24", "accepted inputs unchanged", not snapshot_errors(input_hashes), "all start/end hashes exact", not snapshot_errors(input_hashes)),

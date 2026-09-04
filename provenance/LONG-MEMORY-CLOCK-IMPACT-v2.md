@@ -1,13 +1,12 @@
-# R13 long-memory clock and impact provenance
+# Long-memory clock and impact provenance
 
-## Accepted parent and scope
+## Scope
 
-R13 starts from the accepted local R12 commit
-`cd4ff8abda45b4162c614f5e7627578aa71c46dc`. It does not alter the frozen
-`source/source-v1/` paper, refit a parameter, replace the operational solver,
-or modify the public `v2.0.0` tag or release.
+This v2.1.0 extension does not alter the frozen `source/source-v1/` paper,
+refit a parameter, replace the operational solver, or modify the public
+`v2.0.0` tag or release.
 
-The stage changes two declared inputs and adds one comparison:
+The extension changes two declared inputs and adds one comparison:
 
 1. Figure 13 order signs use exogenous heavy-tailed meta-order runs instead of
    the earlier finite Markov fixture.
@@ -26,7 +25,7 @@ positive stable variate. At `beta=1` this reduces to an exponential wait.
 Tempering is the exact exponential probability tilt with acceptance
 probability `exp(-lambda_T * W)`. It is not a hard cutoff. Its Laplace
 transform and finite mean are recorded in the computational supplement. The
-R13 values are `beta=0.8`, `tau=10 s` and `lambda_T=0.0125 s^-1`.
+registered values are `beta=0.8`, `tau=10 s` and `lambda_T=0.0125 s^-1`.
 
 All uniforms are caller-supplied and book-specific. A clock selects the last
 refresh and then the last completed operational node. It performs no
@@ -48,17 +47,18 @@ after a declared lag, and aggregates paths. The associated paper is Diana and
 Gebbie, “Non-uniformly sampled simulated price impact of an order-book,”
 arXiv:2310.06079 and <https://doi.org/10.1016/j.cam.2024.116202>.
 
-R13 preserves the signed-response logic but does not port the Julia routine.
-It retains the stronger local estimator established in Figures 9 and 10:
-aggressor sign times shocked-minus-control log-mid displacement, with identical
-initial state, operational innovations and realised observation clock in each
-pair. No spline smoothing, log/power fit or empirical impact-law claim is made.
+The Julia routine is a methodological reference and is not ported. The v2.1.0
+implementation uses the common-input estimator established in Figures 9 and
+10: aggressor sign times shocked-minus-control log-mid displacement, with
+identical initial state, operational innovations and realised observation
+clock in each pair. No spline smoothing, log/power fit or empirical impact-law
+claim is made.
 
 ## Registered evidence
 
-- `config/config-v2.1.0-r13.json`
-- `diagnostics/r13-science-math-checks-v2.1.csv`
-- `outputs/r13-observation-clock-summary-v2.1.csv`
+- `config/config-v2.1.0-clock-impact.json`
+- `diagnostics/clock-impact-science-math-checks-v2.1.csv`
+- `outputs/observation-clock-summary-v2.1.csv`
 - `outputs/figure-13-long-memory-clock-comparison-v2.1.npz`
 - `outputs/clock-subordinated-impact-curves-v2.1.csv`
 - `outputs/clock-subordinated-impact-v2.1.npz`

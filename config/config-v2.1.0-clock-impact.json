@@ -1,8 +1,7 @@
 {
-  "schema_version": "2.1.0-r13",
+  "schema_version": "2.1.0",
   "scope": "long_memory_order_flow_observation_clocks_and_paired_impact",
-  "target_id": "V210-R13",
-  "accepted_r12_commit": "cd4ff8abda45b4162c614f5e7627578aa71c46dc",
+  "target_id": "V210-CLOCK-IMPACT",
   "diana_reference": {
     "repository": "https://github.com/DerickDiana/InteractingLOBs.jl",
     "commit": "098f180729f0b678109c53f86c514dfdc12ec708",
@@ -70,8 +69,8 @@
     "archive": "outputs/clock-subordinated-impact-v2.1.npz"
   },
   "outputs": {
-    "clock_summary": "outputs/r13-observation-clock-summary-v2.1.csv",
-    "checks": "diagnostics/r13-science-math-checks-v2.1.csv"
+    "clock_summary": "outputs/observation-clock-summary-v2.1.csv",
+    "checks": "diagnostics/clock-impact-science-math-checks-v2.1.csv"
   },
   "scientific_boundary": {
     "operational_dynamics": "unchanged_uniform_fixed_grid_solver",

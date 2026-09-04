@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import csv
 import json
+import math
 import os
 from pathlib import Path
 from typing import Iterable, Mapping
@@ -71,6 +72,47 @@ def write_csv(path: Path, fieldnames: list[str], rows: Iterable[Mapping[str, obj
             pass
 
 
+def write_csv_preserving_equivalent(
+    path: Path,
+    fieldnames: list[str],
+    rows: Iterable[Mapping[str, object]],
+    *,
+    absolute_tolerance: float,
+) -> bool:
+    """Retain accepted CSV bytes after a roundoff-equivalent recomputation."""
+
+    candidate_rows = list(rows)
+    if path.is_file():
+        with path.open("r", encoding="utf-8", newline="") as handle:
+            reader = csv.DictReader(handle)
+            existing_fieldnames = reader.fieldnames
+            existing_rows = list(reader)
+        equivalent = existing_fieldnames == fieldnames and len(existing_rows) == len(candidate_rows)
+        if equivalent:
+            for existing, candidate in zip(existing_rows, candidate_rows, strict=True):
+                for field in fieldnames:
+                    left = existing[field]
+                    right = str(candidate[field])
+                    if left == right:
+                        continue
+                    try:
+                        if math.isclose(
+                            float(left),
+                            float(right),
+                            rel_tol=0.0,
+                            abs_tol=absolute_tolerance,
+                        ):
+                            continue
+                    except ValueError:
+                        pass
+                    equivalent = False
+                    break
+        if equivalent:
+            return False
+    write_csv(path, fieldnames, candidate_rows)
+    return True
+
+
 def read_csv(path: Path) -> list[dict[str, str]]:
     with path.open("r", encoding="utf-8", newline="") as handle:
         return list(csv.DictReader(handle))
@@ -115,6 +157,7 @@ __all__ = [
     "ensure_output_directories",
     "remove_orphaned_output_staging_files",
     "write_csv",
+    "write_csv_preserving_equivalent",
     "read_csv",
     "write_json",
     "latex_escape",

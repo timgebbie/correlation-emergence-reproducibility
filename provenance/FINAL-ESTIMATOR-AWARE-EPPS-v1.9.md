@@ -2,12 +2,14 @@
 
 Status: accepted numerical gate; acceptance recorded 2026-08-24
 
-Figure 7 assembles the accepted clock-only, corrected coupling-only and
-combined holdout results without rerunning or fitting the underlying models.
-All three panels use the same linear 0--400 second horizontal scale and the
-same 0--1.1 normalized-covariance scale.
+Figures 7a--7c expose the accepted clock-only, corrected coupling-only and
+combined holdout results as separate standalone square outputs without
+rerunning or fitting the underlying models. All three use the same linear
+0--400 second horizontal scale and the same 0--1.1 normalized-covariance
+scale. The original three-panel composite is retained only as the compact
+README overview.
 
-The clock-only and coupling-only panels compare the frozen analytical curves
+The clock-only and coupling-only figures compare the frozen analytical curves
 with their accepted thick reaction-boundary simulations. The combined panel
 compares the accepted no-refit holdout with two distinct theoretical objects:
 
@@ -17,7 +19,7 @@ compares the accepted no-refit holdout with two distinct theoretical objects:
    on the operational indices selected by the same realized clocks as the
    holdout.
 
-The estimator-aware combined RMSE is `0.039719`, below the leading-order
+The estimator-aware combined figure has RMSE `0.039719`, below the leading-order
 product RMSE `0.066963`. Its standardized RMSE is `0.455132`, and the
 pointwise normal 95% band covers the same-clock reference at all 20 registered
 lags. This improvement is obtained without changing a clock rate, coupling

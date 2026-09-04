@@ -14,11 +14,15 @@ from functions.integrity import ARCHIVE_MANIFEST_PATH, IMMUTABLE_MANIFEST_PATH, 
 
 
 IGNORED_PARTS = {
+    ".controlled-py312",
     ".git",
     ".figure-staging",
     ".matplotlib-cache",
     ".output-staging",
+    ".render-staging",
+    ".venv",
     "__pycache__",
+    "tmp",
 }
 GENERATED_TOP_LEVEL = {"diagnostics", "figures", "outputs", "tables"}
 GENERATED_ROOT_FILES: set[str] = set()

@@ -1,4 +1,4 @@
-"""Mathematical and contract tests for R13 observation renewal clocks."""
+"""Mathematical and contract tests for the v2.1.0 observation renewal clocks."""
 
 from __future__ import annotations
 
@@ -97,7 +97,7 @@ class RenewalClockTests(unittest.TestCase):
             beta=0.8,
             scale_seconds=1.0,
             horizon=20.0,
-            stream_id="R13-ML-B1",
+            stream_id="V21-ML-B1",
         )
         second = tempered_mittag_leffler_refresh_path_from_uniforms(
             streams[1],
@@ -108,7 +108,7 @@ class RenewalClockTests(unittest.TestCase):
             scale_seconds=1.0,
             tempering_rate_per_second=0.05,
             horizon=20.0,
-            stream_id="R13-TML-B2",
+            stream_id="V21-TML-B2",
         )
         operational_times = np.arange(21, dtype=float)
         prices = np.column_stack((operational_times, -operational_times))

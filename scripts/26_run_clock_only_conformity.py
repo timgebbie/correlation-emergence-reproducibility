@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt
 
 from functions.correlation_build_up import ordinary_build_up
 from functions.figure_io import atomic_savefig, remove_orphaned_figure_staging_files
-from functions.io_utils import write_csv
+from functions.io_utils import write_csv, write_csv_preserving_equivalent
 from functions.observation import (
     overlap_component_sums,
     poisson_refresh_path_from_uniforms,
@@ -561,7 +561,12 @@ def main() -> int:
                     "software_version": VERSION,
                 }
             )
-    write_csv(CURVE_PATH, list(curve_rows[0]), curve_rows)
+    curve_published = write_csv_preserving_equivalent(
+        CURVE_PATH,
+        list(curve_rows[0]),
+        curve_rows,
+        absolute_tolerance=5e-13,
+    )
 
     reduced_label = "recovered" if reduced_recovered else "invalid_experiment"
     if boundary_recovered:
@@ -606,7 +611,12 @@ def main() -> int:
             "software_version": VERSION,
         },
     ]
-    write_csv(SUMMARY_PATH, list(summary_rows[0]), summary_rows)
+    summary_published = write_csv_preserving_equivalent(
+        SUMMARY_PATH,
+        list(summary_rows[0]),
+        summary_rows,
+        absolute_tolerance=5e-13,
+    )
 
     checks = [
         _check("S7CLK-01", "uniform operational time resolution", step_seconds, "equals 0.5 seconds", np.isclose(step_seconds, 0.5)),
@@ -657,6 +667,8 @@ def main() -> int:
     )
     print(f"Reduced reference: {reduced_label}; thick boundary: {boundary_label}.")
     print("Figure 19 generated as PDF and PNG with 40 machine-readable curve rows.")
+    if not curve_published and not summary_published:
+        print("Accepted curve and summary CSV bytes retained after roundoff-equivalent recomputation.")
     return 0
 
 

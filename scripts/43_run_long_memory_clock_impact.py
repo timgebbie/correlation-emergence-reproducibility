@@ -1,4 +1,4 @@
-"""Run the v2.1.0 R13 long-memory clock and paired-impact extension."""
+"""Run the v2.1.0 long-memory clock and paired-impact extension."""
 
 from __future__ import annotations
 
@@ -9,7 +9,6 @@ import json
 import math
 import os
 from pathlib import Path
-import subprocess
 import sys
 
 import numpy as np
@@ -47,8 +46,8 @@ from functions.stylised_facts import (
 from functions.path_diagnostics import increment_autocorrelation
 
 
-VERSION = "2.1.0-r13"
-CONFIG_PATH = PROJECT_ROOT / "config/config-v2.1.0-r13.json"
+VERSION = "2.1.0"
+CONFIG_PATH = PROJECT_ROOT / "config/config-v2.1.0-clock-impact.json"
 DOMAIN_IDS = (
     "operational_gaussian",
     "poisson_previous_refresh",
@@ -57,7 +56,6 @@ DOMAIN_IDS = (
 )
 DOMAIN_SHORT = ("Operational", "Poisson", "Mittag-Leffler", "Tempered ML")
 DOMAIN_COLOURS = ("#225ea8", "#d95f0e", "#756bb1", "#238b45")
-ACCEPTED_R12_COMMIT = "cd4ff8abda45b4162c614f5e7627578aa71c46dc"
 FROZEN_SOURCE_V1_SHA256 = "48eea98a6fb084d6ecc397bede4c107a44cae947e16271d66a7041e2997afb5a"
 
 
@@ -109,7 +107,7 @@ def _renewal_pairs(
                 "beta": float(row["beta"]),
                 "scale_seconds": float(row["scale_seconds"]),
                 "horizon": horizon,
-                "stream_id": f"r13-{purpose}-{clock_type}-p{path:02d}-b{book + 1}",
+                "stream_id": f"v21-{purpose}-{clock_type}-p{path:02d}-b{book + 1}",
             }
             if clock_type == "mittag_leffler":
                 clock = mittag_leffler_refresh_path_from_uniforms(
@@ -414,7 +412,7 @@ def _figure13(configuration: dict[str, object], fig13_module):
     )
 
     manifest_rows = []
-    config_relative = "config/config-v2.1.0-r13.json"
+    config_relative = "config/config-v2.1.0-clock-impact.json"
     config_hash = _sha256(PROJECT_ROOT / config_relative)
     archive_relative = archive_path.relative_to(PROJECT_ROOT).as_posix()
     archive_hash = _sha256(archive_path)
@@ -436,7 +434,7 @@ def _figure13(configuration: dict[str, object], fig13_module):
             }
         )
     write_csv(
-        PROJECT_ROOT / "outputs/figure-13-r13-panel-manifest-v2.1.csv",
+        PROJECT_ROOT / "outputs/figure-13-observation-clock-panel-manifest-v2.1.csv",
         list(manifest_rows[0]),
         manifest_rows,
     )
@@ -762,39 +760,17 @@ def _check(check_id: str, claim: str, observed: object, criterion: str, passed: 
     }
 
 
-def _accepted_base_status(accepted_commit: str) -> tuple[str, bool]:
-    """Check ancestry when Git metadata exists; retain the recorded base in archives."""
-
-    if not (PROJECT_ROOT / ".git").exists():
-        return accepted_commit, accepted_commit == ACCEPTED_R12_COMMIT
-    current_head = subprocess.run(
-        ["git", "rev-parse", "HEAD"],
-        cwd=PROJECT_ROOT,
-        check=True,
-        capture_output=True,
-        text=True,
-    ).stdout.strip()
-    ancestry = subprocess.run(
-        ["git", "merge-base", "--is-ancestor", accepted_commit, current_head],
-        cwd=PROJECT_ROOT,
-        check=False,
-        capture_output=True,
-        text=True,
-    )
-    return current_head, ancestry.returncode == 0
-
-
 def main() -> int:
     configuration = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
     if configuration["schema_version"] != VERSION:
-        raise ValueError("R13 configuration version mismatch")
-    fig13_module = _load_module("r13_fig13_base", "scripts/41_run_stylised_facts_recovery.py")
-    single_module = _load_module("r13_single_impact", "scripts/33_run_single_trade_impact.py")
-    meta_module = _load_module("r13_meta_impact", "scripts/34_run_meta_order_impact.py")
+        raise ValueError("v2.1.0 clock-impact configuration version mismatch")
+    fig13_module = _load_module("v21_fig13_base", "scripts/41_run_stylised_facts_recovery.py")
+    single_module = _load_module("v21_single_impact", "scripts/33_run_single_trade_impact.py")
+    meta_module = _load_module("v21_meta_impact", "scripts/34_run_meta_order_impact.py")
 
     figure13 = _figure13(configuration, fig13_module)
     if "--figure13-only" in sys.argv:
-        print("R13 Figure 13 rendering complete")
+        print("v2.1.0 Figure 13 rendering complete")
         return 0
     impacts = _extend_impacts(configuration, single_module, meta_module)
     laws = _law_checks(configuration)
@@ -805,7 +781,6 @@ def main() -> int:
         list(clock_rows[0]),
         clock_rows,
     )
-    base_observed, base_valid = _accepted_base_status(configuration["accepted_r12_commit"])
     source_hash = _sha256(PROJECT_ROOT / "source/source-v1/CATG-RD2Epps-v3-arXiv.tex")
     rows = configuration["figure_13"]["rows"]
     s_active = np.mean(impacts["single_active"], axis=(0, 1, 2, 4, 5))
@@ -815,31 +790,31 @@ def main() -> int:
         and np.all(np.isfinite(impacts["relaxation"]))
     )
     checks = [
-        _check("R13-01", "accepted R12 base commit", base_observed, "accepted R12 is the recorded base or an ancestor of HEAD", base_valid),
-        _check("R13-02", "frozen source-v1 paper unchanged", source_hash, FROZEN_SOURCE_V1_SHA256, source_hash == FROZEN_SOURCE_V1_SHA256),
-        _check("R13-03", "Gaussian label applies only to operational innovations", configuration["scientific_boundary"]["gaussian_semantics"], "operational_innovations_not_waiting_intervals", configuration["scientific_boundary"]["gaussian_semantics"] == "operational_innovations_not_waiting_intervals"),
-        _check("R13-04", "previous-refresh map exact", figure13["previous_refresh_exact"], "all displayed states equal indexed operational states", figure13["previous_refresh_exact"]),
-        _check("R13-05", "untempered ML Laplace transform", laws["ml_laplace_error"], "maximum Monte Carlo error < 0.006", laws["ml_laplace_error"] < 0.006),
-        _check("R13-06", "tempered ML Laplace transform", laws["tempered_laplace_error"], "maximum Monte Carlo error < 0.006", laws["tempered_laplace_error"] < 0.006),
-        _check("R13-07", "tempered ML finite mean", laws["tempered_mean_relative_error"], "Monte Carlo relative error < 0.035", laws["tempered_mean_relative_error"] < 0.035),
-        _check("R13-08", "tempering truncates extreme waits", [laws["ml_q99"], laws["tempered_q99"]], "tempered q99 < untempered q99", laws["tempered_q99"] < laws["ml_q99"]),
-        _check("R13-09", "order-flow memory is declared exogenous input", configuration["scientific_boundary"]["order_flow_memory"], "exogenous heavy-tailed metaorder runs", "exogenous" in configuration["scientific_boundary"]["order_flow_memory"]),
-        _check("R13-10", "event-sign persistence at lag 10", float(figure13["event_sign_acf"][10]), "> 0.05", float(figure13["event_sign_acf"][10]) > 0.05),
-        _check("R13-11", "event-sign ACF log-log decay slope", figure13["event_sign_slope"], "between -1.2 and -0.05", -1.2 < figure13["event_sign_slope"] < -0.05),
-        _check("R13-12", "observation clocks alter zero-return mass", figure13["zero_return_fractions"].tolist(), "untempered ML exceeds operational and tempering reduces ML atom", figure13["zero_return_fractions"][2] > figure13["zero_return_fractions"][0] and figure13["zero_return_fractions"][3] < figure13["zero_return_fractions"][2]),
-        _check("R13-13", "paired impact outputs finite", finite_impacts, "all single-trade and meta-order responses finite", finite_impacts),
-        _check("R13-14", "common-input single-trade control", impacts["single"]["pre_event_maximum"], "maximum pre-event difference <= 1e-14", float(impacts["single"]["pre_event_maximum"]) <= 1e-14),
-        _check("R13-15", "common-input meta-order control", impacts["meta"]["pre_event_maximum"], "maximum pre-event difference <= 1e-14", float(impacts["meta"]["pre_event_maximum"]) <= 1e-14),
-        _check("R13-16", "Mittag-Leffler parameters", [rows[2]["beta"], rows[2]["scale_seconds"]], "beta=0.8 and tau=10 s", float(rows[2]["beta"]) == 0.8 and float(rows[2]["scale_seconds"]) == 10.0),
-        _check("R13-17", "tempering parameter", rows[3]["tempering_rate_per_second"], "lambda=0.0125 per second", float(rows[3]["tempering_rate_per_second"]) == 0.0125),
-        _check("R13-18", "single-trade clock domains retain event information", s_active.tolist(), "all domain-wide mean active fractions are positive", bool(np.all(s_active > 0.0))),
-        _check("R13-19", "Diana implementation pinned", configuration["diana_reference"]["commit"], "098f180729f0b678109c53f86c514dfdc12ec708", configuration["diana_reference"]["commit"] == "098f180729f0b678109c53f86c514dfdc12ec708"),
-        _check("R13-20", "no parameter refit", configuration["scientific_boundary"]["parameter_refit"], "false", configuration["scientific_boundary"]["parameter_refit"] is False),
+        _check("V21CI-01", "clock-impact configuration identity", [configuration["schema_version"], configuration["target_id"]], "v2.1.0 clock-impact configuration", configuration["schema_version"] == "2.1.0" and configuration["target_id"] == "V210-CLOCK-IMPACT"),
+        _check("V21CI-02", "frozen source-v1 paper unchanged", source_hash, FROZEN_SOURCE_V1_SHA256, source_hash == FROZEN_SOURCE_V1_SHA256),
+        _check("V21CI-03", "Gaussian label applies only to operational innovations", configuration["scientific_boundary"]["gaussian_semantics"], "operational_innovations_not_waiting_intervals", configuration["scientific_boundary"]["gaussian_semantics"] == "operational_innovations_not_waiting_intervals"),
+        _check("V21CI-04", "previous-refresh map exact", figure13["previous_refresh_exact"], "all displayed states equal indexed operational states", figure13["previous_refresh_exact"]),
+        _check("V21CI-05", "untempered ML Laplace transform", laws["ml_laplace_error"], "maximum Monte Carlo error < 0.006", laws["ml_laplace_error"] < 0.006),
+        _check("V21CI-06", "tempered ML Laplace transform", laws["tempered_laplace_error"], "maximum Monte Carlo error < 0.006", laws["tempered_laplace_error"] < 0.006),
+        _check("V21CI-07", "tempered ML finite mean", laws["tempered_mean_relative_error"], "Monte Carlo relative error < 0.035", laws["tempered_mean_relative_error"] < 0.035),
+        _check("V21CI-08", "tempering truncates extreme waits", [laws["ml_q99"], laws["tempered_q99"]], "tempered q99 < untempered q99", laws["tempered_q99"] < laws["ml_q99"]),
+        _check("V21CI-09", "order-flow memory is declared exogenous input", configuration["scientific_boundary"]["order_flow_memory"], "exogenous heavy-tailed metaorder runs", "exogenous" in configuration["scientific_boundary"]["order_flow_memory"]),
+        _check("V21CI-10", "event-sign persistence at lag 10", float(figure13["event_sign_acf"][10]), "> 0.05", float(figure13["event_sign_acf"][10]) > 0.05),
+        _check("V21CI-11", "event-sign ACF log-log decay slope", figure13["event_sign_slope"], "between -1.2 and -0.05", -1.2 < figure13["event_sign_slope"] < -0.05),
+        _check("V21CI-12", "observation clocks alter zero-return mass", figure13["zero_return_fractions"].tolist(), "untempered ML exceeds operational and tempering reduces ML atom", figure13["zero_return_fractions"][2] > figure13["zero_return_fractions"][0] and figure13["zero_return_fractions"][3] < figure13["zero_return_fractions"][2]),
+        _check("V21CI-13", "paired impact outputs finite", finite_impacts, "all single-trade and meta-order responses finite", finite_impacts),
+        _check("V21CI-14", "common-input single-trade control", impacts["single"]["pre_event_maximum"], "maximum pre-event difference <= 1e-14", float(impacts["single"]["pre_event_maximum"]) <= 1e-14),
+        _check("V21CI-15", "common-input meta-order control", impacts["meta"]["pre_event_maximum"], "maximum pre-event difference <= 1e-14", float(impacts["meta"]["pre_event_maximum"]) <= 1e-14),
+        _check("V21CI-16", "Mittag-Leffler parameters", [rows[2]["beta"], rows[2]["scale_seconds"]], "beta=0.8 and tau=10 s", float(rows[2]["beta"]) == 0.8 and float(rows[2]["scale_seconds"]) == 10.0),
+        _check("V21CI-17", "tempering parameter", rows[3]["tempering_rate_per_second"], "lambda=0.0125 per second", float(rows[3]["tempering_rate_per_second"]) == 0.0125),
+        _check("V21CI-18", "single-trade clock domains retain event information", s_active.tolist(), "all domain-wide mean active fractions are positive", bool(np.all(s_active > 0.0))),
+        _check("V21CI-19", "Diana implementation pinned", configuration["diana_reference"]["commit"], "098f180729f0b678109c53f86c514dfdc12ec708", configuration["diana_reference"]["commit"] == "098f180729f0b678109c53f86c514dfdc12ec708"),
+        _check("V21CI-20", "no parameter refit", configuration["scientific_boundary"]["parameter_refit"], "false", configuration["scientific_boundary"]["parameter_refit"] is False),
     ]
     check_path = PROJECT_ROOT / str(configuration["outputs"]["checks"])
     write_csv(check_path, list(checks[0]), checks)
     failures = [row for row in checks if row["status"] != "Verified"]
-    print(f"R13 checks: {len(checks) - len(failures)}/{len(checks)} verified")
+    print(f"Clock-impact checks: {len(checks) - len(failures)}/{len(checks)} verified")
     for row in failures:
         print(f"  FAILED {row['check_id']}: {row['claim']} ({row['observed']})")
     return 1 if failures else 0

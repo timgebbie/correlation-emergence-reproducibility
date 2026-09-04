@@ -1,6 +1,6 @@
 # Correlation emergence reproducibility bundle
 
-Version: v2.1.0 development candidate
+Version: v2.1.0
 
 Supplementary code and materials for:
 
@@ -12,7 +12,7 @@ The supplementary-materials document is included here:
 
 > [SUPPLEMENTARY-MATERIAL-v2.1.0.pdf](supplementary-materials/SUPPLEMENTARY-MATERIAL-v2.1.0.pdf)
 
-The candidate changes and their scientific boundary are summarized in
+The v2.1.0 changes and their scientific boundary are summarized in
 [RELEASE-NOTES-v2.1.0.md](RELEASE-NOTES-v2.1.0.md).
 
 This repository is a quantitative-finance reproducibility bundle. It extends
@@ -43,6 +43,12 @@ RMSE from `0.066963` to `0.039719`, with standardized RMSE `0.455132` and full
 pointwise 95% normal-band coverage. No clock, coupling, boundary, normalization
 or simulation parameter is refitted.
 
+Paper-ready standalone square exports are provided for
+[Figure 7a (clock only)](figures/figure-07a-clock-only-epps-v2.png),
+[Figure 7b (coupling only)](figures/figure-07b-coupling-only-epps-v2.png), and
+[Figure 7c (combined)](figures/figure-07c-combined-epps-v2.png). The combined
+three-panel image above is retained as the compact README overview.
+
 The [machine-readable curves](outputs/final-estimator-aware-epps-curves-v1.9.csv)
 and [summary statistics](outputs/final-estimator-aware-epps-summary-v1.9.csv)
 retain their frozen development identifiers.
@@ -60,7 +66,7 @@ Calendar waiting intervals never enter the density recurrence. Calendar prices
 are previous-completed-state observations; no interpolation, extrapolation or
 nonuniform state update is used.
 
-The current v2.1.0 development bundle contains:
+The v2.1.0 bundle contains:
 
 - the six analytical figures and two publication tables retained from v1.0.0;
 - clock-only, translation-mode coupling-only and combined no-refit
@@ -136,12 +142,13 @@ post-completion relaxation for fast and slow four-child meta-orders. The
 untempered clock delays the largest fraction of early responses, while
 tempering restores more timely observation. The curves are unconditional
 paired model responses: an event not yet seen by a calendar clock contributes
-its actual zero paired response rather than being dropped. The signed raw-price
-displacement method in
+its actual zero paired response rather than being dropped. The signed
+raw-price-displacement routine in
 [`DerickDiana/InteractingLOBs.jl`](https://github.com/DerickDiana/InteractingLOBs.jl)
-was audited at commit `098f1807`; R13 retains its impact logic but uses the
-stricter shocked-minus-control estimator already established in Figures 9 and
-10. No impact law is fitted.
+was audited at commit `098f1807` as a methodological reference. The v2.1.0
+implementation does not port that routine: it uses the common-input
+shocked-minus-control estimator established for Figures 9 and 10. No impact
+law is fitted.
 
 ### Legacy Julia implementation from [arXiv:2408.03181](https://arxiv.org/abs/2408.03181)
 
@@ -222,7 +229,7 @@ supplementary-materials/ Compiled computational supplement
 
 Scientific object versions such as `config-v1.7.7.json` and output suffixes
 such as `-v1.8.csv` are retained where they identify an accepted development
-object. The current development documentation uses v2.1.0. The public v2.0.0
+object. The current documentation uses v2.1.0. The public v2.0.0
 tag and its release assets remain unchanged.
 
 ## Installation
@@ -276,7 +283,7 @@ Rerun mode still checks the runtime and immutable inputs. Generated artifacts
 are assessed by numerical, schema, figure and scientific tests rather than by
 cross-platform byte identity.
 
-## Execution gates passed
+## Verification status
 
 The frozen v2.0.0 candidate passed the complete strict route from a fresh
 extraction:
@@ -292,14 +299,14 @@ embedding or compression. Reproducibility is assessed from frozen inputs,
 machine-readable values, declared tolerances and claim-bearing tests rather
 than cross-platform PDF byte identity.
 
-The accepted v2.1.0 Figure 12 gate adds fixed-time shock recovery. The accepted
-R12 Figure 13 gate established the operational/Poisson comparison; the current
-R13 candidate extends it to exogenous long-memory order flow, untempered and
-tempered Mittag--Leffler observation, and paired clock-dependent impact in
-Figure 14. The frozen v2.0.0 tag and target-paper source remain unchanged.
+Version 2.1.0 adds fixed-time shock recovery in Figure 12. Figure 13 extends
+the operational/Poisson comparison to exogenous long-memory order flow and
+untempered and tempered Mittag--Leffler observation. Figure 14 adds paired
+clock-dependent impact. The frozen v2.0.0 tag and target-paper source remain
+unchanged.
 The retained v2.0.0 verifier checks that its frozen claims and Figures 1--11
-remain present; the v2.1.0 release-candidate audit owns the exact current
-Figures 1--14 surface.
+remain present; the v2.1.0 release audit verifies the exact current Figures
+1--14 surface.
 
 ## Version-control policy
 
@@ -326,16 +333,15 @@ Git history:
 | `v1.9.2` | Slim public payload and claim-equivalence gate | Accepted parent stage |
 | `v1.9.3` | Legacy executable retirement and final public evidence map | Accepted final gate |
 | `v2.0.0` | Public promotion of the accepted v1.9.3 scientific payload | Frozen public release |
-| `v2.1.0` | Fixed-time shock recovery, long-memory clock morphology and clock-subordinated impact | Current development candidate |
+| `v2.1.0` | Fixed-time shock recovery, long-memory clock morphology and clock-subordinated impact | Current version |
 
-The latest public Git tag remains `v2.0.0`. The GitHub Release title is
-**v2.0.0 — Reproducibility code for arXiv:2606.14182**, and its release asset is
-`correlation-emergence-reproducibility-v2.0.0.zip`.
-No v2.1.0 tag or GitHub Release has been created.
+The release identifier and Git tag are `v2.1.0`. The corresponding GitHub
+Release title is **v2.1.0 — Recovery, long-memory clocks and impact
+extensions**, and the release asset is
+`correlation-emergence-reproducibility-v2.1.0.zip`.
 
-`CITATION.cff` identifies the checked-out candidate as v2.1.0 but deliberately
-omits `date-released` until publication. This does not alter the frozen public
-v2.0.0 tag or release metadata.
+`CITATION.cff` identifies the software version as v2.1.0. This does not alter
+the frozen public v2.0.0 tag or release metadata.
 
 ## DOI, citation and license
 
