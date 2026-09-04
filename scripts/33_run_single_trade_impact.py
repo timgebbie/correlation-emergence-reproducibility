@@ -249,7 +249,9 @@ def _check(
     }
 
 
-def _run_experiment(configuration: dict[str, object]) -> dict[str, object]:
+def _run_experiment(
+    configuration: dict[str, object], *, write_outputs: bool = True
+) -> dict[str, object]:
     experiment = configuration["experiment"]
     model = configuration["model"]
     paths = int(experiment["paths"])
@@ -519,25 +521,26 @@ def _run_experiment(configuration: dict[str, object]) -> dict[str, object]:
         for path in range(paths)
     )
 
-    write_csv(CURVE_PATH, list(curve_rows[0]), curve_rows)
-    write_csv(MEMBER_PATH, list(member_rows[0]), member_rows)
-    write_csv(EVENT_PATH, list(event_rows[0]), event_rows)
-    write_csv(CLOCK_PATH, list(clock_rows[0]), clock_rows)
-    np.savez_compressed(
-        PATH_ARCHIVE,
-        base_standard_normals=base_inputs,
-        operational_times_seconds=operational_times_seconds,
-        control_prices=control_prices,
-        shocked_prices=shocked_prices,
-        calendar_query_times_seconds=operational_times_seconds,
-        calendar_control_prices=calendar_control,
-        calendar_shocked_prices=calendar_shocked,
-        calendar_operational_indices=calendar_indices,
-        response_lags_seconds=lags_seconds,
-        response_lag_steps=lag_steps,
-        event_operational_step=np.asarray(event_step),
-        event_quantity=np.asarray(quantity),
-    )
+    if write_outputs:
+        write_csv(CURVE_PATH, list(curve_rows[0]), curve_rows)
+        write_csv(MEMBER_PATH, list(member_rows[0]), member_rows)
+        write_csv(EVENT_PATH, list(event_rows[0]), event_rows)
+        write_csv(CLOCK_PATH, list(clock_rows[0]), clock_rows)
+        np.savez_compressed(
+            PATH_ARCHIVE,
+            base_standard_normals=base_inputs,
+            operational_times_seconds=operational_times_seconds,
+            control_prices=control_prices,
+            shocked_prices=shocked_prices,
+            calendar_query_times_seconds=operational_times_seconds,
+            calendar_control_prices=calendar_control,
+            calendar_shocked_prices=calendar_shocked,
+            calendar_operational_indices=calendar_indices,
+            response_lags_seconds=lags_seconds,
+            response_lag_steps=lag_steps,
+            event_operational_step=np.asarray(event_step),
+            event_quantity=np.asarray(quantity),
+        )
     return {
         "base_inputs": base_inputs,
         "responses": responses,

@@ -285,7 +285,9 @@ def _check(
     }
 
 
-def _run_experiment(configuration: dict[str, object]) -> dict[str, object]:
+def _run_experiment(
+    configuration: dict[str, object], *, write_outputs: bool = True
+) -> dict[str, object]:
     experiment = configuration["experiment"]
     model = configuration["model"]
     schedule_specs = tuple(experiment["schedules"])
@@ -800,30 +802,31 @@ def _run_experiment(configuration: dict[str, object]) -> dict[str, object]:
         for path in range(paths)
     )
 
-    write_csv(TRAJECTORY_CURVE_PATH, list(trajectory_rows[0]), trajectory_rows)
-    write_csv(TRAJECTORY_MEMBER_PATH, list(trajectory_member_rows[0]), trajectory_member_rows)
-    write_csv(RELAXATION_CURVE_PATH, list(relaxation_rows[0]), relaxation_rows)
-    write_csv(RELAXATION_MEMBER_PATH, list(relaxation_member_rows[0]), relaxation_member_rows)
-    write_csv(EVENT_PATH, list(event_rows[0]), event_rows)
-    write_csv(SCHEDULE_PATH, list(schedule_rows[0]), schedule_rows)
-    write_csv(CLOCK_PATH, list(clock_rows[0]), clock_rows)
-    np.savez_compressed(
-        PATH_ARCHIVE,
-        base_standard_normals=base_inputs,
-        operational_times_seconds=operational_times_seconds,
-        control_prices=control_prices,
-        shocked_prices=shocked_prices,
-        calendar_query_times_seconds=operational_times_seconds,
-        calendar_control_prices=calendar_control,
-        calendar_shocked_prices=calendar_shocked,
-        calendar_operational_indices=calendar_indices,
-        trajectory_responses=trajectory,
-        trajectory_active=trajectory_active,
-        relaxation_responses=relaxation,
-        relaxation_active=relaxation_active,
-        post_completion_lags_seconds=post_lags,
-        post_completion_lag_steps=post_lag_steps,
-    )
+    if write_outputs:
+        write_csv(TRAJECTORY_CURVE_PATH, list(trajectory_rows[0]), trajectory_rows)
+        write_csv(TRAJECTORY_MEMBER_PATH, list(trajectory_member_rows[0]), trajectory_member_rows)
+        write_csv(RELAXATION_CURVE_PATH, list(relaxation_rows[0]), relaxation_rows)
+        write_csv(RELAXATION_MEMBER_PATH, list(relaxation_member_rows[0]), relaxation_member_rows)
+        write_csv(EVENT_PATH, list(event_rows[0]), event_rows)
+        write_csv(SCHEDULE_PATH, list(schedule_rows[0]), schedule_rows)
+        write_csv(CLOCK_PATH, list(clock_rows[0]), clock_rows)
+        np.savez_compressed(
+            PATH_ARCHIVE,
+            base_standard_normals=base_inputs,
+            operational_times_seconds=operational_times_seconds,
+            control_prices=control_prices,
+            shocked_prices=shocked_prices,
+            calendar_query_times_seconds=operational_times_seconds,
+            calendar_control_prices=calendar_control,
+            calendar_shocked_prices=calendar_shocked,
+            calendar_operational_indices=calendar_indices,
+            trajectory_responses=trajectory,
+            trajectory_active=trajectory_active,
+            relaxation_responses=relaxation,
+            relaxation_active=relaxation_active,
+            post_completion_lags_seconds=post_lags,
+            post_completion_lag_steps=post_lag_steps,
+        )
     return {
         "base_inputs": base_inputs,
         "trajectory": trajectory,
@@ -864,6 +867,12 @@ def _run_experiment(configuration: dict[str, object]) -> dict[str, object]:
         "calendar_own_eighty": calendar_own_eighty,
         "clock_relative_error": clock_relative_error,
         "distinct_clock_pairs": distinct_clock_pairs,
+        "operational_times_seconds": operational_times_seconds,
+        "control_prices": control_prices,
+        "shocked_prices": shocked_prices,
+        "calendar_control": calendar_control,
+        "calendar_shocked": calendar_shocked,
+        "calendar_indices": calendar_indices,
     }
 
 

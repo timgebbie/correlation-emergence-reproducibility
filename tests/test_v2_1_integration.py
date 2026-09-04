@@ -29,7 +29,7 @@ class V21IntegrationTests(unittest.TestCase):
     def test_all_integration_checks_are_verified(self) -> None:
         with CHECK_PATH.open("r", encoding="utf-8", newline="") as handle:
             rows = list(csv.DictReader(handle))
-        self.assertEqual(len(rows), 24)
+        self.assertEqual(len(rows), 32)
         self.assertTrue(all(row["status"] == "Verified" for row in rows))
 
     def test_frozen_v2_supplement_is_retained(self) -> None:

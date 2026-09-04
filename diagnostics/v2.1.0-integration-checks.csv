@@ -1,15 +1,15 @@
 check_id,claim,observed,criterion,status,software_version
 V21I-01,frozen v2.0.0 and source-v1 inputs,{},no errors,Verified,2.1.0
 V21I-02,README version,True,v2.1.0 development identity,Verified,2.1.0
-V21I-03,public figure sequence,"[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]",Figures 1 through 13,Verified,2.1.0
-V21I-04,public figure pairs,[],all Figure 1--13 PDF/PNG pairs,Verified,2.1.0
+V21I-03,public figure sequence,"[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]",Figures 1 through 14,Verified,2.1.0
+V21I-04,public figure pairs,[],all Figure 1--14 PDF/PNG pairs,Verified,2.1.0
 V21I-05,Figure 11 qualification in README,"('registered finite periodic-schedule diagnostic', 'phase-sensitive')",both accepted terms,Verified,2.1.0
 V21I-06,Figure 11 qualification in caption register,"('registered finite periodic-schedule diagnostic', 'phase-sensitive')",both accepted terms,Verified,2.1.0
 V21I-07,Figure 11 qualification in supplement,"('registered finite periodic-schedule diagnostic', 'phase-sensitive')",both accepted terms,Verified,2.1.0
 V21I-08,Figure 12 supplement integration,True,accepted source-v2 insert,Verified,2.1.0
 V21I-09,Figure 13 supplement integration,True,accepted source-v2 insert,Verified,2.1.0
-V21I-10,Figure 13 scope in README,"('alpha_u=1', 'zero cancellation', 'Poisson refresh clock')",all accepted limits,Verified,2.1.0
-V21I-11,Figure 13 scope in supplement source,"('\\alpha_u=1', 'zero cancellation', 'Poisson refresh clock')",all accepted limits,Verified,2.1.0
+V21I-10,Figure 13 scope in README,"('beta=0.8', 'tempered', 'exogenous long-memory')",all accepted limits,Verified,2.1.0
+V21I-11,Figure 13 scope in supplement source,"('\\beta=0.8', 'tempered', 'exogenous')",all accepted limits,Verified,2.1.0
 V21I-12,Figure 13 panel manifest,"[6, []]",six rows and no hash errors,Verified,2.1.0
 V21I-13,Figure 13 assembled pair,"[True, True]",both present,Verified,2.1.0
 V21I-14,active Figure 12 route,True,present,Verified,2.1.0
@@ -23,3 +23,11 @@ V21I-21,operational coupling algorithm,True,receiving-front translation field,Ve
 V21I-22,previous-refresh conditional algorithm,True,nested previous-refresh map and conditional moments,Verified,2.1.0
 V21I-23,autocorrelation estimator equation,slice-specific Pearson product form,separate lagged-slice means and product of variance factors,Verified,2.1.0
 V21I-24,stable representative paths,Figure 11 path 4; Figure 13 path 2,predeclared paths with ULP validation,Verified,2.1.0
+V21I-25,R13 supplement integration,True,clock and impact insert included,Verified,2.1.0
+V21I-26,R13 panel manifest,"[12, []]",twelve rows and no hash errors,Verified,2.1.0
+V21I-27,Figure 14 assembled pair,figures/figure-14-clock-subordinated-impact-v2,PDF and PNG present,Verified,2.1.0
+V21I-28,README Figure 14 image,True,embedded,Verified,2.1.0
+V21I-29,active R13 route,True,present,Verified,2.1.0
+V21I-30,R13 science and mathematics checks,"[20, 0]",twenty checks and no failures,Verified,2.1.0
+V21I-31,renewal algorithm,True,algorithmicx renewal construction present,Verified,2.1.0
+V21I-32,paired impact algorithm,True,common-input impact construction present,Verified,2.1.0

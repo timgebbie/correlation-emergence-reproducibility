@@ -10,21 +10,16 @@
 \usepackage{array}
 \usepackage{pdflscape}
 \usepackage{float}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
 \usepackage{xcolor}
 \usepackage{microtype}
 \usepackage{hyperref}
 \hypersetup{colorlinks=true,linkcolor=blue!55!black,urlcolor=blue!55!black,citecolor=blue!55!black}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.55em}
-
-\newcounter{suppalgorithm}
-\newenvironment{suppalgorithm}[1]{%
-  \refstepcounter{suppalgorithm}%
-  \par\medskip\noindent\hrule\smallskip
-  \noindent\textbf{Algorithm \thesuppalgorithm. #1}\par\smallskip
-}{%
-  \par\smallskip\noindent\hrule\medskip
-}
+\algrenewcommand\algorithmicrequire{\textbf{Input:}}
+\algrenewcommand\algorithmicensure{\textbf{Output:}}
 
 \title{Computational Supplement:\\Correlation Emergence and the Epps Effect}
 \author{Chris Angstmann \and Tim Gebbie}
@@ -34,7 +29,7 @@
 \maketitle
 
 \begin{abstract}
-This supplement records the analytical and simulation companion to ``Correlation emergence and the Epps effect in two coupled limit order books'' (arXiv:2606.14182). It evaluates the paper's ordinary and fractional correlation build-up factors, reports their sensitivities and identifiability limits, diagnoses finite-grid boundary representation, and verifies a uniform-operational simulation followed by explicit book-specific previous-refresh subordination. The retained numerical evidence includes clock-only and translation-mode coupling-only conformity, a combined no-refit holdout, single-trade and meta-order impact, mid-price-increment and trade-sign autocorrelations, fixed-time order-book shock recovery, and operational/calendar stylised-facts diagnostics. The computations are model-conditional reproducibility evidence, not empirical calibration or mathematical proof.
+This supplement records the analytical and simulation companion to ``Correlation emergence and the Epps effect in two coupled limit order books'' (arXiv:2606.14182). It evaluates the paper's ordinary and fractional correlation build-up factors, reports their sensitivities and identifiability limits, diagnoses finite-grid boundary representation, and verifies a uniform-operational simulation followed by explicit book-specific previous-refresh subordination. The retained numerical evidence includes clock-only and translation-mode coupling-only conformity, a combined no-refit holdout, single-trade and meta-order impact, mid-price-increment and trade-sign autocorrelations, fixed-time order-book shock recovery, and stylised-facts diagnostics. The v2.1.0 extension separates exogenous long-memory order flow from Poisson, Mittag--Leffler and exponentially tempered observation clocks, then measures paired single-trade and meta-order impact in each domain. The computations are model-conditional reproducibility evidence, not empirical calibration or mathematical proof.
 \end{abstract}
 
 \tableofcontents
@@ -346,6 +341,9 @@ and calendar-binned signed flow are separate estimands.
 \input{source/source-v2/STYLISED-FACTS-RECOVERY-v2.1.tex}
 
 \clearpage
+\input{source/source-v2/LONG-MEMORY-CLOCK-IMPACT-v2.1.tex}
+
+\clearpage
 \begin{landscape}
 \input{tables/table-01-parameter-timescale-identifiability-v1.tex}
 \end{landscape}
@@ -368,13 +366,13 @@ and the standard-library regression tests are
 \begin{verbatim}
 python -m unittest discover -s tests -v
 \end{verbatim}
-The run regenerates or scientifically verifies the thirteen selected PDF/PNG figure pairs, two CSV/LaTeX table pairs, claim-bearing curve and summary datasets, diagnostic reports, and the retained simulation route. PDF bytes can differ across systems because of renderer metadata or font embedding; frozen inputs, machine-readable values, declared tolerances and diagnostic statuses are the cross-platform reproducibility objects.
+The run regenerates or scientifically verifies the fourteen selected PDF/PNG figure pairs, two CSV/LaTeX table pairs, claim-bearing curve and summary datasets, diagnostic reports, and the retained simulation route. PDF bytes can differ across systems because of renderer metadata or font embedding; frozen inputs, machine-readable values, declared tolerances and diagnostic statuses are the cross-platform reproducibility objects.
 
 The accepted analytical output schemas retain their scientific object versions. The final simulation evidence is registered in the component, combined, impact and dependence CSV files listed in the figure manifest. Simulation resolution, alignment and domain metadata accompany the comparisons because Figure~\ref{fig:grid} shows that numerical boundary representation can move the apparent response curve.
 
 \section{Interpretive limits}
 
-The diagnosed computations support a limited set of conclusions. Ordinary clock and coupling factors are distinguishable when their timescales are sufficiently separated and the components are shown explicitly. The long-scale plateau contains little local information about either rate. The leading short-scale power of a combined fractional curve identifies an order sum rather than two separate orders. Reaction-boundary quantities affect the Epps curve conditionally through the effective response rate, but are not individually identified by that curve. Continuum selector invariance can coexist with finite-grid distortion when parity, alignment or domain controls are not respected. The translation-mode simulation is consistent with the registered component curves and improves the no-refit combined comparison when the estimator's finite-grid, finite-step clock selection is represented exactly. The impact, shock-recovery, autocorrelation and stylised-facts figures are conditional model diagnostics, not empirical calibration.
+The diagnosed computations support a limited set of conclusions. Ordinary clock and coupling factors are distinguishable when their timescales are sufficiently separated and the components are shown explicitly. The long-scale plateau contains little local information about either rate. The leading short-scale power of a combined fractional curve identifies an order sum rather than two separate orders. Reaction-boundary quantities affect the Epps curve conditionally through the effective response rate, but are not individually identified by that curve. Continuum selector invariance can coexist with finite-grid distortion when parity, alignment or domain controls are not respected. The translation-mode simulation is consistent with the registered component curves and improves the no-refit combined comparison when the estimator's finite-grid, finite-step clock selection is represented exactly. Heavy-tailed sign runs establish a controlled long-memory input but do not show that the book endogenously generates that memory. Mittag--Leffler clocks change observed return morphology and delay observed impact without changing the underlying operational response. The impact, shock-recovery, autocorrelation and stylised-facts figures are conditional model diagnostics, not empirical calibration.
 
 These are computational illustrations and numerical verification statements inside the paper's assumptions. They are not empirical validation, calibration or proof of the approximations. The retired Bauer implementation is not required to execute or interpret the accepted v2 route.
 

@@ -16,7 +16,7 @@ This repository is a quantitative-finance reproducibility bundle. It extends
 the analytical v1.0.0 materials with a Python implementation of two
 coupled order books, explicit separation of operational and calendar time, and
 event-impact and dependence diagnostics. The code regenerates or verifies the
-thirteen selected figures, two publication tables, numerical diagnostics and
+fourteen selected figures, two publication tables, numerical diagnostics and
 machine-readable evidence used in the supplementary material.
 
 ## Key figure: theory and simulation
@@ -68,8 +68,10 @@ The current v2.1.0 development bundle contains:
 - paired single-trade and scheduled meta-order own/cross-impact simulations;
 - log-mid increment and trade-sign autocorrelation diagnostics;
 - fixed-time order-book shock recovery on the operational grid;
-- operational/calendar stylised-facts diagnostics with six standalone square
-  panels and one assembled Figure 13;
+- operational/Poisson/Mittag--Leffler/tempered-clock stylised-facts diagnostics
+  with twelve standalone panels and one assembled Figure 13;
+- common-input paired single-trade and meta-order impact across the same four
+  clock domains in Figure 14;
 - the frozen target-paper source and the v2 computational supplement; and
 - one strict reproducibility entry point with a used-tree `--rerun` mode.
 
@@ -84,7 +86,8 @@ The public figure sequence is deliberately compact:
 | 10 | Scheduled meta-order own- and cross-impact simulation |
 | 11 | Log-mid increment and trade-sign autocorrelations across event, operational and calendar layers |
 | 12 | Fixed-time order-book shock recovery and reaction-boundary relaxation |
-| 13 | Operational and previous-refresh calendar stylised-facts comparison |
+| 13 | Long-memory operational input under operational, Poisson, Mittag--Leffler and tempered observation |
+| 14 | Clock-subordinated paired single-trade and meta-order impact |
 
 Figure 11 includes log-mid increment autocorrelation, event-time trade-sign
 autocorrelation, subordinated signed-flow autocorrelation and sign-convention
@@ -102,20 +105,40 @@ All density contributions use one common scale. The zero cancellation curve is
 retained because the accepted model sets both cancellation rates to zero; it is
 not inflated for visibility. The high-resolution PNG is 4500 by 3600 pixels.
 
-### Figure 13: operational and calendar stylised facts
+### Figure 13: long memory and observation clocks
 
-![Figure 13: operational and previous-refresh calendar stylised facts](figures/figure-13-stylised-facts-recovery-v2.png)
+![Figure 13: operational and three previous-refresh observation-clock domains](figures/figure-13-stylised-facts-recovery-v2.png)
 
-Figure 13 uses irregular background market-order arrivals and compares the
-same completed model paths before and after previous-refresh observation. Its
-baseline uses ordinary operational order, `alpha_u=1`, zero cancellation and
-a Poisson refresh clock. It does not claim fractional operational memory, a
-non-Markovian calendar clock or empirical calibration. The top row is the
-uniform operational path and is therefore smoother and closer to Gaussian.
-The bottom row observes those same paths through book-specific previous refresh;
-held prices create a 60.49% zero-return atom, a sharp central spike, an extended
-QQ plateau and stronger apparent tails. The lower-row leptokurtosis is an
-observation-clock effect, not a change in the underlying operational dynamics.
+Figure 13 uses irregular background market-order arrivals with heavy-tailed
+meta-order sign runs as a declared, exogenous long-memory input. The four rows
+hold the completed operational paths fixed and change only the observation
+map: (1) operational, (2) Poisson previous refresh, (3) untempered
+Mittag--Leffler previous refresh with `beta=0.8`, and (4) its exponentially
+tempered counterpart. The top row is smoother and close to Gaussian because
+it is the directly observed operational process with Gaussian innovations.
+The lower rows hold prices between book-specific refreshes. Their zero-return
+fractions are 60.49%, 88.19% and 66.10%, respectively, producing the central
+spike, QQ plateau and leptokurtic appearance. These are observation-clock
+effects; the operational dynamics do not change. “Gaussian” describes the
+operational innovations, not a waiting-time distribution. The sign memory is
+an order-splitting input, not an endogenous result or empirical calibration.
+
+### Figure 14: clock-subordinated impact
+
+![Figure 14: single-trade and meta-order impact across observation clocks](figures/figure-14-clock-subordinated-impact-v2.png)
+
+Figure 14 applies the same clocks to common-input shocked and control paths.
+The top panels show single-trade own and cross impact; the bottom panels show
+post-completion relaxation for fast and slow four-child meta-orders. The
+untempered clock delays the largest fraction of early responses, while
+tempering restores more timely observation. The curves are unconditional
+paired model responses: an event not yet seen by a calendar clock contributes
+its actual zero paired response rather than being dropped. The signed raw-price
+displacement method in
+[`DerickDiana/InteractingLOBs.jl`](https://github.com/DerickDiana/InteractingLOBs.jl)
+was audited at commit `098f1807`; R13 retains its impact logic but uses the
+stricter shocked-minus-control estimator already established in Figures 9 and
+10. No impact law is fitted.
 
 ### Legacy Julia implementation from [arXiv:2408.03181](https://arxiv.org/abs/2408.03181)
 
@@ -152,8 +175,8 @@ Possible later extensions include:
 - calibration of clock, coupling and event parameters under an explicit
   identification strategy;
 - additional limit-order, cancellation and strategic execution mechanisms;
-- endogenous or long-memory trade-sign processes rather than the present
-  finite Markov fixture;
+- endogenous trade-sign memory rather than the present exogenous heavy-tailed
+  order-splitting input;
 - more than two coupled books and a general cross-impact network; and
 - locked containers, continuous integration and broader platform testing.
 
@@ -184,7 +207,7 @@ scripts/                 Active reproduction and verification commands
 tests/                   Compact claim-bearing regression suite
 data/                    Data instructions; no empirical data are required
 outputs/                 Machine-readable curve and summary evidence
-figures/                 Thirteen selected PDF/PNG figure pairs plus six Figure 13 panels
+figures/                 Fourteen selected PDF/PNG figure pairs plus twelve Figure 13 panels
 tables/                  Two generated CSV/LaTeX publication tables
 captions/                Standalone captions for the selected evidence
 diagnostics/             Generated scientific acceptance checks
@@ -266,10 +289,11 @@ embedding or compression. Reproducibility is assessed from frozen inputs,
 machine-readable values, declared tolerances and claim-bearing tests rather
 than cross-platform PDF byte identity.
 
-The v2.1.0 Figure 12 and Figure 13 gates add fixed-time shock recovery and the
-accepted stylised-facts comparison without changing the frozen v2.0.0 tag or
-target-paper source. Figure 13 passed 162 registered checks and 11 independent
-reconstruction tests at its production gate.
+The accepted v2.1.0 Figure 12 gate adds fixed-time shock recovery. The accepted
+R12 Figure 13 gate established the operational/Poisson comparison; the current
+R13 candidate extends it to exogenous long-memory order flow, untempered and
+tempered Mittag--Leffler observation, and paired clock-dependent impact in
+Figure 14. The frozen v2.0.0 tag and target-paper source remain unchanged.
 
 ## Version-control policy
 
@@ -296,7 +320,7 @@ Git history:
 | `v1.9.2` | Slim public payload and claim-equivalence gate | Accepted parent stage |
 | `v1.9.3` | Legacy executable retirement and final public evidence map | Accepted final gate |
 | `v2.0.0` | Public promotion of the accepted v1.9.3 scientific payload | Frozen public release |
-| `v2.1.0` | Fixed-time shock recovery and operational/calendar stylised-facts diagnostics | Current development candidate |
+| `v2.1.0` | Fixed-time shock recovery, long-memory clock morphology and clock-subordinated impact | Current development candidate |
 
 The latest public Git tag remains `v2.0.0`. The GitHub Release title is
 **v2.0.0 — Reproducibility code for arXiv:2606.14182**, and its release asset is

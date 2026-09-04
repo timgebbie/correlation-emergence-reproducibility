@@ -1,0 +1,21 @@
+check_id,claim,observed,criterion,status,software_version
+R13-01,accepted R12 base commit,9cb1b9c35f411a2d184eb177fb9d093e9ae7be4e,accepted R12 is the recorded base or an ancestor of HEAD,Verified,2.1.0-r13
+R13-02,frozen source-v1 paper unchanged,48eea98a6fb084d6ecc397bede4c107a44cae947e16271d66a7041e2997afb5a,48eea98a6fb084d6ecc397bede4c107a44cae947e16271d66a7041e2997afb5a,Verified,2.1.0-r13
+R13-03,Gaussian label applies only to operational innovations,operational_innovations_not_waiting_intervals,operational_innovations_not_waiting_intervals,Verified,2.1.0-r13
+R13-04,previous-refresh map exact,True,all displayed states equal indexed operational states,Verified,2.1.0-r13
+R13-05,untempered ML Laplace transform,0.000976077967699579,maximum Monte Carlo error < 0.006,Verified,2.1.0-r13
+R13-06,tempered ML Laplace transform,0.0010295379353876255,maximum Monte Carlo error < 0.006,Verified,2.1.0-r13
+R13-07,tempered ML finite mean,0.002671554480727197,Monte Carlo relative error < 0.035,Verified,2.1.0-r13
+R13-08,tempering truncates extreme waits,"[487.60444154504063, 78.1634755235738]",tempered q99 < untempered q99,Verified,2.1.0-r13
+R13-09,order-flow memory is declared exogenous input,exogenous_heavy_tailed_metaorder_run_input_not_endogenous_output,exogenous heavy-tailed metaorder runs,Verified,2.1.0-r13
+R13-10,event-sign persistence at lag 10,0.1441693025153875,> 0.05,Verified,2.1.0-r13
+R13-11,event-sign ACF log-log decay slope,-0.8378972033889032,between -1.2 and -0.05,Verified,2.1.0-r13
+R13-12,observation clocks alter zero-return mass,"[0.0, 0.6049149338374291, 0.8819116257088847, 0.6610349716446124]",untempered ML exceeds operational and tempering reduces ML atom,Verified,2.1.0-r13
+R13-13,paired impact outputs finite,True,all single-trade and meta-order responses finite,Verified,2.1.0-r13
+R13-14,common-input single-trade control,0.0,maximum pre-event difference <= 1e-14,Verified,2.1.0-r13
+R13-15,common-input meta-order control,0.0,maximum pre-event difference <= 1e-14,Verified,2.1.0-r13
+R13-16,Mittag-Leffler parameters,"[0.8, 10.0]",beta=0.8 and tau=10 s,Verified,2.1.0-r13
+R13-17,tempering parameter,0.0125,lambda=0.0125 per second,Verified,2.1.0-r13
+R13-18,single-trade clock domains retain event information,"[1.0, 0.65625, 0.3489583333333333, 0.5416666666666666]",all domain-wide mean active fractions are positive,Verified,2.1.0-r13
+R13-19,Diana implementation pinned,098f180729f0b678109c53f86c514dfdc12ec708,098f180729f0b678109c53f86c514dfdc12ec708,Verified,2.1.0-r13
+R13-20,no parameter refit,False,false,Verified,2.1.0-r13

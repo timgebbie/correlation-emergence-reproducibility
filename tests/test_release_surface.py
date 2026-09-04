@@ -67,7 +67,7 @@ class ReleaseSurfaceTests(unittest.TestCase):
             for path in archive_paths
             if (match := re.match(r"figures/figure-(\d{2})-.*\.png$", path))
         }
-        self.assertEqual(numbers, set(range(1, 14)))
+        self.assertEqual(numbers, set(range(1, 15)))
 
     def test_single_trade_and_meta_order_figures_are_retained(self) -> None:
         for stem in (

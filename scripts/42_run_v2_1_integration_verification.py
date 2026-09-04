@@ -1,4 +1,4 @@
-"""Verify the v2.1.0 Figure 12/13 reader-facing integration boundary."""
+"""Verify the v2.1.0 Figure 12--14 reader-facing integration boundary."""
 
 from __future__ import annotations
 
@@ -19,6 +19,10 @@ from scripts.run_all import ACTIVE_STEPS
 
 CHECK_PATH = PROJECT_ROOT / "diagnostics/v2.1.0-integration-checks.csv"
 PANEL_MANIFEST_PATH = PROJECT_ROOT / "outputs/figure-13-panel-manifest-v2.1.csv"
+R13_PANEL_MANIFEST_PATH = (
+    PROJECT_ROOT / "outputs/figure-13-r13-panel-manifest-v2.1.csv"
+)
+R13_CHECK_PATH = PROJECT_ROOT / "diagnostics/r13-science-math-checks-v2.1.csv"
 
 FROZEN_INPUTS = {
     "RELEASE-NOTES-v2.0.0.md": "6e5d20ebd0d30afc8cbf56b63c188f18c9a98b136e27aee17bbee8dd64355ff0",
@@ -65,6 +69,7 @@ def main() -> int:
             "source/source-v2/NUMERICAL-ALGORITHMS-v2.1.tex",
             "source/source-v2/ORDER-BOOK-SHOCK-RECOVERY-v2.1.tex",
             "source/source-v2/STYLISED-FACTS-RECOVERY-v2.1.tex",
+            "source/source-v2/LONG-MEMORY-CLOCK-IMPACT-v2.1.tex",
         )
     )
     readme_normalized = re.sub(r"\s+", " ", readme)
@@ -72,6 +77,8 @@ def main() -> int:
     supplement_normalized = re.sub(r"\s+", " ", supplement)
     active_paths = [path for _, path in ACTIVE_STEPS]
     panel_rows = _rows(PANEL_MANIFEST_PATH)
+    r13_panel_rows = _rows(R13_PANEL_MANIFEST_PATH)
+    r13_checks = _rows(R13_CHECK_PATH)
     representative_policy = (
         PROJECT_ROOT / "config/config-v2.1.0-representative-paths.json"
     ).read_text(encoding="utf-8")
@@ -82,7 +89,7 @@ def main() -> int:
     }
     missing_pairs = [
         number
-        for number in range(1, 14)
+        for number in range(1, 15)
         if not any(
             path.with_suffix(".pdf").is_file()
             for path in (PROJECT_ROOT / "figures").glob(f"figure-{number:02d}-*.png")
@@ -99,6 +106,17 @@ def main() -> int:
             path = PROJECT_ROOT / row[path_field]
             if not path.is_file() or sha256(path) != row[hash_field]:
                 panel_errors.append(row[path_field])
+    r13_panel_errors: list[str] = []
+    for row in r13_panel_rows:
+        for path_field, hash_field in (
+            ("source_config", "source_config_sha256"),
+            ("data_path", "data_sha256"),
+            ("pdf_path", "pdf_sha256"),
+            ("png_path", "png_sha256"),
+        ):
+            path = PROJECT_ROOT / row[path_field]
+            if not path.is_file() or sha256(path) != row[hash_field]:
+                r13_panel_errors.append(row[path_field])
 
     frozen_errors: dict[str, str] = {}
     for relative, expected in FROZEN_INPUTS.items():
@@ -110,23 +128,15 @@ def main() -> int:
         "registered finite periodic-schedule diagnostic",
         "phase-sensitive",
     )
-    readme_figure_13_scope = (
-        "alpha_u=1",
-        "zero cancellation",
-        "Poisson refresh clock",
-    )
-    supplement_figure_13_scope = (
-        "\\alpha_u=1",
-        "zero cancellation",
-        "Poisson refresh clock",
-    )
+    readme_figure_13_scope = ("beta=0.8", "tempered", "exogenous long-memory")
+    supplement_figure_13_scope = ("\\beta=0.8", "tempered", "exogenous")
     governance_paths = list(PROJECT_ROOT.rglob("*R7C*"))
 
     checks = [
         _check("V21I-01", "frozen v2.0.0 and source-v1 inputs", frozen_errors, "no errors", not frozen_errors),
         _check("V21I-02", "README version", "Version: v2.1.0" in readme, "v2.1.0 development identity", "Version: v2.1.0" in readme),
-        _check("V21I-03", "public figure sequence", sorted(figure_numbers), "Figures 1 through 13", figure_numbers == set(range(1, 14))),
-        _check("V21I-04", "public figure pairs", missing_pairs, "all Figure 1--13 PDF/PNG pairs", not missing_pairs),
+        _check("V21I-03", "public figure sequence", sorted(figure_numbers), "Figures 1 through 14", figure_numbers == set(range(1, 15))),
+        _check("V21I-04", "public figure pairs", missing_pairs, "all Figure 1--14 PDF/PNG pairs", not missing_pairs),
         _check("V21I-05", "Figure 11 qualification in README", qualification, "both accepted terms", all(term in readme_normalized for term in qualification)),
         _check("V21I-06", "Figure 11 qualification in caption register", qualification, "both accepted terms", all(term in captions_normalized for term in qualification)),
         _check("V21I-07", "Figure 11 qualification in supplement", qualification, "both accepted terms", all(term in supplement_normalized for term in qualification)),
@@ -147,6 +157,14 @@ def main() -> int:
         _check("V21I-22", "previous-refresh conditional algorithm", "nested map" in supplement, "nested previous-refresh map and conditional moments", "nested map" in supplement and "\\Theta_{q,r}-\\frac{K_{q,r}}{2\\kappa}" in supplement and "e^{-\\kappa(b_j-a_j)}-1" in supplement),
         _check("V21I-23", "autocorrelation estimator equation", "slice-specific Pearson product form" if "\\bar X_{L,k}" in supplement and "\\bar X_{R,k}" in supplement and "\\left[\\sum" in supplement and "\\right] \\left[\\sum" in supplement_normalized else "missing or malformed", "separate lagged-slice means and product of variance factors", "\\bar X_{L,k}" in supplement and "\\bar X_{R,k}" in supplement and "\\left[\\sum" in supplement and "\\right] \\left[\\sum" in supplement_normalized and "\\widehat\\rho_X(0)=1" in supplement),
         _check("V21I-24", "stable representative paths", "Figure 11 path 4; Figure 13 path 2", "predeclared paths with ULP validation", '"predeclared_path_index": 4' in representative_policy and '"predeclared_master_path_index": 2' in representative_policy and '"distance_tolerance_ulps": 64' in representative_policy),
+        _check("V21I-25", "R13 supplement integration", "LONG-MEMORY-CLOCK-IMPACT-v2.1.tex" in supplement, "clock and impact insert included", "LONG-MEMORY-CLOCK-IMPACT-v2.1.tex" in supplement),
+        _check("V21I-26", "R13 panel manifest", [len(r13_panel_rows), r13_panel_errors], "twelve rows and no hash errors", len(r13_panel_rows) == 12 and not r13_panel_errors),
+        _check("V21I-27", "Figure 14 assembled pair", "figures/figure-14-clock-subordinated-impact-v2", "PDF and PNG present", all((PROJECT_ROOT / f"figures/figure-14-clock-subordinated-impact-v2{suffix}").is_file() for suffix in (".pdf", ".png"))),
+        _check("V21I-28", "README Figure 14 image", "figures/figure-14-clock-subordinated-impact-v2.png" in readme, "embedded", "![Figure 14:" in readme and "figures/figure-14-clock-subordinated-impact-v2.png" in readme),
+        _check("V21I-29", "active R13 route", "scripts/43_run_r13_long_memory_clock_impact.py" in active_paths, "present", "scripts/43_run_r13_long_memory_clock_impact.py" in active_paths),
+        _check("V21I-30", "R13 science and mathematics checks", [len(r13_checks), sum(row["status"] == "Failed" for row in r13_checks)], "twenty checks and no failures", len(r13_checks) == 20 and all(row["status"] == "Verified" for row in r13_checks)),
+        _check("V21I-31", "renewal algorithm", "renewal-clock-construction" in supplement, "algorithmicx renewal construction present", "renewal-clock-construction" in supplement and "Kanter" in supplement),
+        _check("V21I-32", "paired impact algorithm", "paired-clock-impact" in supplement, "common-input impact construction present", "paired-clock-impact" in supplement and "same realised clock" in supplement_normalized),
     ]
 
     write_csv(

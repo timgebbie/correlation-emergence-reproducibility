@@ -5,6 +5,24 @@ This project uses numeric semantic versions only. Pre-release labels such as
 
 ## `v2.1.0` — 2026-08-30 — development integration candidate
 
+- Extend Figure 13 at R13 to four clock domains: the unchanged Gaussian-
+  innovation operational path, Poisson previous refresh, Mittag--Leffler
+  previous refresh with $\beta=0.8$, and its exact exponentially tempered law.
+- Replace the finite Markov Figure 13 sign fixture with a declared exogenous
+  heavy-tailed meta-order-run input, while explicitly withholding any
+  endogenous-memory or empirical-calibration claim.
+- Add Figure 14: common-input paired single-trade and fast/slow meta-order own
+  and cross impact under the same operational, Poisson, untempered and tempered
+  observation domains.
+- Audit the impact construction against Diana and Gebbie's
+  `InteractingLOBs.jl` commit `098f1807` and retain the repository's stricter
+  shocked-minus-control estimand.
+- Add exact caller-driven positive-stable, Mittag--Leffler and exponentially
+  tilted renewal samplers, with Laplace-transform, finite-mean and
+  previous-refresh regression controls.
+- Expand and streamline the algorithmicx supplement with explicit renewal-
+  clock and paired-impact algorithms. Preserve the accepted R12 commit as the
+  unmodified base; no tag, GitHub Release or remote upload is made at R13.
 - Add the accepted fixed-time order-book shock recovery as Figure 12.
 - Add the accepted six-panel operational/calendar stylised-facts comparison as
   Figure 13, using irregular background arrivals and the unchanged R7B design.

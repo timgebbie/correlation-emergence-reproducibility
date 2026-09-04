@@ -1,0 +1,88 @@
+{
+  "schema_version": "2.1.0-r13",
+  "scope": "long_memory_order_flow_observation_clocks_and_paired_impact",
+  "target_id": "V210-R13",
+  "accepted_r12_commit": "cd4ff8abda45b4162c614f5e7627578aa71c46dc",
+  "diana_reference": {
+    "repository": "https://github.com/DerickDiana/InteractingLOBs.jl",
+    "commit": "098f180729f0b678109c53f86c514dfdc12ec708",
+    "implementation": "src/useful_functions.jl:calculate_price_impacts",
+    "paper": "Non-uniformly sampled simulated price impact of an order-book",
+    "arxiv": "2310.06079",
+    "doi": "10.1016/j.cam.2024.116202"
+  },
+  "figure_13_base_configuration": "config/config-v2.1.0-figure-13.json",
+  "figure_13": {
+    "sign_process": {
+      "type": "pareto_metaorder_runs",
+      "tail_exponent": 1.5,
+      "minimum_run_events": 2,
+      "interpretation": "exogenous_order_splitting_input"
+    },
+    "representative_path_index": 2,
+    "rows": [
+      {
+        "domain_id": "operational_gaussian",
+        "label": "Operational: Gaussian innovations",
+        "clock": "none"
+      },
+      {
+        "domain_id": "poisson_previous_refresh",
+        "label": "Observation: Poisson renewal",
+        "clock": "poisson",
+        "rate_per_second": 0.1
+      },
+      {
+        "domain_id": "mittag_leffler_previous_refresh",
+        "label": "Observation: Mittag-Leffler renewal",
+        "clock": "mittag_leffler",
+        "beta": 0.8,
+        "scale_seconds": 10.0
+      },
+      {
+        "domain_id": "tempered_mittag_leffler_previous_refresh",
+        "label": "Observation: tempered Mittag-Leffler",
+        "clock": "tempered_mittag_leffler",
+        "beta": 0.8,
+        "scale_seconds": 10.0,
+        "tempering_rate_per_second": 0.0125
+      }
+    ],
+    "clock_seed": 188305,
+    "clock_candidates_per_book_path": 18000,
+    "histogram_supports": [
+      [-8.0, 8.0],
+      [-14.0, 14.0],
+      [-30.0, 30.0],
+      [-18.0, 18.0]
+    ],
+    "histogram_bins": 61,
+    "output_stem": "figures/figure-13-stylised-facts-recovery-v2",
+    "archive": "outputs/figure-13-long-memory-clock-comparison-v2.1.npz"
+  },
+  "figure_14": {
+    "single_trade_configuration": "config/config-v1.8.1.json",
+    "meta_order_configuration": "config/config-v1.8.2.json",
+    "clock_seed": 188306,
+    "clock_candidates_per_book_path": 6000,
+    "output_stem": "figures/figure-14-clock-subordinated-impact-v2",
+    "curve_output": "outputs/clock-subordinated-impact-curves-v2.1.csv",
+    "archive": "outputs/clock-subordinated-impact-v2.1.npz"
+  },
+  "outputs": {
+    "clock_summary": "outputs/r13-observation-clock-summary-v2.1.csv",
+    "checks": "diagnostics/r13-science-math-checks-v2.1.csv"
+  },
+  "scientific_boundary": {
+    "operational_dynamics": "unchanged_uniform_fixed_grid_solver",
+    "gaussian_semantics": "operational_innovations_not_waiting_intervals",
+    "calendar_semantics": "book_specific_previous_refresh_of_completed_operational_paths",
+    "interpolation": "forbidden",
+    "impact_estimand": "aggressor_signed_shocked_minus_common_input_control_log_mid",
+    "order_flow_memory": "exogenous_heavy_tailed_metaorder_run_input_not_endogenous_output",
+    "untempered_mean_wait": "infinite_for_beta_below_one",
+    "tempering": "exact_exponential_tilt_of_mittag_leffler_wait_law",
+    "source_v1_changed": false,
+    "parameter_refit": false
+  }
+}

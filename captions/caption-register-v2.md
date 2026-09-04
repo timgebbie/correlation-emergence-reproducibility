@@ -95,14 +95,25 @@ evolution. All density and contribution curves use one scale. Zero cancellation
 is retained, translation-mode coupling remains active, and the result recovers
 the earlier panel structure without claiming pointwise replication.
 
-## Figure 13 - Current-model stylised facts under operational and calendar observation
+## Figure 13 - Long-memory input and observation-clock morphology
 
-Panels (a)--(c) use five-second increments on the uniform operational grid;
-panels (d)--(f) use previous-refresh calendar observations of the same paths.
-Price/return, density/QQ and the nested return, absolute-return and signed-flow
-ACFs preserve the accepted source-panel hierarchy. The baseline uses
-`alpha_u=1`, zero cancellation and a Poisson refresh clock. Signed-flow
-persistence is a declared finite-persistence input, not an endogenous result.
+Rows (a)--(c), (d)--(f), (g)--(i), and (j)--(l) show the same completed
+operational paths directly, through Poisson previous refresh, through
+Mittag--Leffler previous refresh, and through its exponentially tempered
+counterpart. The columns show both-book price paths, standardised five-second
+return density with normal Q-Q inset, and return/absolute-return/order-flow
+ACFs. Heavy-tailed meta-order sign runs are a declared exogenous long-memory
+input. Holding creates the zero-return atom and leptokurtic morphology; it does
+not change the operational dynamics. No empirical calibration is claimed.
+
+## Figure 14 - Paired impact under alternative observation clocks
+
+Single-trade own/cross impact and fast/slow meta-order own/cross relaxation use
+aggressor-signed shocked-minus-common-input-control log-mid displacement.
+Operational, Poisson, Mittag--Leffler and tempered Mittag--Leffler domains use
+the same completed paths, with shocked and control members sharing each
+realised clock. Inactive observations retain their actual zero response. The
+curves are conditional model diagnostics, not fitted impact laws.
 
 ## Table 1 - Parameter, timescale and identifiability register
 

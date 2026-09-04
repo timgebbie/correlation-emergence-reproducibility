@@ -24,8 +24,6 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from PIL import Image, ImageDraw, ImageFont
-from pypdf import PdfReader, PdfWriter
-from pypdf._page import PageObject
 
 from functions.events import (
     EVENT_MARKET_ORDER,
@@ -218,7 +216,14 @@ def _arrival_and_sign_grids(
     start = int(experiment["event_start_operational_step"])
     last = steps - int(experiment["terminal_event_margin_steps"])
     probability = float(experiment["arrival_probability_per_step"])
-    repeat_probability = float(experiment["declared_sign_repeat_probability"])
+    sign_process = experiment.get(
+        "sign_process",
+        {
+            "type": "finite_markov",
+            "repeat_probability": experiment["declared_sign_repeat_probability"],
+        },
+    )
+    sign_process_type = str(sign_process["type"])
     primitive_arrivals = np.zeros((primitive_paths, 2, steps + 1), dtype=bool)
     primitive_signs = np.zeros((primitive_paths, 2, steps + 1), dtype=np.int8)
     for path in range(primitive_paths):
@@ -240,14 +245,44 @@ def _arrival_and_sign_grids(
                 )
             )
             event_signs = np.empty(event_steps.size, dtype=np.int8)
-            event_signs[0] = 1 if sign_rng.random() >= 0.5 else -1
-            repeats = sign_rng.random(event_steps.size - 1) < repeat_probability
-            for event in range(1, event_steps.size):
-                event_signs[event] = (
-                    event_signs[event - 1]
-                    if repeats[event - 1]
-                    else -event_signs[event - 1]
-                )
+            if sign_process_type == "finite_markov":
+                repeat_probability = float(sign_process["repeat_probability"])
+                if not 0.0 <= repeat_probability <= 1.0:
+                    raise ValueError("sign repeat probability must lie in [0, 1]")
+                event_signs[0] = 1 if sign_rng.random() >= 0.5 else -1
+                repeats = sign_rng.random(event_steps.size - 1) < repeat_probability
+                for event in range(1, event_steps.size):
+                    event_signs[event] = (
+                        event_signs[event - 1]
+                        if repeats[event - 1]
+                        else -event_signs[event - 1]
+                    )
+            elif sign_process_type == "pareto_metaorder_runs":
+                tail_exponent = float(sign_process["tail_exponent"])
+                minimum_run = int(sign_process["minimum_run_events"])
+                if not 1.0 < tail_exponent < 2.0:
+                    raise ValueError(
+                        "Pareto meta-order tail exponent must lie in (1, 2)"
+                    )
+                if minimum_run < 1:
+                    raise ValueError("minimum meta-order run must be positive")
+                position = 0
+                while position < event_steps.size:
+                    run_length = max(
+                        minimum_run,
+                        int(
+                            np.floor(
+                                minimum_run
+                                * sign_rng.random() ** (-1.0 / tail_exponent)
+                            )
+                        ),
+                    )
+                    run_sign = 1 if sign_rng.random() >= 0.5 else -1
+                    stop = min(position + run_length, event_steps.size)
+                    event_signs[position:stop] = run_sign
+                    position = stop
+            else:
+                raise ValueError(f"unsupported sign process: {sign_process_type}")
             primitive_signs[path, book, event_steps] = event_signs
     arrivals = np.concatenate((primitive_arrivals, primitive_arrivals), axis=0)
     signs = np.concatenate((primitive_signs, -primitive_signs), axis=0)
@@ -1240,6 +1275,9 @@ def _assemble_png(panels: list[dict[str, object]], configuration: dict[str, obje
 
 
 def _assemble_pdf(panels: list[dict[str, object]], configuration: dict[str, object]) -> None:
+    from pypdf import PdfReader, PdfWriter
+    from pypdf._page import PageObject
+
     figure_config = configuration["figure"]
     width_points = float(figure_config["assembled_canvas_inches"][0]) * 72.0
     height_points = float(figure_config["assembled_canvas_inches"][1]) * 72.0
@@ -1456,6 +1494,8 @@ def _verification_rows(
     master: dict[str, np.ndarray | float],
     configuration: dict[str, object],
 ) -> list[dict[str, object]]:
+    from pypdf import PdfReader
+
     checks = []
     add = lambda claim, observed, criterion, passed: checks.append(
         _check(f"F13-{len(checks) + 1:02d}", claim, observed, criterion, passed)

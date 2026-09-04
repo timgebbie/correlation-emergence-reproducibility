@@ -237,3 +237,13 @@ outputs/event-semantics-register-v1.8.csv. The deterministic fixture is stored
 in config/config-v1.8.0.json. Its execution prices are consumed-cell proxies,
 not market observations, and the legacy Figures 8--9 shock is not relabelled as
 a trade-impact measurement.
+
+The v2.1.0 R13 candidate adds synthetic clock and order-flow inputs, not
+empirical observations. `config/config-v2.1.0-r13.json` declares caller-owned
+seeds for independent book-specific Mittag--Leffler and exponentially tempered
+Mittag--Leffler renewal paths, plus heavy-tailed meta-order sign-run inputs.
+Run `scripts/43_run_r13_long_memory_clock_impact.py` to regenerate Figures 13
+and 14, the two compressed evidence archives, the impact curve CSV, clock
+summary and science/mathematics checks. The operational paths are completed
+before clocks are applied. No wait is fitted, clipped or inserted into the
+density recurrence, and no market data are required.
