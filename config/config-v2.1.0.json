@@ -6,13 +6,13 @@
   "doi_bearing_parent_commit": "02341b6be05e375b176d8865ba8f6ccdcebfe1dc",
   "accepted_r1_r2_commit": "24becbb6517f928bd9b87e6619604d4abaf84976",
   "accepted_inputs": [
-    {"path": "README.md", "sha256": "9aefcb40a71014b1c8a6bf575c9e7ad7a11d8daec2ad31f7b8d90bf00f413b5a", "role": "doi_bearing_public_readme"},
+    {"path": "README.md", "sha256": "c663e4f231a431677db12ce7a002cc84c16655bef4eaf71955260ef4ba483e8c", "role": "doi_bearing_public_readme"},
     {"path": "RELEASE-NOTES-v2.0.0.md", "sha256": "6e5d20ebd0d30afc8cbf56b63c188f18c9a98b136e27aee17bbee8dd64355ff0", "role": "frozen_v2_release_notes"},
     {"path": "SUPPLEMENTARY-MATERIAL-v2.0.0.tex", "sha256": "960400980ae7224eca072f71ec9e69ead8bc0c9cc11024a4d48a66d55f403bf4", "role": "frozen_v2_supplement_source"},
     {"path": "supplementary-materials/SUPPLEMENTARY-MATERIAL-v2.0.0.pdf", "sha256": "5152ab809b9826feb24915fcc9c7aa414ab98052b3fedb085315311498bf3b6f", "role": "frozen_v2_supplement_pdf"},
     {"path": "source/source-v1/CATG-RD2Epps-v3-arXiv.tex", "sha256": "48eea98a6fb084d6ecc397bede4c107a44cae947e16271d66a7041e2997afb5a", "role": "frozen_target_paper"},
     {"path": "figures/figure-08-corrected-translation-mode-coupling-v2.png", "sha256": "43b906b67894005673af38884d87a8858c36e65fb4af097610d241bd88c0b905", "role": "accepted_figure_8"},
-    {"path": "figures/figure-11-mid-price-trade-sign-autocorrelations-v2.png", "sha256": "d9fd5931dd1b2fea925ecccd80f03222c7b15821f8810f228d11475a0c09eff8", "role": "accepted_figure_11"}
+    {"path": "figures/figure-11-mid-price-trade-sign-autocorrelations-v2.png", "sha256": "0ee4444cc61cf6667dfe275c4dda0013d2127dd3aed0c7681bd01755e2ba8e88", "role": "accepted_figure_11"}
   ],
   "model": {
     "grid_lower": -10.0,

@@ -1,11 +1,11 @@
 check_id,claim,observed,criterion,status,software_version
 V21I-01,frozen v2.0.0 and source-v1 inputs,{},no errors,Verified,2.1.0
-V21I-02,README version,True,v2.1.0 development identity,Verified,2.1.0
+V21I-02,README version,True,v2.2.0 identity,Verified,2.1.0
 V21I-03,public figure sequence,"[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]",Figures 1 through 14,Verified,2.1.0
 V21I-04,public figure pairs,"{'numbered': [], 'figure_7_standalones': []}",all Figure 1--14 pairs including Figure 7a--7c,Verified,2.1.0
 V21I-05,Figure 11 qualification in README,"('registered finite periodic-schedule diagnostic', 'phase-sensitive')",both accepted terms,Verified,2.1.0
 V21I-06,Figure 11 qualification in caption register,"('registered finite periodic-schedule diagnostic', 'phase-sensitive')",both accepted terms,Verified,2.1.0
-V21I-07,Figure 11 qualification in supplement,"('registered finite periodic-schedule diagnostic', 'phase-sensitive')",both accepted terms,Verified,2.1.0
+V21I-07,Figure 11 qualification in supplement,"('periodic-schedule structure', 'finite-schedule diagnostics', 'not an endogenous long-memory claim')",finite-schedule and exogenous-memory limits,Verified,2.1.0
 V21I-08,Figure 12 supplement integration,True,accepted source-v2 insert,Verified,2.1.0
 V21I-09,Figure 13 supplement integration,True,accepted source-v2 insert,Verified,2.1.0
 V21I-10,Figure 13 scope in README,"('beta=0.8', 'tempered', 'exogenous long-memory')",all accepted limits,Verified,2.1.0

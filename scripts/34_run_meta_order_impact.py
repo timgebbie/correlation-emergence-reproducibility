@@ -969,6 +969,54 @@ def _plot(result: dict[str, object], configuration: dict[str, object]) -> None:
     plt.close(figure)
 
 
+def _plot_numerical_resolution(data=None):
+    if data is None:
+        with np.load(PROJECT_ROOT / "outputs/impact-ensemble-v2.2.0.npz") as stored:
+            data = dict(stored)
+    cfg = json.loads((PROJECT_ROOT / "config/config-v1.8.1.json").read_text())["numerical_resolution"]
+    assert np.array_equal(data["group_ids"], np.arange(cfg["independent_groups"]))
+    x = data["lags_seconds"]
+    def save(fig, name):
+        stem = PROJECT_ROOT / "figures" / name
+        atomic_savefig(fig, Path(str(stem) + ".pdf"), metadata={"CreationDate": None, "ModDate": None})
+        if name != "meta-order-individual-envelopes-v2.2.0":
+            atomic_savefig(fig, Path(str(stem) + ".png"), dpi=220)
+        plt.close(fig)
+    def axis_style(ax):
+        ax.grid(alpha=.17, linewidth=.5)
+    colours = ['#225ea8', '#d95f0e', '#756bb1', '#238b45']
+    domains = ['Operational', 'Poisson', 'Mittag-Leffler', 'Tempered ML']
+    g = data['group_mean']; b = data['build_up_group_mean']
+    individual = data['primary_individual_response']; n = cfg['independent_groups']
+    m = g.mean(0); h = 1.965 * g.std(0, ddof=1) / np.sqrt(n)
+    bm = b.mean(0); bh = 1.965 * b.std(0, ddof=1) / np.sqrt(n)
+    with plt.rc_context():
+        plt.rcdefaults()
+        plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 10, "axes.spines.top": True, "axes.spines.right": True, "pdf.fonttype": 42, "ps.fonttype": 42})
+        fig,axes=plt.subplots(2,2,figsize=(10.8,8.2),sharey=True)
+        for response in range(2):
+         for row in range(2):
+          for schedule in range(2):
+           for domain in range(2):
+            values=bm[schedule,domain,:,response] if row==0 else m[schedule+1,domain,:,response];err=bh[schedule,domain,:,response] if row==0 else h[schedule+1,domain,:,response];xx=.05*np.arange(1,5) if row==0 else x;colour=['#2166ac','#b35806'][schedule]
+            axes[row,response].plot(xx,values,color=colour,ls='-' if domain==0 else '--',lw=1.7,label=f'{"Fast 15" if schedule==0 else "Slow 60"} s; '+('Operational' if domain==0 else 'Previous-refresh calendar'));axes[row,response].fill_between(xx,values-err,values+err,color=colour,alpha=.08)
+          ax=axes[row,response];ax.axhline(0,color='#777777',lw=.7);axis_style(ax);ax.set_title(['Own','Cross'][response]+'-impact '+['build-up','relaxation'][row]);ax.set_xlabel('Scheduled cumulative meta-order volume' if row==0 else 'Lag after final child [s]')
+          if response==0:ax.set_ylabel('Aggressor-signed log-mid response')
+        axes[0,0].legend(frameon=False,fontsize=7);fig.suptitle('Meta-order impact: equal signed volume, distinct execution horizons, explicit subordination');fig.tight_layout(rect=(0,0,1,.97));save(fig,'figure-10-meta-order-impact-v2')
+        # Individual path variation has its own clearly labelled companion figure.
+        # Preserve clock colour and fast/slow convention, avoiding eight overlapping wide bands.
+        lo,hi=np.quantile(individual,[.1,.9],axis=0)
+        fig,axes=plt.subplots(2,4,figsize=(13.2,6.8))
+        for domain in range(4):
+         for response in range(2):
+          ax=axes[response,domain]
+          for s in range(2):
+           ax.fill_between(x,lo[s+1,domain,:,response],hi[s+1,domain,:,response],color=colours[domain],alpha=.06 if s else .12,hatch='//' if s else None,linewidth=0)
+           ax.plot(x,m[s+1,domain,:,response],color=colours[domain],ls='-' if s==0 else '--',lw=1.55,label='Fast' if s==0 else 'Slow')
+          ax.set_title(domains[domain] if response==0 else '');ax.set_xlabel('Lag after final child [s]');ax.set_ylabel(['Own','Cross'][response]+' impact' if domain==0 else '');axis_style(ax);ax.legend(frameon=False,fontsize=7)
+        fig.suptitle('Meta-order responses: individual 10th–90th percentile envelopes');fig.tight_layout();save(fig,'meta-order-individual-envelopes-v2.2.0')
+
+
 def main() -> int:
     remove_orphaned_figure_staging_files()
     configuration = _load_configuration()
@@ -1080,7 +1128,12 @@ def main() -> int:
         f"{failed} failures; {len(result['event_rows'])} child-event rows."
     )
     print("Figure 10 generated on one common linear response scale.")
-    return 1 if failed else 0
+    if failed:
+        return 1
+    impact_configuration = json.loads((PROJECT_ROOT / "config/config-v1.8.1.json").read_text())
+    if "numerical_resolution" in impact_configuration:
+        _plot_numerical_resolution()
+    return 0
 
 
 if __name__ == "__main__":

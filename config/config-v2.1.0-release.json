@@ -1,5 +1,5 @@
 {
-  "schema_version": "2.1.0",
+  "schema_version": "2.2.0",
   "scope": "release_conformity_and_science_consistency",
   "frozen_inputs": [
     {
@@ -25,15 +25,15 @@
     },
     {
       "path": "figures/figure-13-stylised-facts-recovery-v2.png",
-      "sha256": "af545f6553128e2c6dcf8ecdbc42c51e93d2353be62085a29c7cf8f8a03a2229"
+      "sha256": "e096b0def2c0011633bb8d88ba198540c7b03873047e5eec36c53709949df9b2"
     },
     {
       "path": "figures/figure-14-clock-subordinated-impact-v2.png",
-      "sha256": "30cc9dd5d18843e575a24601d1f39bfb80dcdfb1bf686cee4ad0a44419b46d27"
+      "sha256": "7826a9ead1b746c2bdce97933314288661f81864274180639102a90b5d642d7e"
     },
     {
-      "path": "supplementary-materials/SUPPLEMENTARY-MATERIAL-v2.1.0.pdf",
-      "sha256": "fa2ae0c32bf749e44b65aada32af1304d8962875eca44bb827ec610f3d3347c7"
+      "path": "supplementary-materials/SUPPLEMENTARY-MATERIAL-v2.2.0.pdf",
+      "sha256": "99b358a73aa1f5235f5a76431e7e463f4b2d06090ded4f6ccc8a6ecf40e101b8"
     }
   ],
   "scientific_contract": {
@@ -59,10 +59,10 @@
     "pypdf": "6.10.0"
   },
   "publication_contract": {
-    "version": "v2.1.0",
-    "tag": "v2.1.0",
-    "release_title": "v2.1.0 — Recovery, long-memory clocks and impact extensions",
-    "archive_name": "correlation-emergence-reproducibility-v2.1.0.zip",
+    "version": "v2.2.0",
+    "tag": "v2.2.0",
+    "release_title": "v2.2.0 — Numerical resolution update",
+    "archive_name": "correlation-emergence-reproducibility-v2.2.0.zip",
     "single_release_archive": true
   }
 }

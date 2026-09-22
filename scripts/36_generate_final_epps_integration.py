@@ -312,6 +312,95 @@ def _save_figures(
     _save_pair(fig, FIGURE_STEMS["overview"])
 
 
+
+
+def _resolution_curves(ensembles):
+    from functions.observation.combined_reference import stationary_poisson_joint_attenuation
+    from functions.correlation_build_up import ordinary_build_up
+    cfg = json.loads(CONFIG_PATH.read_text())["numerical_resolution"]
+    x = np.asarray(cfg["lags_seconds"], dtype=float)
+    def correlation(v):
+        return v[..., 0] / np.sqrt(v[..., 1]*v[..., 2])
+    def result(mean, loo, theory):
+        n = len(loo)
+        se = np.sqrt((n-1)/n*np.sum((loo-loo.mean(0))**2, axis=0))
+        return dict(lags_seconds=x, matched_mean=mean, standard_error=se,
+                    halfwidth_98=cfg["mean_interval_critical_value"]*se, theory=theory)
+    c = ensembles["clock"]
+    a, s = c["asynchronous"], c["synchronous"]
+    at, st = a.sum(0), s.sum(0)
+    panels = [result(correlation(at)/correlation(st), correlation(at-a)/correlation(st-s), ordinary_build_up(.1*x))]
+    c = ensembles["coupled"]
+    a, s, den = c["asynchronous"], c["synchronous"], c["centre_squares"]
+    at, st, total = a.sum(0), s.sum(0), den.sum(0)
+    panels.append(result(st[:, 0]/total, (st[:, 0]-s[:, :, 0])/(total-den), ordinary_build_up(.025*x)))
+    replicas = cfg["clock_replicas"]
+    panels.append(result(at[:, 0]/(replicas*total), (at[:, 0]-a[:, :, 0])/(replicas*(total-den)), stationary_poisson_joint_attenuation(x, clock_rate=.1, response_rate=.025)))
+    panels[2]["conditional_reference"] = c["reference"][:, :, 0].sum(0)/(len(den)*replicas*(round(cfg["horizon_seconds"]/cfg["step_seconds"])+1-(x/cfg["step_seconds"]).astype(int))*x)
+    return panels
+
+def _resolution_panel(ax, j, short):
+    from functions.correlation_build_up import ordinary_build_up
+    from functions.observation.combined_reference import stationary_poisson_joint_attenuation
+    d = short[j]
+    xx = d['lags_seconds']
+    mean = d['matched_mean']
+    half = d['halfwidth_98']
+    c = ['#1f77b4', '#2a9d55', '#b51f2e'][j]
+    dense = np.geomspace(0.5, 400, 500)
+    th = ordinary_build_up(0.1 * dense) if j == 0 else ordinary_build_up(0.025 * dense) if j == 1 else ordinary_build_up(0.1 * dense) * ordinary_build_up(0.025 * dense)
+    ax.fill_between(xx, mean - half, mean + half, color=c, alpha=0.32, lw=0.4, edgecolor=c, label='98% mean interval')
+    ax.plot(dense, th, color='black', lw=3.1, label=['Clock theory', 'Coupling theory', 'Product approximation'][j])
+    if j == 2:
+        ax.plot(dense, stationary_poisson_joint_attenuation(dense, clock_rate=.1, response_rate=.025), color='#666666', ls='--', lw=2.5, label='Joint reduced reference')
+    ax.plot(xx, mean, color=c, lw=1.55, label='Simulation')
+    ax.set(title=['(a) Clock only', '(b) Translation-mode coupling only', '(c) Clock and translation-mode coupling'][j], xlim=(0, 410), ylim=(-0.02, 1.1), xlabel='Calendar aggregation scale $\\Delta$ [s]', ylabel='Normalized correlation attenuation' if j == 0 else 'Normalized covariance response')
+    ax.set_box_aspect(1)
+    ax.grid(alpha=0.18)
+    ax.legend(loc='lower right', fontsize=8, frameon=False)
+    inset = ax.inset_axes([0.49, 0.25, 0.47, 0.38])
+    inset.set_xscale('log')
+    inset.set_yscale('log')
+    low = np.where(mean - half > 0, mean - half, np.nan)
+    inset.fill_between(xx, low, mean + half, color=c, alpha=0.32, lw=0.35, edgecolor=c)
+    inset.plot(dense, th, color='black', lw=2)
+    if j == 2:
+        inset.plot(dense, stationary_poisson_joint_attenuation(dense, clock_rate=.1, response_rate=.025), color='#666666', ls='--', lw=1.65)
+    inset.plot(xx, np.where(mean > 0, mean, np.nan), color=c, lw=1.05, marker='.', markersize=2)
+    inset.set_xlim(0.45, 440)
+    inset.set_ylim(0.0001, 1.1)
+    inset.set_xticks([0.5, 10, 400], labels=['0.5', '10', '400'])
+    inset.set_yticks([0.001, 0.1, 1], labels=['0.001', '0.1', '1'])
+    inset.minorticks_off()
+    inset.tick_params(labelsize=7, pad=1, length=2)
+    inset.set_title('Log–log', fontsize=8, pad=3)
+    inset.grid(alpha=0.18, linewidth=0.4)
+
+def _run_resolution_comparison():
+    """Assemble Figure 7 from the independent-path statistics produced by script 33."""
+    with np.load(PROJECT_ROOT / "outputs/figure-07-ensemble-v2.2.0.npz") as data:
+        ensembles = {kind: {key.split("__", 1)[1]: data[key] for key in data.files
+                            if key.startswith(kind + "__")}
+                     for kind in ("clock", "coupled")}
+    panels = _resolution_curves(ensembles)
+    rows = []
+    for label, panel in zip(["clock", "synchronous", "asynchronous"], panels):
+        for i, lag in enumerate(panel["lags_seconds"]):
+            rows.append(dict(panel=label, lag_seconds=lag, simulation=panel["matched_mean"][i], halfwidth_98=panel["halfwidth_98"][i], reduced_theory=panel["theory"][i], conditional_reference=panel.get("conditional_reference", [""]*len(panel["lags_seconds"]))[i]))
+    write_csv(PROJECT_ROOT/"outputs/figure-07-curves-v2.2.0.csv", list(rows[0]), rows)
+    with plt.rc_context():
+        plt.rcdefaults()
+        plt.rcParams.update({"font.size": 10, "pdf.fonttype": 42})
+        for j, key in enumerate(["clock_only", "coupling_only", "combined"]):
+            figure, axis = plt.subplots(figsize=(6.4, 6.4), layout="constrained")
+            _resolution_panel(axis, j, panels)
+            _save_pair(figure, FIGURE_STEMS[key], square_canvas=True)
+        figure, axes = plt.subplots(1, 3, figsize=(17.4, 6.2), layout="constrained")
+        for j, axis in enumerate(axes):
+            _resolution_panel(axis, j, panels)
+        _save_pair(figure, FIGURE_STEMS["overview"], square_canvas=True)
+    return ensembles, panels
+
 def main() -> int:
     configuration = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
     if configuration.get("schema_version") != VERSION:
@@ -474,7 +563,12 @@ def main() -> int:
         f"Final estimator-aware Epps integration completed: {len(checks) - failed} "
         f"checks verified, {failed} failures."
     )
-    return 1 if failed else 0
+    if failed:
+        return 1
+    if "numerical_resolution" in configuration:
+        _run_resolution_comparison()
+        print("Figure 7 numerical-resolution ensembles and figures completed.")
+    return 0
 
 
 if __name__ == "__main__":

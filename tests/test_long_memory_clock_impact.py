@@ -102,9 +102,9 @@ class LongMemoryClockImpactTests(unittest.TestCase):
 
     def test_figures_and_panel_manifest(self) -> None:
         with Image.open(ROOT / "figures/figure-13-stylised-facts-recovery-v2.png") as image:
-            self.assertEqual(image.size, (3960, 4560))
+            self.assertEqual(image.size, (2880, 3440))
         with Image.open(ROOT / "figures/figure-14-clock-subordinated-impact-v2.png") as image:
-            self.assertEqual(image.size, (3600, 2580))
+            self.assertEqual(image.size, (2640, 1892))
         manifest = _rows(PANEL_MANIFEST)
         self.assertEqual(len(manifest), 12)
         self.assertEqual({row["panel_id"] for row in manifest}, set("abcdefghijkl"))
@@ -120,11 +120,11 @@ class LongMemoryClockImpactTests(unittest.TestCase):
                 self.assertEqual(_sha256(path), row[hash_field])
 
     def test_supplement_algorithm_boundary(self) -> None:
-        root = (ROOT / "SUPPLEMENTARY-MATERIAL-v2.1.0.tex").read_text(encoding="utf-8")
-        algorithms = (ROOT / "source/source-v2/NUMERICAL-ALGORITHMS-v2.1.tex").read_text(encoding="utf-8")
-        science = (ROOT / "source/source-v2/LONG-MEMORY-CLOCK-IMPACT-v2.1.tex").read_text(encoding="utf-8")
+        root = (ROOT / "SUPPLEMENTARY-MATERIAL-v2.2.0.tex").read_text(encoding="utf-8")
+        algorithms = (ROOT / "source/source-v2/NUMERICAL-ALGORITHMS-v2.2.0.tex").read_text(encoding="utf-8")
+        science = (ROOT / "source/source-v2/LONG-MEMORY-CLOCK-IMPACT-v2.2.0.tex").read_text(encoding="utf-8")
         normalized_algorithms = " ".join(algorithms.split())
-        self.assertIn("LONG-MEMORY-CLOCK-IMPACT-v2.1.tex", root)
+        self.assertIn("LONG-MEMORY-CLOCK-IMPACT-v2.2.0.tex", root)
         self.assertIn("alg:renewal-clock-construction", algorithms)
         self.assertIn("alg:paired-clock-impact", algorithms)
         self.assertIn("same realised clock", normalized_algorithms)

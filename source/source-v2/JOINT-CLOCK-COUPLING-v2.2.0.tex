@@ -1,0 +1,42 @@
+\paragraph{Why the combined curve differs from the product.}
+Clock-only attenuation and coupling-induced covariance describe different operations. The clock selects observation times; coupling spreads cross-book dependence over time. Applying independent clocks to a coupled process therefore requires averaging that time-dependent covariance over the sampled intervals. It is not equivalent to multiplying the two separately averaged component curves.
+
+This distinction can be calculated explicitly for the stationary reduced model underlying the grey reference. Write $P_1=X+Z/2$ and $P_2=X-Z/2$, with independent Brownian pair centre $X$ and stationary Ornstein--Uhlenbeck spread $Z$. Let $C$ be the variance rate of $X$, and use the spread variance $2C/\kappa$ of the symmetric closure. The cross-covariance kernel of price increments is
+\begin{equation}
+K_{12}(s)=\frac{C\kappa}{2}e^{-\kappa|s|}.
+\end{equation}
+For independent stationary Poisson observation clocks, each of rate $\lambda=\lambda^{\rm clk}$ and independent of the prices, previous-refresh observation convolves this cross-kernel with the difference-of-clock-age density $h_\lambda(s)=(\lambda/2)e^{-\lambda|s|}$. This is a cross-book result; it does not apply the same convolution to a book's marginal variance. Integrating the resulting kernel over a return window gives
+\begin{align}
+G(\Delta)
+&=\frac{2}{C\Delta}\int_0^\Delta(\Delta-s)
+       (K_{12}*h_\lambda)(s)\,ds \\
+&=\frac{\lambda^2F(\kappa\Delta)-\kappa^2F(\lambda\Delta)}
+        {\lambda^2-\kappa^2},\qquad \lambda\ne\kappa.
+\label{eq:joint-poisson-coupling}
+\end{align}
+At equal rates the continuous limit is $G(\Delta)=F(x)-xF'(x)/2$, with $x=\kappa\Delta$. Equation~\eqref{eq:joint-poisson-coupling} is a population covariance normalized by $C\Delta$. It is the stationary continuous-time counterpart of the reduced conditional calculation, not an exact solution of the full reaction--diffusion dynamics or a finite-sample ratio identity.
+
+The short-time powers expose the difference:
+\begin{equation}
+G(\Delta)=\frac{\lambda\kappa}{2(\lambda+\kappa)}\Delta+O(\Delta^3),
+\qquad
+F(\lambda\Delta)F(\kappa\Delta)
+=\frac{\lambda\kappa}{4}\Delta^2+O(\Delta^3).
+\label{eq:joint-short-time}
+\end{equation}
+The joint reduced response starts linearly, whereas the product starts quadratically. Thus the paper's product approximation is not the short-time asymptotic of this joint reduced model. With the fixed rates $\lambda=0.1$ and $\kappa=0.025\,\mathrm{s}^{-1}$, at 20 seconds the joint expression is 0.18942, the product is 0.12095, and the pooled simulation is 0.18717. Increasing the ensemble can expose this approximation residual more clearly, but cannot remove it. Both analytical expressions tend to one as the aggregation lag increases.
+
+The mean clock wait is 10 seconds and the coupling relaxation time is 40 seconds. The earlier Figure 7 curves began at 20 seconds, where the clock factor has already reached 0.568. A log--log change of axes alone cannot recover the missing initial rise. The short-lag extension therefore evaluates all three panels below 20 seconds and checks the numerical grid separately from sampling precision. The algebra above was checked against direct kernel convolution and return-window quadrature without parameter fitting.
+
+\paragraph{Short-lag numerical check.}
+The same 512-path ensembles were replayed at eight additional lags: 0.5, 1, 2, 3, 5, 7.5, 10 and 15 seconds. Their previously saved moments at 20--400 seconds were recovered before the additional lags were used. At 0.5 seconds, the clock-only estimate is $0.02460\pm0.00064$, compared with $F(0.05)=0.02459$, and the combined estimate is $0.00531\pm0.00075$, compared with $G(0.5)=0.00500$; the quoted uncertainties are pointwise 98\% half-widths.
+
+The coupling-only value at that lag is $-0.00638\pm0.00167$, compared with the continuous reduced value 0.00622. Here the return contains only one 0.5-second update. The explicit discrete reduced closure explains why this distinction matters. With update $h$, spread coefficient $q=1-\kappa h$ and $\Delta=mh$, its stationary normalized synchronous covariance is
+\begin{equation}
+B_h(\Delta)=1-\frac{1-(1-\kappa h)^m}
+ {\kappa\Delta(1-\kappa h/2)},\qquad 0<\kappa h<2.
+\label{eq:discrete-coupling}
+\end{equation}
+At one update, $B_h(h)=-\kappa h/(2-\kappa h)$, which is $-0.00629$ here. The two coupling drifts oppose one another, while a new independent shock reaches the other book through subsequent updates. This discrete result is a reduced benchmark, not an exact identity for the full density solver. As $h\to0$ at fixed $\Delta$, it tends to $F(\kappa\Delta)$.
+
+A paired 64-path, 2000-second screen compared $(\Delta x,h)=(0.1,0.5\,\mathrm{s})$ and $(0.05,0.125\,\mathrm{s})$, preserving the diffusion scaling and using nested innovations and the same continuous observation clocks. At the 0.5-second lag the coupling-only change is $+0.00938\pm0.00009$; the clock-only and combined changes are $-0.00047\pm0.00091$ and $+0.00001\pm0.00113$. Thus sampling precision, discrete updating and product approximation have different roles. The main figure retains the declared 512-path production grid, and the paired refinement results are summarized above. The smallest-lag coupling-only points are not continuum-converged; the required scale ordering is $h\ll\Delta$. Nonpositive estimates and interval endpoints remain visible on the linear axes and are omitted from the log--log axes.

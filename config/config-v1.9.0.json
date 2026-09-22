@@ -7,7 +7,7 @@
   "accepted_inputs": [
     {
       "path": "config/config-v1.8.3.json",
-      "sha256": "196667485eb68412ea50060e25b5bf0e593b6ef53b495410448a1e9dbf979eda",
+      "sha256": "145b8da8db40fbf4d055919339deff2405a75dae2c6e3fb21fbcbb2f3c38e16e",
       "role": "accepted_stage_8_closure_configuration"
     },
     {
@@ -41,8 +41,26 @@
     "integration_route": "deterministic_assembly_of_frozen_accepted_curves"
   },
   "registered_lags_seconds": [
-    20, 40, 60, 80, 100, 120, 140, 160, 180, 200,
-    220, 240, 260, 280, 300, 320, 340, 360, 380, 400
+    20,
+    40,
+    60,
+    80,
+    100,
+    120,
+    140,
+    160,
+    180,
+    200,
+    220,
+    240,
+    260,
+    280,
+    300,
+    320,
+    340,
+    360,
+    380,
+    400
   ],
   "required_curves": [
     "clock_only_theory",
@@ -55,9 +73,19 @@
   ],
   "display_contract": {
     "figure_number": 26,
-    "panels": ["clock_only", "coupling_only", "combined"],
-    "shared_x_scale_seconds": [0.0, 410.0],
-    "shared_y_scale": [0.0, 1.1],
+    "panels": [
+      "clock_only",
+      "coupling_only",
+      "combined"
+    ],
+    "shared_x_scale_seconds": [
+      0.0,
+      410.0
+    ],
+    "shared_y_scale": [
+      0.0,
+      1.1
+    ],
     "aggregation_axis": "linear",
     "simulation_uncertainty": "normal_95_percent_standard_error_band",
     "optional_calibrated_curve": "excluded"
@@ -86,5 +114,48 @@
     "final_epps_integration_complete_on_acceptance": true,
     "source_v1_changed": false,
     "next_stage_on_acceptance": "v1.9.1_release_streamlining"
+  },
+  "numerical_resolution": {
+    "independent_paths": 512,
+    "batch_size": 32,
+    "clock_replicas": 4,
+    "horizon_seconds": 8000,
+    "warmup_seconds": 200,
+    "step_seconds": 0.5,
+    "lags_seconds": [
+      0.5,
+      1,
+      2,
+      3,
+      5,
+      7.5,
+      10,
+      15,
+      20,
+      40,
+      60,
+      80,
+      100,
+      120,
+      140,
+      160,
+      180,
+      200,
+      220,
+      240,
+      260,
+      280,
+      300,
+      320,
+      340,
+      360,
+      380,
+      400
+    ],
+    "clock_batch_seed": 222000,
+    "coupled_path_seed": 224200,
+    "coupled_clock_seed": 224300,
+    "mean_interval_probability": 0.98,
+    "mean_interval_critical_value": 2.333667430316829
   }
 }

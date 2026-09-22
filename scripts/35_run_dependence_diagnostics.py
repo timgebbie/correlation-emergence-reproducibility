@@ -1051,6 +1051,147 @@ def _plot(result: dict[str, object]) -> None:
     plt.close(figure)
 
 
+def _resolution_dependence_batch(start, stop, kind):
+    import runpy
+    core = runpy.run_path(str(PROJECT_ROOT / 'scripts/33_run_single_trade_impact.py'))
+    settings = json.loads((PROJECT_ROOT / 'config/config-v1.8.3.json').read_text())['numerical_resolution'][kind]
+    persistent = kind == 'persistent'
+    H = settings['horizon_steps']
+    q = settings['child_volume']
+    L = settings['acf_lags']
+    horizons = np.array([H//4, H//2, H])
+    acf = increment_autocorrelation
+    def acfs(x):
+        try:return acf(x,L)
+        except ValueError:
+            # A clock may not refresh: a constant series has undefined Pearson ACF.
+            y=np.full(L+1,np.nan)
+            for k in range(L+1):
+                u=x if k==0 else x[:-k];v=x if k==0 else x[k:]
+                if len(u)>1 and np.std(u)>0 and np.std(v)>0:y[k]=np.corrcoef(u,v)[0,1]
+            return y
+
+    def events(gid):
+        records=[]
+        for b in range(2):
+            rng=np.random.default_rng(np.random.SeedSequence([225101 if persistent else 225111,gid,b]))
+            steps=301+np.flatnonzero(rng.random(H-149-301+1)<.05) if persistent else 301+10*b+20*np.arange(48)
+            r=np.random.default_rng(np.random.SeedSequence([225102 if persistent else 225112,gid,b]));signs=[]
+            if persistent:
+                while len(signs)<len(steps):
+                    length=max(2,int(np.floor(2*r.random()**(-1/1.5))));sign=1 if r.random()>=.5 else -1;signs.extend([sign]*length)
+            else:
+                signs=[1 if r.random()>=.5 else -1]
+                for k in range(1,len(steps)):signs.append(signs[-1] if r.random()<.75 else -signs[-1])
+            records.extend(OrderEvent(f'v2.2.0-g{gid}-b{b}-e{k}','market_order',b,int(step),int(signs[k]),q) for k,step in enumerate(steps))
+        return sorted(records,key=lambda e:(e.operational_step,e.book_index))
+
+    ids=np.arange(start,stop);n=len(ids)
+    z=np.array([np.random.default_rng(np.random.SeedSequence([225100 if persistent else 225110,int(g)])).standard_normal((H,2)) for g in ids]);tapes=[events(int(g)) for g in ids];ev=[]
+    prices,guard=core['_resolution_paths'](z,tapes=tapes,event_records=ev)
+    # Full explicit primitive and antithetic solves, so quote/tick conventions are not inferred.
+    anti=[[OrderEvent(e.event_id+'-a',e.event_type,e.book_index,e.operational_step,-e.side,e.quantity) for e in tape] for tape in tapes];ae=[]
+    neg,aguard=core['_resolution_paths'](-z,tapes=anti,event_records=ae)
+    bybook=np.full((n,2,3,4,5,2,L+1),np.nan);responses=np.full((n,2,3,4,5,L+1),np.nan);eventacf=np.full((n,2,2,3,13),np.nan);allreturns=[];agreements=[]
+    for j,gid in enumerate(ids):
+        variantreturns=[]
+        for v,(ps,records) in enumerate([(prices,ev),(neg,ae)]):
+            flow=np.zeros((H+1,2,3));counts=[]
+            for b in range(2):
+                rr=[r for r in records if r[0]==j and r[1]==b];ss=np.array([r[2] for r in rr]);truth=np.array([r[3] for r in rr]);quote=np.array([r[5] for r in rr]);tick=tick_rule_signs(np.array([r[4] for r in rr]));counts.append(len(rr))
+                flow[ss,b]=np.stack([truth,quote,tick],axis=1)
+                agreements.append([float(np.mean(truth==quote)),float(np.mean(truth==tick))])
+                for c,sign in enumerate([truth,quote,tick]):
+                    try:eventacf[j,v,b,c]=acf(sign,12)
+                    except ValueError:pass
+            flow=np.cumsum(flow,axis=0);ix=core['_resolution_clock_indices'](225200,int(gid),v,0,.5*np.arange(H+1));domainreturns=[]
+            for d in range(4):
+                series=ps[j][ix[d],np.arange(2)];obsflow=flow[ix[d],np.arange(2)]
+                for h,horizon in enumerate(horizons):
+                    query=np.arange(301,horizon+1,10);r=np.diff(series[query],axis=0);f=np.diff(obsflow[query],axis=0)
+                    for c,x in enumerate([r,np.abs(r),f[:,:,0],f[:,:,1],f[:,:,2]]):
+                        curves=np.array([acfs(x[:,b]) for b in range(2)])
+                        # Require both books rather than silently selecting only the active book.
+                        responses[j,v,h,d,c]=np.mean(curves,axis=0)
+                        bybook[j,v,h,d,c]=curves
+                    if h==2:domainreturns.append(r)
+            variantreturns.append(domainreturns)
+        allreturns.append(variantreturns)
+
+    result=dict(group_ids=ids,horizon_steps=horizons,acf_by_book=bybook,
+        acf_by_group_variant=responses,event_sign_acf=eventacf,
+        returns_max_horizon=np.array(allreturns),sign_agreements=np.array(agreements))
+    if 2 in ids:
+        j=int(np.flatnonzero(ids==2)[0])
+        result.update(example_prices=prices[j],example_clock_indices=core['_resolution_clock_indices'](225200,2,0,0,.5*np.arange(H+1)),example_times=.5*np.arange(H+1))
+    return result
+
+
+def _plot_numerical_resolution(data):
+    cfg=json.loads((PROJECT_ROOT/'config/config-v1.8.3.json').read_text())['numerical_resolution']['finite']
+    assert np.array_equal(data['group_ids'],np.arange(128))
+    g=data['acf_by_group_variant'].mean(axis=1)[:,:,:2]
+    e=data['event_sign_acf'].mean(axis=(1,2))
+    assert np.isfinite(g).all() and np.isfinite(e).all()
+    critical=cfg['mean_interval_critical_value']
+    d={'acf_mean':g.mean(0),'acf_pointwise_95_halfwidth':critical*g.std(0,ddof=1)/np.sqrt(128),
+       'event_acf_mean':e.mean(0),'event_acf_halfwidth':critical*e.std(0,ddof=1)/np.sqrt(128)}
+    returns=data['returns_max_horizon'];agree=data['sign_agreements'];assert np.all(agree[:,0]==1)
+    prices=data['example_prices'];ix=data['example_clock_indices'];times=data['example_times']
+    series=[prices[ix[c],np.arange(2)] for c in range(2)];q=np.arange(301,len(times),10)
+    def save(fig,name):
+        atomic_savefig(fig,PROJECT_ROOT/'figures'/(name+'.pdf'),metadata={'CreationDate':None,'ModDate':None})
+        atomic_savefig(fig,PROJECT_ROOT/'figures'/(name+'.png'),dpi=200)
+        plt.close(fig)
+    def style(ax):ax.grid(alpha=.17,linewidth=.5)
+    def interval(ax,x,m,h,c,label,ls='-',lw=1.5):
+        ax.fill_between(x,m-h,m+h,color=c,alpha=.12,lw=0)
+        ax.plot(x,m,color=c,ls=ls,lw=lw,label=label)
+    with plt.rc_context():
+        plt.rcdefaults()
+        plt.rcParams.update({'font.family':'DejaVu Sans','font.size':9,'pdf.fonttype':42,'ps.fonttype':42})
+        fig,axes=plt.subplots(3,3,figsize=(13.2,12.6));colours=['#2166ac','#b35806','#1b7837']
+        for c in range(2):
+         for b,colour in enumerate(['#2166ac','#b2182b']):axes[0,c].plot(times,series[c][:,b],color=colour,lw=1.25,label=f'Book {b+1}')
+         axes[0,c].set_xlabel('Time [s]');axes[0,c].set_ylabel('Log-mid price');axes[0,c].legend(frameon=False,fontsize=7)
+        for c,label in enumerate(['Uniform operational','Previous-refresh calendar']):
+         axes[0,2].plot(times[q][1:],np.diff(series[c][q].mean(1)),color=colours[c],lw=1.1,label=label)
+         z=returns[:,:,c].ravel();z=(z-z.mean())/z.std(ddof=1);edges=np.linspace(-6,6,61);count,_=np.histogram(z,edges);den=count/(len(z)*np.diff(edges));xx=(edges[1:]+edges[:-1])/2
+         axes[1,0].plot(xx,den,color=colours[c],lw=1.5,drawstyle='steps-mid',label=label)
+         prob=np.linspace(.005,.995,99);axes[1,1].plot(np.array([NormalDist().inv_cdf(float(v)) for v in prob]),np.quantile(z,prob),color=colours[c],lw=1.3,label=label)
+         interval(axes[1,2],np.arange(21)*5,d['acf_mean'][2,c,0],d['acf_pointwise_95_halfwidth'][2,c,0],colours[c],label)
+        axes[0,2].set_xlabel('Time [s]');axes[0,2].set_ylabel('Log-mid increment');axes[0,2].legend(frameon=False,fontsize=6.8)
+        axes[1,0].plot(xx,np.exp(-xx**2/2)/np.sqrt(2*np.pi),color='#111111',lw=1.9,label='Fixed N(0,1) reference');axes[1,0].set_xlim(-6,6);axes[1,0].set_xlabel('Standardised five-second return');axes[1,0].set_ylabel('Density');axes[1,0].legend(frameon=False,fontsize=6.5)
+        lims=axes[1,1].get_ylim();lo=min(lims[0],-3);hi=max(lims[1],3);axes[1,1].plot([lo,hi],[lo,hi],color='#111111',lw=1.6,label='Identity');axes[1,1].set_xlim(lo,hi);axes[1,1].set_ylim(lo,hi);axes[1,1].set_xlabel('Fixed standard-normal quantile');axes[1,1].set_ylabel('Empirical standardised quantile');axes[1,1].legend(frameon=False,fontsize=6.5)
+        for c,label in enumerate(['Ground-truth aggressor','Quote/midpoint rule','Tick rule']):
+         interval(axes[2,0],np.arange(13),d['event_acf_mean'][c],d['event_acf_halfwidth'][c],colours[c],label,lw=1.8-.3*c)
+         interval(axes[2,1],np.arange(21)*5,d['acf_mean'][2,1,c+2],d['acf_pointwise_95_halfwidth'][2,1,c+2],colours[c],label,lw=1.8-.3*c)
+        a=np.array([agree[:,0].mean(),agree[:,1].mean(),agree[:,1].mean()]);x=np.arange(3);axes[2,2].bar(x-.18,a,width=.36,color='#4d9221',label='Agreement');axes[2,2].bar(x+.18,1-a,width=.36,color='#c51b7d',label='Disagreement');axes[2,2].set_xticks(x,['Truth-quote','Truth-tick','Quote-tick'],rotation=12)
+        minimum=min(np.min(d['acf_mean'][2,:2,0]-d['acf_pointwise_95_halfwidth'][2,:2,0]),np.min(d['event_acf_mean']-d['event_acf_halfwidth']),np.min(d['acf_mean'][2,1,2:]-d['acf_pointwise_95_halfwidth'][2,1,2:]));lower=min(-.08,float(minimum)-.08*max(1-float(minimum),.1))
+        for ax,label in zip([axes[1,2],axes[2,0],axes[2,1],axes[2,2]],['Lag [s]','Same-book event lag','Calendar lag [s]','Convention pair']):
+         ax.set_xlabel(label);ax.set_ylabel('Correlation or fraction');ax.axhline(0,color='#777777',lw=.7);ax.set_ylim(lower,1.06);ax.legend(frameon=False,fontsize=6.6)
+        for ax,title in zip(axes.flat,['(a) Uniform-operational log-mid path','(b) Previous-refresh calendar path','(c) Five-second pair-centre increments','(d) Standardised return distribution','(e) Normal quantile comparison','(f) Log-mid increment autocorrelation','(g) Trade-sign autocorrelation in event time','(h) Subordinated signed-flow autocorrelation','(i) Sign-convention agreement']):
+         style(ax);ax.set_title(title,fontsize=9.5);ax.set_box_aspect(1)
+        fig.suptitle('Mid-price and trade-sign dependence: event time, operational time and explicit subordination');fig.subplots_adjust(left=.065,right=.985,bottom=.06,top=.94,wspace=.28,hspace=.31);save(fig,'figure-11-mid-price-trade-sign-autocorrelations-v2')
+
+
+def _resolution_dependence_ensemble(kind):
+    settings=json.loads((PROJECT_ROOT/'config/config-v1.8.3.json').read_text())['numerical_resolution'][kind]
+    parts=[]
+    for start in range(0,settings['independent_groups'],settings['batch_size']):
+        stop=min(start+settings['batch_size'],settings['independent_groups'])
+        parts.append(_resolution_dependence_batch(start,stop,kind))
+        print(f'{kind}: {stop}/{settings["independent_groups"]} groups',flush=True)
+    data={k:parts[0][k] if k=='horizon_steps' else np.concatenate([d[k] for d in parts])
+          for k in parts[0] if not k.startswith('example_')}
+    for part in parts:
+        data.update({k:v for k,v in part.items() if k.startswith('example_')})
+    path=PROJECT_ROOT/'outputs'/f'{kind}-dependence-ensemble-v2.2.0.npz'
+    temporary=path.with_suffix('.tmp.npz')
+    np.savez_compressed(temporary,**data)
+    temporary.replace(path)
+    return data
+
 def main() -> int:
     remove_orphaned_figure_staging_files()
     configuration = _load_configuration()
@@ -1194,7 +1335,11 @@ def main() -> int:
         f"{failed} failures; {len(event_rows)} market-event records."
     )
     print("Figure 11 generated with log-mid increment and trade-sign autocorrelations; level autocorrelation is excluded.")
-    return 1 if failed else 0
+    if failed:
+        return 1
+    if "numerical_resolution" in configuration:
+        _plot_numerical_resolution(_resolution_dependence_ensemble("finite"))
+    return 0
 
 
 if __name__ == "__main__":

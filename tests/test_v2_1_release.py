@@ -21,7 +21,7 @@ class V21ReleaseTests(unittest.TestCase):
         cls.config = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
 
     def test_release_configuration_is_streamlined(self) -> None:
-        self.assertEqual(self.config["schema_version"], "2.1.0")
+        self.assertEqual(self.config["schema_version"], "2.2.0")
         self.assertEqual(
             self.config["scope"],
             "release_conformity_and_science_consistency",
@@ -31,9 +31,9 @@ class V21ReleaseTests(unittest.TestCase):
 
     def test_release_metadata_is_consistent(self) -> None:
         citation = (ROOT / "CITATION.cff").read_text(encoding="utf-8")
-        self.assertIn('version: "2.1.0"', citation)
+        self.assertIn('version: "2.2.0"', citation)
         self.assertNotIn("date-released:", citation)
-        self.assertTrue((ROOT / "RELEASE-NOTES-v2.1.0.md").is_file())
+        self.assertTrue((ROOT / "RELEASE-NOTES-v2.2.0.md").is_file())
 
     def test_publication_contract_is_fixed_and_minimal(self) -> None:
         publication = self.config["publication_contract"]
@@ -41,8 +41,8 @@ class V21ReleaseTests(unittest.TestCase):
             set(publication),
             {"version", "tag", "release_title", "archive_name", "single_release_archive"},
         )
-        self.assertEqual(publication["version"], "v2.1.0")
-        self.assertEqual(publication["tag"], "v2.1.0")
+        self.assertEqual(publication["version"], "v2.2.0")
+        self.assertEqual(publication["tag"], "v2.2.0")
         self.assertTrue(publication["single_release_archive"])
 
     def test_scientific_limits_are_explicit(self) -> None:

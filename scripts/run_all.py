@@ -1,4 +1,4 @@
-"""Run the single active v2.1.0 reproducibility and integration route.
+"""Run the single active v2.2.0 reproducibility and integration route.
 
 The default mode is strict fresh-archive verification. ``--rerun`` repeats the
 same retained scientific route in an already-used tree while retaining
@@ -52,8 +52,8 @@ ACTIVE_STEPS = (
     ("fixed-time order-book shock recovery", "scripts/40_run_order_book_shock_recovery.py"),
     ("current-model stylised-facts recovery", "scripts/41_run_stylised_facts_recovery.py"),
     ("long-memory clocks and paired impact", "scripts/43_run_long_memory_clock_impact.py"),
-    ("v2.1.0 integration verification", "scripts/42_run_v2_1_integration_verification.py"),
-    ("v2.1.0 release conformity", "scripts/44_run_v2_1_release_audit.py"),
+    ("v2.2.0 integration verification", "scripts/42_run_v2_1_integration_verification.py"),
+    ("v2.2.0 release conformity", "scripts/44_run_v2_1_release_audit.py"),
 )
 
 
@@ -126,7 +126,7 @@ def main(arguments: list[str] | None = None) -> int:
     except subprocess.CalledProcessError as error:
         print(f"\nActive route stopped after an unsuccessful command (exit code {error.returncode}).")
         return error.returncode or 1
-    print("\nActive v2.1.0 reproducibility route completed successfully.")
+    print("\nActive v2.2.0 reproducibility route completed successfully.")
     return 0
 
 

@@ -364,6 +364,62 @@ def _plot(
     plt.close(figure)
 
 
+def _resolution_model(dx):
+    if dx == 0.1:
+        grid, _, sources, initial, kernels, spec = _operational_model(json.loads(CONFIG_PATH.read_text()))
+    else:
+        grid = np.linspace(-10, 10, round(20 / dx) + 1)
+        actual = float(grid[1] - grid[0])
+        sources = (OperationalSource(1, 0.1), OperationalSource(1, 0.1))
+        initial = np.stack([apply_spatial_boundary(stationary_density(grid, operational_source_density(grid, 0, s), diffusion=0.5, cancellation_rate=0, boundary_condition='dirichlet_zero')) for s in sources])
+        kernels = (np.array([1.0]), np.array([1.0]))
+        spec = OperationalSolverSpec(delta_u=0.5 * actual ** 2, transport_probability=0.5, cancellation_rates=(0, 0), minimum_abs_boundary_slope=1e-06)
+    return (grid, initial, sources, kernels, spec)
+
+def _resolution_paths(z, dx):
+    grid, initial, _, _, spec = _resolution_model(dx)
+    actual = float(grid[1] - grid[0])
+    du = spec.delta_u
+    sigma = 0.4 * np.sqrt(_resolution_model(.1)[-1].delta_u / du)
+    n, steps, _ = z.shape
+    density = np.broadcast_to(initial, (n,) + initial.shape).copy()
+    prices = np.zeros((n, steps + 1, 2), dtype=float)
+    left = np.zeros_like(density)
+    right = np.zeros_like(density)
+    min_slope = float('inf')
+    edge = 10.0
+    for k in range(steps):
+        displacement = grid[None, None, :] - prices[:, k, :, None]
+        src = -1.0 * 0.1 * displacement * np.exp(-0.1 * displacement * displacement)
+        bias = 0.5 * np.tanh(sigma * z[:, k, :] * actual / (4.0 * 0.5))
+        left[..., 1:] = density[..., :-1]
+        right[..., :-1] = density[..., 1:]
+        plus = 0.5 * (0.5 + bias)
+        minus = 0.5 * (0.5 - bias)
+        history = plus[..., None] * left + minus[..., None] * right - 0.5 * density
+        density = history + density + du * src
+        density[..., 0] = 0.0
+        density[..., -1] = 0.0
+        slopes = np.diff(density, axis=-1) / actual
+        crosses = (density[..., :-1] * density[..., 1:] < 0) & (np.abs(slopes) >= 1e-06)
+        exact_slopes = (density[..., 2:] - density[..., :-2]) / (2 * actual)
+        zeros = (density[..., 1:-1] == 0) & (density[..., :-2] * density[..., 2:] < 0) & (np.abs(exact_slopes) >= 1e-06)
+        counts = crosses.sum(axis=-1) + zeros.sum(axis=-1)
+        if np.any(counts != 1) or not np.all(np.isfinite(density)):
+            raise RuntimeError(f'Invalid field or nonunique admissible boundary at step {k + 1}')
+        index = np.argmax(crosses, axis=-1)
+        lv = np.take_along_axis(density, index[..., None], axis=-1)[..., 0]
+        slope = np.take_along_axis(slopes, index[..., None], axis=-1)[..., 0]
+        use_cross = crosses.any(axis=-1)
+        safe_slope = np.where(use_cross, slope, 1.0)
+        exact_index = np.argmax(zeros, axis=-1)
+        selected_slope = np.where(use_cross, slope, np.take_along_axis(exact_slopes, exact_index[..., None], axis=-1)[..., 0])
+        price = np.where(use_cross, grid[index] - lv / safe_slope, grid[exact_index + 1])
+        prices[:, k + 1, :] = price
+        min_slope = min(min_slope, float(np.min(np.abs(selected_slope))))
+        edge = min(edge, float(np.min(10 - np.abs(price))))
+    return (prices, {'minimum_abs_slope': min_slope, 'minimum_edge_distance': edge, 'completed_steps': steps, 'dx_actual': actual, 'du': du, 'sigma_velocity': float(sigma)})
+
 def main() -> int:
     remove_orphaned_figure_staging_files()
     configuration = _load_configuration()

@@ -1,4 +1,4 @@
-"""Audit the v2.1.0 release surface and scientific publication boundary."""
+"""Audit the v2.2.0 release surface and scientific publication boundary."""
 
 from __future__ import annotations
 
@@ -41,7 +41,7 @@ def _check(
         "observed": observed,
         "criterion": criterion,
         "status": "Verified" if passed else "Failed",
-        "software_version": "2.1.0",
+        "software_version": "2.2.0",
     }
 
 
@@ -88,15 +88,15 @@ def main() -> int:
     readme = (PROJECT_ROOT / "README.md").read_text(encoding="utf-8")
     changelog = (PROJECT_ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
     citation = (PROJECT_ROOT / "CITATION.cff").read_text(encoding="utf-8")
-    release_notes = (PROJECT_ROOT / "RELEASE-NOTES-v2.1.0.md").read_text(
+    release_notes = (PROJECT_ROOT / "RELEASE-NOTES-v2.2.0.md").read_text(
         encoding="utf-8"
     )
     supplement = "\n".join(
         (PROJECT_ROOT / relative).read_text(encoding="utf-8")
         for relative in (
-            "SUPPLEMENTARY-MATERIAL-v2.1.0.tex",
-            "source/source-v2/NUMERICAL-ALGORITHMS-v2.1.tex",
-            "source/source-v2/LONG-MEMORY-CLOCK-IMPACT-v2.1.tex",
+            "SUPPLEMENTARY-MATERIAL-v2.2.0.tex",
+            "source/source-v2/NUMERICAL-ALGORITHMS-v2.2.0.tex",
+            "source/source-v2/LONG-MEMORY-CLOCK-IMPACT-v2.2.0.tex",
         )
     )
     public_manifest = (
@@ -149,7 +149,7 @@ def main() -> int:
     }
     required_manifest_paths = {
         "CITATION.cff",
-        "RELEASE-NOTES-v2.1.0.md",
+        "RELEASE-NOTES-v2.2.0.md",
         "config/config-v2.1.0-release.json",
         "scripts/44_run_v2_1_release_audit.py",
         "tests/test_v2_1_release.py",
@@ -194,24 +194,24 @@ def main() -> int:
     ]
 
     checks = [
-        _check("V21R-01", "release configuration identity", [configuration["schema_version"], configuration["scope"]], "v2.1.0 release conformity", configuration["schema_version"] == "2.1.0" and configuration["scope"] == "release_conformity_and_science_consistency"),
+        _check("V21R-01", "release configuration identity", [configuration["schema_version"], configuration["scope"]], "v2.2.0 release conformity", configuration["schema_version"] == "2.2.0" and configuration["scope"] == "release_conformity_and_science_consistency"),
         _check("V21R-02", "frozen v2.0.0 and source-v1 inputs", frozen_errors, "no hash errors", not frozen_errors),
         _check("V21R-03", "accepted Figures 12--14 and supplement", evidence_errors, "no hash errors", not evidence_errors),
-        _check("V21R-04", "README release identity", "Version: v2.1.0" in readme and "development candidate" not in readme, "v2.1.0 release identity", "Version: v2.1.0" in readme and "development candidate" not in readme),
-        _check("V21R-05", "changelog release identity", "`v2.1.0` — 2026-09-04" in changelog, "dated v2.1.0 entry", "`v2.1.0` — 2026-09-04" in changelog),
-        _check("V21R-06", "citation version", ["version: \"2.1.0\"" in citation, "date-released:" in citation], "v2.1.0 and no premature release date", "version: \"2.1.0\"" in citation and "date-released:" not in citation),
-        _check("V21R-07", "v2.1.0 release notes", [token for token in ("Figure 7", "Figure 12", "Figure 13", "Figure 14") if token in release_notes], "all release topics", all(token in release_notes for token in ("Figure 7", "Figure 12", "Figure 13", "Figure 14"))),
+        _check("V21R-04", "README release identity", "Version: v2.2.0" in readme and "development candidate" not in readme, "v2.2.0 release identity", "Version: v2.2.0" in readme and "development candidate" not in readme),
+        _check("V21R-05", "changelog release identity", "## `v2.2.0` — Numerical resolution update" in changelog, "v2.2.0 entry", "## `v2.2.0` — Numerical resolution update" in changelog),
+        _check("V21R-06", "citation version", ["version: \"2.2.0\"" in citation, "date-released:" in citation], "v2.2.0 and no premature release date", "version: \"2.2.0\"" in citation and "date-released:" not in citation),
+        _check("V21R-07", "v2.2.0 release notes", [token for token in ("Figure 7", "Figure 13", "Figure 14", "refitted") if token in release_notes], "all release topics", all(token in release_notes for token in ("Figure 7", "Figure 13", "Figure 14", "refitted"))),
         _check("V21R-08", "streamlined publication contract", sorted(publication), "five fixed release fields", set(publication) == {"version", "tag", "release_title", "archive_name", "single_release_archive"}),
-        _check("V21R-09", "final release identity", [publication["version"], publication["tag"], publication["archive_name"]], "fixed v2.1.0 identity", publication["version"] == "v2.1.0" and publication["tag"] == "v2.1.0" and publication["archive_name"] == "correlation-emergence-reproducibility-v2.1.0.zip"),
+        _check("V21R-09", "final release identity", [publication["version"], publication["tag"], publication["archive_name"]], "fixed v2.2.0 identity", publication["version"] == "v2.2.0" and publication["tag"] == "v2.2.0" and publication["archive_name"] == "correlation-emergence-reproducibility-v2.2.0.zip"),
         _check("V21R-10", "public figure sequence", sorted(figure_numbers), "Figures 1 through 14", figure_numbers == set(range(1, 15))),
         _check("V21R-11", "public figure PDF/PNG pairs", {"numbered": missing_pairs, "figure_7_standalones": missing_figure_7_pairs}, "all Figure 1--14 pairs including Figure 7a--7c", not missing_pairs and not missing_figure_7_pairs),
-        _check("V21R-12", "reader-facing image resolution", figure_sizes, "F7a--F7c 1408x1408; F12 4500x3600; F13 3960x4560; F14 3600x2580", figure_sizes == {"7a": (1408, 1408), "7b": (1408, 1408), "7c": (1408, 1408), "12": (4500, 3600), "13": (3960, 4560), "14": (3600, 2580)}),
-        _check("V21R-13", "enriched supplement exists", (PROJECT_ROOT / "supplementary-materials/SUPPLEMENTARY-MATERIAL-v2.1.0.pdf").stat().st_size, "nonempty compiled PDF", (PROJECT_ROOT / "supplementary-materials/SUPPLEMENTARY-MATERIAL-v2.1.0.pdf").stat().st_size > 100_000),
-        _check("V21R-14", "algorithmic supplement and todonote surface", {"algorithm_controls": [token for token in ("algorithmicx", "renewal-clock-construction", "paired-clock-impact") if token in supplement], "active_todo_commands": active_todo_commands}, "all three algorithm controls and no active todo commands", all(token in supplement for token in ("algorithmicx", "renewal-clock-construction", "paired-clock-impact")) and not active_todo_commands),
+        _check("V21R-12", "reader-facing image resolution", figure_sizes, "F7a--F7c 1408x1408; F12 4500x3600; F13 2880x3440; F14 2640x1892", figure_sizes == {"7a": (1408, 1408), "7b": (1408, 1408), "7c": (1408, 1408), "12": (4500, 3600), "13": (2880, 3440), "14": (2640, 1892)}),
+        _check("V21R-13", "enriched supplement exists", (PROJECT_ROOT / "supplementary-materials/SUPPLEMENTARY-MATERIAL-v2.2.0.pdf").stat().st_size, "nonempty compiled PDF", (PROJECT_ROOT / "supplementary-materials/SUPPLEMENTARY-MATERIAL-v2.2.0.pdf").stat().st_size > 100_000),
+        _check("V21R-14", "algorithmic supplement and todonote surface", {"algorithm_controls": [token for token in ("algpseudocode", "renewal-clock-construction", "paired-clock-impact") if token in supplement], "active_todo_commands": active_todo_commands}, "all three algorithm controls and no active todo commands", all(token in supplement for token in ("algpseudocode", "renewal-clock-construction", "paired-clock-impact")) and not active_todo_commands),
         _check("V21R-15", "README embeds Figures 12--14", [f"![Figure {number}:" in readme for number in (12, 13, 14)], "all embedded", all(f"![Figure {number}:" in readme for number in (12, 13, 14))),
         _check("V21R-16", "exogenous-memory boundary", scientific, "no endogenous or empirical claim and no refit", scientific["long_memory_input"] == "declared_exogenous_heavy_tailed_order_splitting" and scientific["endogenous_memory_claim"] is False and scientific["empirical_calibration_claim"] is False and scientific["parameters_refitted"] is False),
         _check("V21R-17", "clock-impact science and mathematics checks", [len(clock_impact_rows), Counter(row["status"] for row in clock_impact_rows)], "20 verified, zero failures", len(clock_impact_rows) == 20 and all(row["status"] == "Verified" for row in clock_impact_rows)),
-        _check("V21R-18", "v2.1.0 integration checks", [len(integration_rows), Counter(row["status"] for row in integration_rows)], "32 verified, zero failures", len(integration_rows) == 32 and all(row["status"] == "Verified" for row in integration_rows)),
+        _check("V21R-18", "v2.2.0 integration checks", [len(integration_rows), Counter(row["status"] for row in integration_rows)], "32 verified, zero failures", len(integration_rows) == 32 and all(row["status"] == "Verified" for row in integration_rows)),
         _check("V21R-19", "all retained diagnostics", dict(statuses), "zero failed statuses", statuses.get("Failed", 0) == 0),
         _check("V21R-20", "accepted Stage 7 qualifications", qualification_rows, "closure records exactly six", len(qualification_rows) == 1 and qualification_rows[0]["observed"] == "6" and qualification_rows[0]["status"] == "Verified" and scientific["accepted_stage_7_qualifications"] == 6),
         _check("V21R-21", "final active release audit", active_paths[-1], "scripts/44_run_v2_1_release_audit.py", active_paths[-1] == "scripts/44_run_v2_1_release_audit.py"),
@@ -235,9 +235,9 @@ def main() -> int:
     for row in checks:
         print(f"{row['check_id']}: {row['status']} - {row['claim']}")
     if failures:
-        print(f"v2.1.0 release audit failed: {len(failures)} check(s).")
+        print(f"v2.2.0 release audit failed: {len(failures)} check(s).")
         return 1
-    print(f"v2.1.0 release audit completed: {len(checks)} checks verified.")
+    print(f"v2.2.0 release audit completed: {len(checks)} checks verified.")
     return 0
 
 

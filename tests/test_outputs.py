@@ -79,8 +79,8 @@ class GeneratedOutputTests(unittest.TestCase):
 
     def test_two_csv_latex_table_pairs_exist(self) -> None:
         for number in ("01", "02"):
-            csv_paths = list((PROJECT_ROOT / "tables").glob(f"table-{number}-*.csv"))
-            tex_paths = list((PROJECT_ROOT / "tables").glob(f"table-{number}-*.tex"))
+            csv_paths = list((PROJECT_ROOT / "tables").glob(f"table-{number}-*-v1.csv"))
+            tex_paths = list((PROJECT_ROOT / "tables").glob(f"table-{number}-*-v1.tex"))
             self.assertEqual(len(csv_paths), 1)
             self.assertEqual(len(tex_paths), 1)
             self.assertGreater(csv_paths[0].stat().st_size, 500)

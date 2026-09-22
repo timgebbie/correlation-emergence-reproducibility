@@ -38,11 +38,12 @@ class V21IntegrationTests(unittest.TestCase):
             (ROOT / "supplementary-materials/SUPPLEMENTARY-MATERIAL-v2.0.0.pdf").is_file()
         )
 
-    def test_v2_1_supplement_is_separate(self) -> None:
-        self.assertTrue((ROOT / "SUPPLEMENTARY-MATERIAL-v2.1.0.tex").is_file())
-        self.assertTrue(
-            (ROOT / "supplementary-materials/SUPPLEMENTARY-MATERIAL-v2.1.0.pdf").is_file()
-        )
+    def test_versioned_supplements_are_separate(self) -> None:
+        for version in ("2.1.0", "2.2.0"):
+            self.assertTrue((ROOT / f"SUPPLEMENTARY-MATERIAL-v{version}.tex").is_file())
+            self.assertTrue(
+                (ROOT / f"supplementary-materials/SUPPLEMENTARY-MATERIAL-v{version}.pdf").is_file()
+            )
 
 
 if __name__ == "__main__":

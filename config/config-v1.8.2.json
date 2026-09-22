@@ -10,7 +10,7 @@
     "accepted_date": "2026-08-21"
   },
   "accepted_inputs": [
-    {"path": "config/config-v1.8.1.json", "sha256": "63adf539e766b8522785a12ab7730c8557c0651d9730d89d2c14afbe5c8fb38c", "role": "accepted_single_trade_configuration"},
+    {"path": "config/config-v1.8.1.json", "sha256": "4eb64f989b722fe70df0311dc6298396efdf5b01d91c9ab4720840875a3c329c", "role": "accepted_single_trade_configuration"},
     {"path": "diagnostics/single-trade-impact-checks-v1.8.csv", "sha256": "37f578721d36905c934fbd820783c24aa6c79d8c5e07366a1c6a5e6da0f12a48", "role": "accepted_single_trade_checks"},
     {"path": "outputs/single-trade-impact-summary-v1.8.csv", "sha256": "27d65c7509b945b0869e4103de6bc34638ffa2ddfdfc04991c4e845e88ddfac9", "role": "accepted_single_trade_result"},
     {"path": "provenance/SINGLE-TRADE-IMPACT-v1.8.md", "sha256": "8f08214889e7cf9f518b397ad8e59acce5a563263fba746b5a4079629caa834a", "role": "accepted_single_trade_provenance"},

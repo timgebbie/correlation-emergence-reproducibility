@@ -1,4 +1,4 @@
-# Caption register - v2.1.0
+# Caption register - v2.2.0
 
 ## Figure 1 - Ordinary Epps components
 
@@ -43,23 +43,29 @@ path autocorrelation or spectrum.
 
 ## Figure 7a - Clock-only Epps comparison
 
-The exact equal-rate previous-refresh factor is compared with the accepted
-clock-only simulation and its 95% band on the common linear 0--400 second,
-0--1.1 normalized-covariance scale. No parameter or normalization is refitted.
+The equal-rate previous-refresh factor (black) is compared with the matched
+clock-only simulation (blue). Shading shows approximate pointwise 98% mean
+intervals from 512 independent paths, grouping four clock replicates per path.
+The three square panels retain common linear 0--400 second and 0--1.1 scales,
+with log--log insets over the measured 0.5--400 second range. No parameter is refitted.
 
 ## Figure 7b - Translation-mode coupling-only Epps comparison
 
-The analytical translation-mode response is compared with the accepted
-coupling-only simulation and its 95% band on the same square display scale.
-No parameter or normalization is refitted.
+The analytical translation-mode response (black) is compared with the matched
+coupling-only simulation (green), with pointwise 98% mean intervals from 512
+independent paths. The smallest lags remain sensitive to the update size;
+nonpositive values appear only on the linear axes. No parameter is refitted.
 
 ## Figure 7c - Combined estimator-aware Epps comparison
 
-The combined no-refit holdout and its 95% band are compared with the paper's
-leading-order product and the exact finite-grid, finite-step conditional
-moment on the same realised clocks. The estimator-aware RMSE is `0.039719`,
-standardized RMSE is `0.455132`, and pointwise normal-band coverage is
-complete. The three-panel composite is retained only as the README overview.
+The matched combined simulation (red) is compared with the leading-order
+product (black) and stationary joint reduced reference (dashed grey).
+Pointwise 98% mean intervals use 512 independent paths with clock replicates
+grouped within each path; they are not individual-path envelopes. The narrower
+interval resolves the product-approximation difference. The joint prediction
+is linear at short lags, whereas the product is quadratic. The combined three-square
+figure is used in the README and supplement, with separate square exports supplied.
+No parameter is refitted; the supplement explains normalization and finite-step effects.
 
 ## Figure 8 - Translation-mode coupling
 
@@ -67,22 +73,24 @@ The translation-mode thick-boundary holdout is compared with the analytical
 normalized covariance response and the distinct finite-scale return
 correlation. Deterministic panels verify signed front relaxation at the frozen
 response rate. Dynamics use uniform operational time and the current receiving
-front's translation mode; no clock or interpolation enters this component
-gate.
+front's translation mode; no clock or interpolation enters this component.
 
 ## Figure 9 - Single-trade own and cross impact
 
 Paired shocked and matched-control paths measure aggressor-signed own- and
 cross-boundary responses to one labelled market order. Operational and
 previous-refresh calendar views use a common linear response scale. The event
-is a declared model operation, not an empirical trade calibration.
+is a declared model operation, not an empirical trade calibration. Means and
+pointwise 95% intervals use 512 independent groups on the refined grid;
+symmetry partners and clock replicates are grouped before estimating uncertainty.
 
 ## Figure 10 - Meta-order own and cross impact
 
 Scheduled child market orders form matched meta-order experiments. Trajectory,
 peak, relaxation and equal-volume horizon comparisons distinguish own from
 cross impact. Schedule timing is not described as a true participation rate
-because background market-order volume is not modelled.
+because background market-order volume is not modelled. Means and pointwise
+95% intervals use the same 512 independent primitive groups as Figure 9.
 
 ## Figure 11 - Mid-price and trade-sign autocorrelations
 
@@ -93,7 +101,9 @@ autocorrelation, and pairwise sign-convention agreement. Price-level
 autocorrelation is excluded. The declared finite Markov persistence is an
 estimator fixture, not empirical calibration or a long-memory claim. The
 operational five-second ACF is a registered finite periodic-schedule
-diagnostic, and its detailed curve is phase-sensitive to that schedule.
+diagnostic, and its detailed curve is phase-sensitive to that schedule. The
+updated ensemble uses 128 independent groups with explicit antithetic partners
+and pointwise 95% intervals.
 
 ## Figure 12 - Fixed-time order-book shock recovery
 
@@ -112,7 +122,8 @@ counterpart. The columns show both-book price paths, standardised five-second
 return density with normal Q-Q inset, and return/absolute-return/order-flow
 ACFs. Heavy-tailed meta-order sign runs are a declared exogenous long-memory
 input. Holding creates the zero-return atom and leptokurtic morphology; it does
-not change the operational dynamics. No empirical calibration is claimed.
+not change the operational dynamics. The updated ensemble uses 128 independent
+groups and longer records. No empirical calibration is claimed.
 
 ## Figure 14 - Paired impact under alternative observation clocks
 
@@ -121,7 +132,8 @@ aggressor-signed shocked-minus-common-input-control log-mid displacement.
 Operational, Poisson, Mittag--Leffler and tempered Mittag--Leffler domains use
 the same completed paths, with shocked and control members sharing each
 realised clock. Inactive observations retain their actual zero response. The
-curves are conditional model diagnostics, not fitted impact laws.
+curves use 512 independent groups and pointwise 95% mean intervals; they are
+conditional model diagnostics, not fitted impact laws.
 
 ## Table 1 - Parameter, timescale and identifiability register
 

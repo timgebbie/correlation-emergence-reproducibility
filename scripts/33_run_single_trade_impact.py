@@ -639,6 +639,288 @@ def _plot(result: dict[str, object], configuration: dict[str, object]) -> None:
     plt.close(figure)
 
 
+def _resolution_model(dx=.1):
+    cfg = json.loads(CONFIG_PATH.read_text())
+    cfg['model']['grid_points'] = round(20 / dx) + 1
+    cfg['model']['operational_step_model_units'] = .5 * dx * dx
+    cfg['model']['operational_step_seconds'] = 50 * dx * dx
+    cfg['model']['innovation_sigma'] = [.4 * .1 / dx] * 2
+    return _model(cfg)
+
+
+def _resolution_paths(z, dx=0.1, tapes=None, initial=None, initial_prices=None, event_records=None):
+    from functions.events.records import apply_order_event
+    from functions.operational.boundary import extract_reaction_boundary
+    grid, diff, sources, stationary, kernels, spec, couplings, policy = _resolution_model(dx)
+    n, steps, _ = z.shape
+    density = np.broadcast_to(stationary, (n,) + stationary.shape).copy() if initial is None else np.array(initial, copy=True)
+    prices = np.zeros((n, steps + 1, 2))
+    if initial_prices is not None:
+        prices[:, 0] = initial_prices
+    actual = float(grid[1] - grid[0])
+    du = spec.delta_u
+    sigma = 0.4 * 0.1 / dx
+    left = np.zeros_like(density)
+    right = np.zeros_like(density)
+    events = {}
+    if tapes is not None:
+        assert len(tapes) == n
+        for path, tape in enumerate(tapes):
+            for e in tape:
+                events.setdefault(e.operational_step, []).append((path, e))
+    min_slope = float('inf')
+    edge = 10.0
+    mass_error = 0.0
+    events_applied = 0
+    fallbacks = 0
+    for k in range(steps):
+        old = prices[:, k, :]
+        for path, e in events.get(k + 1, []):
+            app = apply_order_event(e, grid, density[path, e.book_index], pre_event_mid_log_price=float(old[path, e.book_index]))
+            if event_records is not None:
+                from functions.events import quote_midpoint_sign
+                event_records.append((path, e.book_index, e.operational_step, e.side, float(app.execution_log_price), quote_midpoint_sign(app)))
+            density[path, e.book_index] += app.density_delta
+            mass_error = max(mass_error, abs(actual * np.sum(np.abs(app.density_delta)) - e.quantity))
+            events_applied += 1
+        disp = grid[None, None, :] - old[:, :, None]
+        src = -0.1 * disp * np.exp(-0.1 * disp * disp)
+        grad = np.gradient(density, grid, axis=-1, edge_order=2)
+        coupling = 1.25 * (old - old[:, ::-1])[:, :, None] * grad
+        coupling[:, :, [0, -1]] = 0.0
+        bias = 0.5 * np.tanh(sigma * z[:, k, :] * actual / 2.0)
+        left[..., 1:] = density[..., :-1]
+        right[..., :-1] = density[..., 1:]
+        history = (0.5 * (0.5 + bias))[:, :, None] * left + (0.5 * (0.5 - bias))[:, :, None] * right - 0.5 * density
+        density = history + density + du * (src + coupling)
+        density[:, :, [0, -1]] = 0.0
+        slopes = np.diff(density, axis=-1) / actual
+        cross = (density[..., :-1] * density[..., 1:] < 0) & (np.abs(slopes) >= 1e-06)
+        exslopes = (density[..., 2:] - density[..., :-2]) / (2 * actual)
+        zeros = (density[..., 1:-1] == 0) & (density[..., :-2] * density[..., 2:] < 0) & (np.abs(exslopes) >= 1e-06)
+        counts = cross.sum(axis=-1) + zeros.sum(axis=-1)
+        if not np.isfinite(density).all():
+            raise RuntimeError('Nonfinite density')
+        indices = np.argmax(cross, axis=-1)
+        lv = np.take_along_axis(density, indices[..., None], axis=-1)[..., 0]
+        slope = np.take_along_axis(slopes, indices[..., None], axis=-1)[..., 0]
+        use = cross.any(axis=-1)
+        ix = np.argmax(zeros, axis=-1)
+        chosen = np.where(use, slope, np.take_along_axis(exslopes, ix[..., None], axis=-1)[..., 0])
+        p = np.where(use, grid[indices] - lv / np.where(use, slope, 1.0), grid[ix + 1])
+        for a, b in np.argwhere(counts != 1):
+            boundary = extract_reaction_boundary(grid, density[a, b], selection=spec.boundary_selection, previous_price=float(old[a, b]) if spec.boundary_selection == 'nearest_previous' else None, minimum_abs_slope=spec.minimum_abs_boundary_slope)
+            p[a, b] = boundary.price
+            fallbacks += 1
+        prices[:, k + 1] = p
+        min_slope = min(min_slope, float(np.min(np.abs(chosen[counts == 1]))))
+        edge = min(edge, float(np.min(10 - np.abs(p))))
+    assert events_applied == sum((len(v) for v in events.values()))
+    return (prices, {'steps': steps, 'paths': n, 'minimum_slope': min_slope, 'minimum_edge_distance': edge, 'maximum_event_mass_error': float(mass_error), 'events_applied': events_applied, 'boundary_fallbacks': fallbacks, 'dx': dx, 'du': du, 'innovation_sigma': sigma})
+
+def _resolution_clock_indices(seed, group, variant, replica, times, candidates=6000):
+    from functions.observation import poisson_refresh_path_from_uniforms, mittag_leffler_refresh_path_from_uniforms, tempered_mittag_leffler_refresh_path_from_uniforms, subordinate_two_book_previous_refresh
+    dummy = np.zeros((len(times), 2))
+    domains = [np.broadcast_to(np.arange(len(times))[:, None], (len(times), 2)).copy()]
+    for law in range(1, 4):
+        pair = []
+        for book in range(2):
+            rng = np.random.default_rng(np.random.SeedSequence([seed, group, variant, replica, law, book]))
+            u = np.clip(rng.random((4, candidates)), np.nextafter(0.0, 1.0), np.nextafter(1.0, 0.0))
+            common = {'horizon': float(times[-1]), 'stream_id': f'v2.2.0-{group}-{variant}-{replica}-{law}-{book}'}
+            if law == 1:
+                c = poisson_refresh_path_from_uniforms(u[0], 0.1, **common)
+            elif law == 2:
+                c = mittag_leffler_refresh_path_from_uniforms(u[0], u[1], u[2], beta=0.8, scale_seconds=10.0, **common)
+            else:
+                c = tempered_mittag_leffler_refresh_path_from_uniforms(u[0], u[1], u[2], u[3], beta=0.8, scale_seconds=10.0, tempering_rate_per_second=0.0125, **common)
+            pair.append(c)
+        domains.append(subordinate_two_book_previous_refresh(times, dummy, tuple(pair), times).operational_indices)
+    return np.array(domains)
+
+def _resolution_impact_batch(start, stop):
+    """Independent primitive groups with paired controls and exact symmetry partners."""
+    cfg = json.loads(CONFIG_PATH.read_text())["numerical_resolution"]
+    dx = cfg["spatial_step"]
+    gids = list(range(start, stop)); g = len(gids)
+    stride = round((.1 / dx)**2); steps = 1000 * stride; dt = .5 / stride
+    lags = np.asarray(cfg["lags_seconds"]); lagsteps = np.rint(lags / dt).astype(int)
+    schedules = cfg["event_steps_at_half_second"]
+    schedule_steps = [[k * stride for k in ss] for ss in schedules]
+    # Injection precedes the update; preserve its physical instant on a finer grid.
+    event_steps = [[(k - 1) * stride + 1 for k in ss] for ss in schedules]
+    times = dt * np.arange(steps + 1)
+    z = []
+    for gid in gids:
+        raw = np.random.default_rng(np.random.SeedSequence([cfg['path_seed'], gid])).standard_normal((4000, 2))
+        if stride == 1:
+            raw = raw.reshape(1000, 4, 2).sum(axis=1) / 2
+        elif stride == 16:
+            bridge = np.random.default_rng(np.random.SeedSequence([cfg['bridge_seed'], gid])).standard_normal((4000, 4, 2))
+            bridge = bridge - bridge.mean(axis=1, keepdims=True) + raw[:, None, :] / 2
+            raw = bridge.reshape(16000, 2)
+        elif stride != 4:
+            raise ValueError('Only dx 0.1, 0.05 and 0.025 are supported')
+        z.append(raw)
+    z = np.array(z)
+    expanded = np.broadcast_to(z[:, None], (g, 13, steps, 2)).reshape(-1, steps, 2)
+    tapes = []
+    for gid in gids:
+        for variant in range(1):
+            tapes.append([])
+            for ss in event_steps:
+                for book in range(2):
+                    for side in [-1, 1]:
+                        tapes.append([OrderEvent(f'v2.2.0-{gid}-{variant}-{book}-{side}-{k}', 'market_order', book, k, side, cfg['child_volume']) for k in ss])
+    prices, guard = _resolution_paths(expanded, dx, tapes=tapes)
+    base = prices.reshape(g, 13, steps + 1, 2)
+    prices = np.empty((g, 4, 13, steps + 1, 2))
+    prices[:, 0] = base
+    for variant in [1, 2, 3]:
+        sign = -1 if variant in [1, 3] else 1
+        swap = variant in [2, 3]
+        prices[:, variant, 0] = sign * (base[:, 0, :, ::-1] if swap else base[:, 0])
+        for scenario in range(3):
+            for book in range(2):
+                for side in range(2):
+                    src = 1 + scenario * 4 + (1 - book if swap else book) * 2 + (1 - side if sign == -1 else side)
+                    prices[:, variant, 1 + scenario * 4 + book * 2 + side] = sign * (base[:, src, :, ::-1] if swap else base[:, src])
+    directional = np.zeros((g, 4, len(lags), 2, 2))
+    means = np.zeros((g, 3, 4, len(lags), 2))
+    active = np.zeros_like(means)
+    members = np.zeros_like(means)
+    build = np.zeros((g, 2, 4, 4, 2))
+    build_members = np.zeros_like(build)
+    for gi, gid in enumerate(gids):
+        for variant in range(4):
+            for rep in range(cfg['clock_replicas']):
+                indices = _resolution_clock_indices(cfg['clock_seed'], gid, variant, rep, times)
+                for scenario, ss in enumerate(schedule_steps):
+                    query = ss[-1] + lagsteps
+                    for book in range(2):
+                        order = [book, 1 - book]
+                        for sideidx, side in enumerate([-1, 1]):
+                            path = 1 + scenario * 4 + book * 2 + sideidx
+                            diff = side * (prices[gi, variant, path] - prices[gi, variant, 0])
+                            for domain in range(4):
+                                select = indices[domain, query]
+                                response = diff[select, np.arange(2)[None, :]][:, order]
+                                means[gi, scenario, domain] += response / (16 * cfg['clock_replicas'])
+                                if scenario == 0:
+                                    directional[gi, domain, :, book, :] += diff[select, np.arange(2)[None, :]] / (8 * cfg['clock_replicas'])
+                                active[gi, scenario, domain] += (select >= event_steps[scenario][-1])[:, order] / (16 * cfg['clock_replicas'])
+                                if variant == 0 and rep == 0 and (book == 0) and (side == 1):
+                                    members[gi, scenario, domain] = response
+                                if scenario:
+                                    select = indices[domain, ss]
+                                    response = diff[select, np.arange(2)[None, :]][:, order]
+                                    build[gi, scenario - 1, domain] += response / (16 * cfg['clock_replicas'])
+                                    if variant == 0 and rep == 0 and (book == 0) and (side == 1):
+                                        build_members[gi, scenario - 1, domain] = response
+    return dict(group_ids=np.asarray(gids), lags_seconds=lags, group_mean=means,
+                directional_group_mean=directional, primary_individual_response=members,
+                final_event_observed_fraction=active, build_up_group_mean=build,
+                build_up_primary_response=build_members)
+
+def _resolution_impact_ensemble():
+    """Generate the declared groups without external research caches."""
+    cfg = json.loads(CONFIG_PATH.read_text())["numerical_resolution"]
+    batches = []
+    for start in range(0, cfg["independent_groups"], cfg["batch_size"]):
+        stop = min(start + cfg["batch_size"], cfg["independent_groups"])
+        batches.append(_resolution_impact_batch(start, stop))
+        print(f"Impact groups: {stop}/{cfg['independent_groups']}", flush=True)
+    return {key: batches[0][key] if key == "lags_seconds" else
+            np.concatenate([batch[key] for batch in batches]) for key in batches[0]}
+
+def _plot_numerical_resolution(data=None):
+    if data is None:
+        with np.load(PROJECT_ROOT / "outputs/impact-ensemble-v2.2.0.npz") as stored:
+            data = dict(stored)
+    cfg = json.loads((PROJECT_ROOT / "config/config-v1.8.1.json").read_text())["numerical_resolution"]
+    assert np.array_equal(data["group_ids"], np.arange(cfg["independent_groups"]))
+    x = data["lags_seconds"]
+    def save(fig, name):
+        stem = PROJECT_ROOT / "figures" / name
+        atomic_savefig(fig, Path(str(stem) + ".pdf"), metadata={"CreationDate": None, "ModDate": None})
+        if name != "meta-order-individual-envelopes-v2.2.0":
+            atomic_savefig(fig, Path(str(stem) + ".png"), dpi=220)
+        plt.close(fig)
+    def axis_style(ax):
+        ax.grid(alpha=.17, linewidth=.5)
+    g = data['directional_group_mean']; m = g.mean(0)
+    h = cfg['mean_interval_critical_value'] * g.std(0, ddof=1) / np.sqrt(cfg['independent_groups'])
+    def style(ax):
+        axis_style(ax)
+    def interval(ax, x, m, h, c, label, ls='-', lw=1.5):
+        ax.fill_between(x, m-h, m+h, color=c, alpha=.12, lw=0)
+        ax.plot(x, m, color=c, ls=ls, lw=lw, label=label)
+    with plt.rc_context():
+        plt.rcdefaults()
+        plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9, "axes.spines.top": True, "axes.spines.right": True, "pdf.fonttype": 42, "ps.fonttype": 42})
+        fig,axes=plt.subplots(2,2,figsize=(10.8,8.2),sharex=True,sharey=True)
+        for b in range(2):
+         for j in range(2):
+          ax=axes[b,j]
+          for c,colour,label in [(0,'#2166ac','Operational paired impact'),(1,'#d6604d','Previous-refresh calendar')]:
+           interval(ax,x,m[c,:,b,j],h[c,:,b,j],colour,label,lw=1.7)
+          ax.axhline(0,color='#777777',lw=.7);style(ax);ax.set_title(f'Event book {b+1} → response book {j+1} ('+('own' if b==j else 'cross')+' impact)',fontsize=10)
+          if b==1:ax.set_xlabel('Lag after market event [s]')
+          if j==0:ax.set_ylabel('Aggressor-signed log-mid response')
+        axes[0,0].legend(frameon=False,fontsize=7.5);fig.suptitle('Paired single-trade own and cross impact');fig.tight_layout(rect=(0,0,1,.96));save(fig,'figure-09-single-trade-impact-v2')
+
+
+def _resolution_figure7_ensemble(path_count=None):
+    """Generate independent-path sufficient statistics for the Figure 7 update."""
+    import runpy
+    cfg = json.loads((PROJECT_ROOT / "config/config-v1.9.0.json").read_text())["numerical_resolution"]
+    clock = runpy.run_path(str(PROJECT_ROOT / "scripts/26_run_clock_only_conformity.py"))
+    coupled = runpy.run_path(str(PROJECT_ROOT / "scripts/30_run_combined_no_refit_prediction.py"))
+    dynamics = runpy.run_path(str(PROJECT_ROOT / "scripts/33_run_single_trade_impact.py"))
+    count = cfg["independent_paths"] if path_count is None else int(path_count)
+    batch_size = cfg["batch_size"]
+    if count < batch_size or count % batch_size:
+        raise ValueError("path count must be a positive multiple of batch size")
+    lags = np.asarray(cfg["lags_seconds"], dtype=float)
+    step = cfg["step_seconds"]
+    lag_steps = np.rint(lags / step).astype(int)
+    horizon, warmup = cfg["horizon_seconds"], cfg["warmup_seconds"]
+    steps = round((horizon + warmup) / step)
+    replicas = cfg["clock_replicas"]
+    collections = {"clock": [], "coupled": []}
+    for kind in collections:
+        for batch, start in enumerate(range(0, count, batch_size)):
+            if kind == "clock":
+                seed = cfg["clock_batch_seed"] + 10 * batch
+                z = np.random.default_rng(seed + 1).standard_normal((batch_size, steps * 4, 2))
+                z[:, :, 1] = .8*z[:, :, 0] + .6*z[:, :, 1]
+                z = z.reshape(batch_size, steps, 4, 2).sum(2) / 2
+                prices, guard = clock["_resolution_paths"](z, .1)
+                pairs = clock["_refresh_pairs"](batch_size, replicas, (.1, .1), horizon+warmup, 4096, seed+2, "figure-07")
+                times = step * np.arange(prices.shape[1])
+                query = warmup + step * np.arange(round(horizon/step)+1)
+                indices = np.rint(query/step).astype(int)
+                synchronous = clock["_identity_component_groups"](prices, indices, lag_steps)
+                asynchronous, reference, _ = clock["_clocked_component_groups"](times, prices, pairs, query, lag_steps)
+                values = dict(synchronous=synchronous, asynchronous=asynchronous, reference=reference)
+            else:
+                z = np.array([np.random.default_rng(np.random.SeedSequence([cfg["coupled_path_seed"], gid])).standard_normal((steps, 2)) for gid in range(start, start+batch_size)])
+                prices, guard = dynamics["_resolution_paths"](z)
+                pairs = tuple(coupled["_refresh_pairs"](1, replicas, (.1, .1), horizon, 4096, cfg["coupled_clock_seed"]+gid, "figure-07")[0] for gid in range(start, start+batch_size))
+                prices = prices[:, round(warmup/step):]
+                times = step * np.arange(prices.shape[1])
+                query = step * np.arange(round(horizon/step)+1)
+                indices = np.rint(query/step).astype(int)
+                synchronous = clock["_identity_component_groups"](prices, indices, lag_steps)
+                asynchronous, reference, _ = coupled["_clocked_components"](times, prices, pairs, query, lag_steps, .025)
+                centre = prices[:, indices].mean(2)
+                den = np.array([[sum((path[k:]-path[:-k])**2) for k in lag_steps] for path in centre])
+                values = dict(synchronous=synchronous, asynchronous=asynchronous, reference=reference, centre_squares=den)
+            collections[kind].append(values)
+            print(f"Figure 7 {kind}: {start+batch_size}/{count} paths", flush=True)
+    return {kind: {key: np.concatenate([v[key] for v in batches]) for key in batches[0]} for kind, batches in collections.items()}
+
+
 def main() -> int:
     remove_orphaned_figure_staging_files()
     configuration = _load_configuration()
@@ -733,7 +1015,22 @@ def main() -> int:
         f"{failed} failures; {len(curve_rows)} curve rows and {len(member_rows)} member rows."
     )
     print("Figure 9 generated with operational and explicitly subordinated impact on one common linear scale.")
-    return 1 if failed else 0
+    if failed:
+        return 1
+    if "numerical_resolution" in configuration:
+        data = _resolution_impact_ensemble()
+        target = PROJECT_ROOT / "outputs/impact-ensemble-v2.2.0.npz"
+        temporary = target.with_suffix(".tmp.npz")
+        np.savez_compressed(temporary, **data)
+        temporary.replace(target)
+        _plot_numerical_resolution(data)
+        ensembles = _resolution_figure7_ensemble()
+        target = PROJECT_ROOT / "outputs/figure-07-ensemble-v2.2.0.npz"
+        temporary = target.with_suffix(".tmp.npz")
+        np.savez_compressed(temporary, **{kind + "__" + key: value
+                            for kind, group in ensembles.items() for key, value in group.items()})
+        temporary.replace(target)
+    return 0
 
 
 if __name__ == "__main__":

@@ -105,5 +105,27 @@ class CombinedReferenceTests(unittest.TestCase):
         self.assertNotIn("np.interp(", source)
 
 
+class StationaryJointReferenceTests(unittest.TestCase):
+    def test_matches_integrated_stationary_cross_kernel(self):
+        from functions.observation.combined_reference import stationary_poisson_joint_attenuation
+        nodes, weights = np.polynomial.legendre.leggauss(96)
+        for lam, kappa in [(0.1, 0.025), (0.1, 0.1), (0.025, 0.1)]:
+            for lag in [0.001, 0.5, 1., 20., 100., 400.]:
+                time = lag * (nodes + 1) / 2
+                if lam == kappa:
+                    kernel = kappa / 4 * (1 + kappa * time) * np.exp(-kappa * time)
+                else:
+                    kernel = kappa * lam / (2 * (lam**2-kappa**2)) * (lam*np.exp(-kappa*time)-kappa*np.exp(-lam*time))
+                integral = np.sum(weights * (lag-time) * kernel)
+                actual = stationary_poisson_joint_attenuation([lag], clock_rate=lam, response_rate=kappa)[0]
+                self.assertAlmostEqual(float(actual), float(integral), places=11)
+
+    def test_short_lag_coefficient_and_zero(self):
+        from functions.observation.combined_reference import stationary_poisson_joint_attenuation
+        values = stationary_poisson_joint_attenuation([0., 1e-5], clock_rate=.1, response_rate=.025)
+        self.assertEqual(values[0], 0.)
+        self.assertAlmostEqual(values[1]/1e-5, .1*.025/(2*(.1+.025)), places=10)
+
+
 if __name__ == "__main__":
     unittest.main()

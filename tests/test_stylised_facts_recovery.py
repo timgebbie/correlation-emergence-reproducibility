@@ -321,11 +321,11 @@ class StylisedFactsRecoveryTests(unittest.TestCase):
             self.assertEqual(len(manifest), 12)
             self.assertEqual({row["panel_id"] for row in manifest}, set("abcdefghijkl"))
             with Image.open(FIGURE_STEM.with_suffix(".png")) as assembled_image:
-                self.assertEqual(assembled_image.size, (3960, 4560))
+                self.assertEqual(assembled_image.size, (2880, 3440))
             reader = PdfReader(str(FIGURE_STEM.with_suffix(".pdf")))
             self.assertEqual(len(reader.pages), 1)
-            self.assertEqual(round(float(reader.pages[0].mediabox.width)), 950)
-            self.assertEqual(round(float(reader.pages[0].mediabox.height)), 1094)
+            self.assertEqual(round(float(reader.pages[0].mediabox.width)), 1037)
+            self.assertEqual(round(float(reader.pages[0].mediabox.height)), 1238)
             return
         manifest = _rows(PANEL_MANIFEST_PATH)
         with Image.open(FIGURE_STEM.with_suffix(".png")) as assembled_image:

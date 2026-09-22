@@ -1,4 +1,4 @@
-"""Verify the v2.1.0 Figure 12--14 reader-facing integration boundary."""
+"""Verify the v2.2.0 Figure 12--14 reader-facing integration boundary."""
 
 from __future__ import annotations
 
@@ -67,11 +67,11 @@ def main() -> int:
     supplement = "\n".join(
         (PROJECT_ROOT / relative).read_text(encoding="utf-8")
         for relative in (
-            "SUPPLEMENTARY-MATERIAL-v2.1.0.tex",
-            "source/source-v2/NUMERICAL-ALGORITHMS-v2.1.tex",
+            "SUPPLEMENTARY-MATERIAL-v2.2.0.tex",
+            "source/source-v2/NUMERICAL-ALGORITHMS-v2.2.0.tex",
             "source/source-v2/ORDER-BOOK-SHOCK-RECOVERY-v2.1.tex",
-            "source/source-v2/STYLISED-FACTS-RECOVERY-v2.1.tex",
-            "source/source-v2/LONG-MEMORY-CLOCK-IMPACT-v2.1.tex",
+            "source/source-v2/STYLISED-FACTS-RECOVERY-v2.2.0.tex",
+            "source/source-v2/LONG-MEMORY-CLOCK-IMPACT-v2.2.0.tex",
         )
     )
     readme_normalized = re.sub(r"\s+", " ", readme)
@@ -143,6 +143,7 @@ def main() -> int:
         "registered finite periodic-schedule diagnostic",
         "phase-sensitive",
     )
+    supplement_qualification = ("periodic-schedule structure", "finite-schedule diagnostics", "not an endogenous long-memory claim")
     readme_figure_13_scope = ("beta=0.8", "tempered", "exogenous long-memory")
     supplement_figure_13_scope = ("\\beta=0.8", "tempered", "exogenous")
     governance_paths = [
@@ -157,14 +158,14 @@ def main() -> int:
 
     checks = [
         _check("V21I-01", "frozen v2.0.0 and source-v1 inputs", frozen_errors, "no errors", not frozen_errors),
-        _check("V21I-02", "README version", "Version: v2.1.0" in readme, "v2.1.0 development identity", "Version: v2.1.0" in readme),
+        _check("V21I-02", "README version", "Version: v2.2.0" in readme, "v2.2.0 identity", "Version: v2.2.0" in readme),
         _check("V21I-03", "public figure sequence", sorted(figure_numbers), "Figures 1 through 14", figure_numbers == set(range(1, 15))),
         _check("V21I-04", "public figure pairs", {"numbered": missing_pairs, "figure_7_standalones": missing_figure_7_pairs}, "all Figure 1--14 pairs including Figure 7a--7c", not missing_pairs and not missing_figure_7_pairs),
         _check("V21I-05", "Figure 11 qualification in README", qualification, "both accepted terms", all(term in readme_normalized for term in qualification)),
         _check("V21I-06", "Figure 11 qualification in caption register", qualification, "both accepted terms", all(term in captions_normalized for term in qualification)),
-        _check("V21I-07", "Figure 11 qualification in supplement", qualification, "both accepted terms", all(term in supplement_normalized for term in qualification)),
+        _check("V21I-07", "Figure 11 qualification in supplement", supplement_qualification, "finite-schedule and exogenous-memory limits", all(term in supplement_normalized for term in supplement_qualification)),
         _check("V21I-08", "Figure 12 supplement integration", "ORDER-BOOK-SHOCK-RECOVERY-v2.1.tex" in supplement, "accepted source-v2 insert", "ORDER-BOOK-SHOCK-RECOVERY-v2.1.tex" in supplement),
-        _check("V21I-09", "Figure 13 supplement integration", "STYLISED-FACTS-RECOVERY-v2.1.tex" in supplement, "accepted source-v2 insert", "STYLISED-FACTS-RECOVERY-v2.1.tex" in supplement),
+        _check("V21I-09", "Figure 13 supplement integration", "STYLISED-FACTS-RECOVERY-v2.2.0.tex" in supplement, "accepted source-v2 insert", "STYLISED-FACTS-RECOVERY-v2.2.0.tex" in supplement),
         _check("V21I-10", "Figure 13 scope in README", readme_figure_13_scope, "all accepted limits", all(term in readme for term in readme_figure_13_scope)),
         _check("V21I-11", "Figure 13 scope in supplement source", supplement_figure_13_scope, "all accepted limits", all(term in supplement for term in supplement_figure_13_scope)),
         _check("V21I-12", "Figure 13 panel manifest", [len(panel_rows), panel_errors], "six rows and no hash errors", len(panel_rows) == 6 and not panel_errors),
@@ -175,12 +176,12 @@ def main() -> int:
         _check("V21I-17", "private governance files excluded", governance_paths, "no repository files", not governance_paths),
         _check("V21I-18", "README Figure 12 image", "figures/figure-12-order-book-shock-recovery-v2.png" in readme, "embedded", "![Figure 12:" in readme and "figures/figure-12-order-book-shock-recovery-v2.png" in readme),
         _check("V21I-19", "README Figure 13 image", "figures/figure-13-stylised-facts-recovery-v2.png" in readme, "embedded", "![Figure 13:" in readme and "figures/figure-13-stylised-facts-recovery-v2.png" in readme),
-        _check("V21I-20", "audited algorithm source integration", "NUMERICAL-ALGORITHMS-v2.1.tex" in supplement, "included source-v2 insert", "NUMERICAL-ALGORITHMS-v2.1.tex" in supplement),
+        _check("V21I-20", "audited algorithm source integration", "NUMERICAL-ALGORITHMS-v2.2.0.tex" in supplement, "included source-v2 insert", "NUMERICAL-ALGORITHMS-v2.2.0.tex" in supplement),
         _check("V21I-21", "operational coupling algorithm", "-\\kappa_{jk}z_{jk,n}" in supplement, "receiving-front translation field", "-\\kappa_{jk}z_{jk,n}" in supplement and "frozen histories" in supplement),
         _check("V21I-22", "previous-refresh conditional algorithm", "nested map" in supplement, "nested previous-refresh map and conditional moments", "nested map" in supplement and "\\Theta_{q,r}-\\frac{K_{q,r}}{2\\kappa}" in supplement and "e^{-\\kappa(b_j-a_j)}-1" in supplement),
         _check("V21I-23", "autocorrelation estimator equation", "slice-specific Pearson product form" if "\\bar X_{L,k}" in supplement and "\\bar X_{R,k}" in supplement and "\\left[\\sum" in supplement and "\\right] \\left[\\sum" in supplement_normalized else "missing or malformed", "separate lagged-slice means and product of variance factors", "\\bar X_{L,k}" in supplement and "\\bar X_{R,k}" in supplement and "\\left[\\sum" in supplement and "\\right] \\left[\\sum" in supplement_normalized and "\\widehat\\rho_X(0)=1" in supplement),
         _check("V21I-24", "stable representative paths", "Figure 11 path 4; Figure 13 path 2", "predeclared paths with ULP validation", '"predeclared_path_index": 4' in representative_policy and '"predeclared_master_path_index": 2' in representative_policy and '"distance_tolerance_ulps": 64' in representative_policy),
-        _check("V21I-25", "clock-impact supplement integration", "LONG-MEMORY-CLOCK-IMPACT-v2.1.tex" in supplement, "clock and impact insert included", "LONG-MEMORY-CLOCK-IMPACT-v2.1.tex" in supplement),
+        _check("V21I-25", "clock-impact supplement integration", "LONG-MEMORY-CLOCK-IMPACT-v2.2.0.tex" in supplement, "clock and impact insert included", "LONG-MEMORY-CLOCK-IMPACT-v2.2.0.tex" in supplement),
         _check("V21I-26", "observation-clock panel manifest", [len(clock_panel_rows), clock_panel_errors], "twelve rows and no hash errors", len(clock_panel_rows) == 12 and not clock_panel_errors),
         _check("V21I-27", "Figure 14 assembled pair", "figures/figure-14-clock-subordinated-impact-v2", "PDF and PNG present", all((PROJECT_ROOT / f"figures/figure-14-clock-subordinated-impact-v2{suffix}").is_file() for suffix in (".pdf", ".png"))),
         _check("V21I-28", "README Figure 14 image", "figures/figure-14-clock-subordinated-impact-v2.png" in readme, "embedded", "![Figure 14:" in readme and "figures/figure-14-clock-subordinated-impact-v2.png" in readme),
@@ -199,9 +200,9 @@ def main() -> int:
     for row in checks:
         print(f"{row['check_id']}: {row['status']} - {row['claim']}")
     if failures:
-        print(f"v2.1.0 integration verification failed: {len(failures)} check(s).")
+        print(f"v2.2.0 integration verification failed: {len(failures)} check(s).")
         return 1
-    print(f"v2.1.0 integration verification completed: {len(checks)} checks verified.")
+    print(f"v2.2.0 integration verification completed: {len(checks)} checks verified.")
     return 0
 
 

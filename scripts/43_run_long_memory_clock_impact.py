@@ -760,6 +760,123 @@ def _check(check_id: str, claim: str, observed: object, criterion: str, passed: 
     }
 
 
+def _plot_numerical_resolution(data=None):
+    if data is None:
+        with np.load(PROJECT_ROOT / "outputs/impact-ensemble-v2.2.0.npz") as stored:
+            data = dict(stored)
+    cfg = json.loads((PROJECT_ROOT / "config/config-v1.8.1.json").read_text())["numerical_resolution"]
+    assert np.array_equal(data["group_ids"], np.arange(cfg["independent_groups"]))
+    x = data["lags_seconds"]
+    def save(fig, name):
+        stem = PROJECT_ROOT / "figures" / name
+        atomic_savefig(fig, Path(str(stem) + ".pdf"), metadata={"CreationDate": None, "ModDate": None})
+        if name != "meta-order-individual-envelopes-v2.2.0":
+            atomic_savefig(fig, Path(str(stem) + ".png"), dpi=220)
+        plt.close(fig)
+    def axis_style(ax):
+        ax.grid(alpha=.17, linewidth=.5)
+    colours = ['#225ea8', '#d95f0e', '#756bb1', '#238b45']
+    domains = ['Operational', 'Poisson', 'Mittag-Leffler', 'Tempered ML']
+    g = data['group_mean']; b = data['build_up_group_mean']
+    individual = data['primary_individual_response']; n = cfg['independent_groups']
+    m = g.mean(0); h = 1.965 * g.std(0, ddof=1) / np.sqrt(n)
+    bm = b.mean(0); bh = 1.965 * b.std(0, ddof=1) / np.sqrt(n)
+    with plt.rc_context():
+        plt.rcdefaults()
+        plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 10, "axes.spines.top": True, "axes.spines.right": True, "pdf.fonttype": 42, "ps.fonttype": 42})
+        fig,axes=plt.subplots(2,2,figsize=(12,8.6))
+        for response in range(2):
+         for domain in range(4):
+          ax=axes[0,response];ax.plot(x,m[0,domain,:,response],color=colours[domain],lw=1.7,label=domains[domain]);ax.fill_between(x,m[0,domain,:,response]-h[0,domain,:,response],m[0,domain,:,response]+h[0,domain,:,response],color=colours[domain],alpha=.08)
+          ax=axes[1,response]
+          for s in range(2):
+           ax.plot(x,m[s+1,domain,:,response],color=colours[domain],lw=1.55,ls='-' if s==0 else '--',label=f'{domains[domain]} / {"fast" if s==0 else "slow"}')
+           ax.fill_between(x,m[s+1,domain,:,response]-h[s+1,domain,:,response],m[s+1,domain,:,response]+h[s+1,domain,:,response],color=colours[domain],alpha=.05)
+         for row in range(2):
+          ax=axes[row,response];ax.set_title(f'({chr(97+2*row+response)}) '+('Single-trade ' if row==0 else 'Meta-order ')+['own','cross'][response]+(' impact' if row==0 else ' relaxation'),loc='left');ax.set_xlabel('Lag after event [s]' if row==0 else 'Lag after final child [s]');ax.set_ylabel('Aggressor-signed shocked-minus-control log-mid');ax.axhline(0,color='#777777',lw=.7);axis_style(ax)
+        axes[0,0].legend(frameon=False,fontsize=7,ncol=2);axes[1,0].legend(frameon=False,fontsize=6.6,ncol=2);fig.suptitle('Paired price impact under alternative observation clocks');fig.tight_layout(rect=(0,0,1,.97));save(fig,'figure-14-clock-subordinated-impact-v2')
+
+
+def _plot_persistent_resolution(data):
+    from statistics import NormalDist
+    import warnings
+    from pypdf import PdfReader, PdfWriter, Transformation
+    from PIL import Image
+    cfg=json.loads((PROJECT_ROOT/'config/config-v1.8.3.json').read_text())['numerical_resolution']['persistent']
+    assert np.array_equal(data['group_ids'],np.arange(cfg['independent_groups']))
+    g=data['acf_by_group_variant'].mean(axis=1);n=np.isfinite(g).sum(0)
+    # Degrees of freedom follow the valid independent groups for each ordinate.
+    critical=np.array([np.nan]+cfg['student_95_critical_by_df'])
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore',RuntimeWarning)
+        mean=np.nanmean(g,axis=0)
+        half=critical[np.maximum(n-1,0)]*np.nanstd(g,axis=0,ddof=1)/np.sqrt(n)
+    d={'acf_mean':mean,'acf_pointwise_95_halfwidth':half}
+    returns=data['returns_max_horizon']
+    ex={'prices':data['example_prices'],'clock_indices':data['example_clock_indices'],'times':data['example_times']}
+    domains=['Operational','Poisson','Mittag-Leffler','Tempered ML']
+    colours=['#225ea8','#d95f0e','#756bb1','#238b45']
+    stems={}
+    def save(fig,name):
+        letter=name.split('figure-13')[1][0];i=ord(letter)-ord('a');row,col=divmod(i,3)
+        kind=['price-returns','distribution-qq','acf'][col]
+        stem=PROJECT_ROOT/'figures'/f"figure-13{letter}-{DOMAIN_IDS[row].replace('_','-')}-{kind}-v2"
+        stems[letter]=stem
+        atomic_savefig(fig,stem.with_suffix('.pdf'),metadata={'CreationDate':None,'ModDate':None})
+        atomic_savefig(fig,stem.with_suffix('.png'),dpi=200)
+        plt.close(fig)
+    def axis_style(ax):ax.grid(alpha=.17,linewidth=.5)
+    style=axis_style
+    with plt.rc_context():
+        plt.rcdefaults()
+        plt.rcParams.update({'font.family':'DejaVu Sans','font.size':10,'axes.spines.top':True,'axes.spines.right':True,'pdf.fonttype':42,'ps.fonttype':42})
+        for domain,limit in enumerate([8,14,30,18]):
+         for panel in ['acf','distribution']:
+          fig,ax=plt.subplots(figsize=(4.8,4.3));letter='cfil'[domain] if panel=='acf' else 'behk'[domain]
+          if panel=='acf':
+           for c,(colour,label) in enumerate(zip(['#2166ac','#b2182b','#238b45'],['Returns','|Returns|','Order flow'])):
+            y=d['acf_mean'][2,domain,c,1:];err=d['acf_pointwise_95_halfwidth'][2,domain,c,1:];lag=np.arange(1,len(y)+1);ax.fill_between(lag,y-err,y+err,color=colour,alpha=.10,lw=0);ax.plot(lag,y,color=colour,lw=1.5 if c==2 else 1.35,label=label)
+           ax.axhline(0,color='#777777',lw=.7);ax.set_xlabel('Lag [5 s bins]');ax.set_ylabel('Autocorrelation');ax.legend(frameon=False,fontsize=7)
+          else:
+           v=returns[:,:,domain].ravel();z=(v-v.mean())/v.std(ddof=1);edges=np.linspace(-limit,limit,62);centres=(edges[:-1]+edges[1:])/2;counts,_=np.histogram(z,bins=edges);density=counts/(len(z)*np.diff(edges));normal=np.exp(-centres**2/2)/np.sqrt(2*np.pi)
+           ax.plot(centres,np.where(density>0,density,np.nan),color=colours[domain],lw=1.6,label='Model');ax.plot(centres,normal,color='#444444',lw=1,ls='--',label='Normal');ax.set_yscale('log');ax.set_ylim(2e-4,max(2,1.6*max(density.max(),normal.max())));ax.set_xlabel('Standardised 5 s return');ax.set_ylabel('Density');ax.legend(frameon=False,fontsize=7,loc='lower left')
+           inset=ax.inset_axes([.57,.53,.39,.40]);prob=np.linspace(.005,.995,199);nq=np.array([NormalDist().inv_cdf(float(p)) for p in prob]);sq=np.quantile(z,prob);inset.plot(nq,sq,color=colours[domain],lw=1.1);low=min(nq.min(),sq.min());high=max(nq.max(),sq.max());inset.plot([low,high],[low,high],color='#777777',ls=':',lw=.8);inset.text(.03,.96,'Normal Q-Q',transform=inset.transAxes,fontsize=7,va='top');inset.tick_params(labelsize=6)
+          axis_style(ax);ax.set_title(f'({letter}) {domains[domain]}: '+('acf' if panel=='acf' else 'distribution qq'),loc='left',fontsize=10);fig.tight_layout();save(fig,f'v2.2.0-figure-13{letter}-style')
+        plt.rcParams.update({'font.size':9})
+        for c,letter in enumerate('adgj'):
+         fig,ax=plt.subplots(figsize=(4.8,4.3));s=ex['prices'][ex['clock_indices'][c],np.arange(2)]
+         for b,colour in enumerate(['#2166ac','#b2182b']):ax.plot(ex['times'],s[:,b],color=colour,lw=1.1,label=f'Book {b+1}')
+         ax.set_xlabel('Time [s]');ax.set_ylabel('Log-mid price');ax.set_title(f'({letter}) {domains[c]}: price path',loc='left',fontsize=10);ax.legend(frameon=False,fontsize=7);style(ax);fig.tight_layout();save(fig,f'v2.2.0-figure-13{letter}-style')
+    writer=PdfWriter();page=writer.add_blank_page(width=14.4*72,height=17.2*72)
+    canvas=Image.new('RGB',(2880,3440),'white')
+    for i,letter in enumerate('abcdefghijkl'):
+        row,col=divmod(i,3);reader=PdfReader(stems[letter].with_suffix('.pdf'))
+        page.merge_transformed_page(reader.pages[0],Transformation().translate(col*4.8*72,(3-row)*4.3*72))
+        with Image.open(stems[letter].with_suffix('.png')) as image:
+            canvas.paste(image.convert('RGB'),(col*960,row*860))
+    configuration=json.loads(CONFIG_PATH.read_text())
+    stem=PROJECT_ROOT/configuration['figure_13']['output_stem']
+    temporary=stem.with_suffix('.tmp.pdf')
+    with temporary.open('wb') as handle:writer.write(handle)
+    temporary.replace(stem.with_suffix('.pdf'))
+    temporary=stem.with_suffix('.tmp.png');canvas.save(temporary);temporary.replace(stem.with_suffix('.png'))
+    config_relative = "config/config-v1.8.3.json"
+    data_relative = "outputs/persistent-dependence-ensemble-v2.2.0.npz"
+    rows = []
+    for i, letter in enumerate("abcdefghijkl"):
+        row, column = divmod(i, 3)
+        panel = stems[letter]
+        rows.append(dict(panel_id=letter, measurement_domain=DOMAIN_IDS[row],
+            panel_type=["price-returns", "distribution-qq", "acf"][column],
+            source_config=config_relative, source_config_sha256=_sha256(PROJECT_ROOT/config_relative),
+            data_path=data_relative, data_sha256=_sha256(PROJECT_ROOT/data_relative),
+            pdf_path=panel.with_suffix(".pdf").relative_to(PROJECT_ROOT).as_posix(),
+            pdf_sha256=_sha256(panel.with_suffix(".pdf")),
+            png_path=panel.with_suffix(".png").relative_to(PROJECT_ROOT).as_posix(),
+            png_sha256=_sha256(panel.with_suffix(".png")), software_version="2.2.0"))
+    write_csv(PROJECT_ROOT/"outputs/figure-13-observation-clock-panel-manifest-v2.1.csv", list(rows[0]), rows)
+
+
 def main() -> int:
     configuration = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
     if configuration["schema_version"] != VERSION:
@@ -817,7 +934,15 @@ def main() -> int:
     print(f"Clock-impact checks: {len(checks) - len(failures)}/{len(checks)} verified")
     for row in failures:
         print(f"  FAILED {row['check_id']}: {row['claim']} ({row['observed']})")
-    return 1 if failures else 0
+    if failures:
+        return 1
+    impact_configuration = json.loads((PROJECT_ROOT / "config/config-v1.8.1.json").read_text())
+    if "numerical_resolution" in impact_configuration:
+        import runpy
+        dependence = runpy.run_path(str(PROJECT_ROOT/'scripts/35_run_dependence_diagnostics.py'))
+        _plot_persistent_resolution(dependence['_resolution_dependence_ensemble']('persistent'))
+        _plot_numerical_resolution()
+    return 0
 
 
 if __name__ == "__main__":

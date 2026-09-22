@@ -3,6 +3,14 @@
 This project uses numeric semantic versions only. Pre-release labels such as
 `alpha`, `beta`, and `rc` are not used.
 
+## `v2.2.0` — Numerical resolution update
+
+- Increase ensemble depth for the Epps, own/cross-impact, meta-order and
+  dependence comparisons without refitting physical parameters.
+- Update the supplementary material and figures; retain the combined Figure 7
+  and three square exports, with short-lag insets and pointwise 98% mean intervals.
+- Retain the existing implementation structure and README layout.
+
 ## `v2.1.0` — 2026-09-04
 
 - Export the accepted Figure 7 clock-only, coupling-only and combined results

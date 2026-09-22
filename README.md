@@ -1,6 +1,6 @@
 # Correlation emergence reproducibility bundle
 
-Version: v2.1.0
+Version: v2.2.0 — Numerical resolution update
 
 Supplementary code and materials for:
 
@@ -10,10 +10,10 @@ Supplementary code and materials for:
 
 The supplementary-materials document is included here:
 
-> [SUPPLEMENTARY-MATERIAL-v2.1.0.pdf](supplementary-materials/SUPPLEMENTARY-MATERIAL-v2.1.0.pdf)
+> [SUPPLEMENTARY-MATERIAL-v2.2.0.pdf](supplementary-materials/SUPPLEMENTARY-MATERIAL-v2.2.0.pdf)
 
-The v2.1.0 changes and their scientific boundary are summarized in
-[RELEASE-NOTES-v2.1.0.md](RELEASE-NOTES-v2.1.0.md).
+The v2.2.0 changes and their scientific boundary are summarized in
+[RELEASE-NOTES-v2.2.0.md](RELEASE-NOTES-v2.2.0.md).
 
 This repository is a quantitative-finance reproducibility bundle. It extends
 the analytical v1.0.0 materials with a Python implementation of two
@@ -32,16 +32,20 @@ previous-refresh factor $F(\lambda^{\rm clk}\Delta)$, where each book has
 $\lambda^{\rm clk}=0.1\,\mathrm{s}^{-1}$. This rate is distinct from the
 $0.2\,\mathrm{s}^{-1}$ pooled minimum-wait rate. Figure 7(b) compares the
 translation-mode coupling simulation with $F(\kappa\Delta)$, using
-$\kappa=0.025\,\mathrm{s}^{-1}$. Figure 7(c) compares the combined simulation
-with the paper's leading-order separable product
-$F(\lambda^{\rm clk}\Delta)F(\kappa\Delta)$ and the same-clock conditional
-reference. The latter evaluates the reduced finite-step conditional moment at
-the same realised previous-refresh indices as the simulation; it is not a
-fitted curve. The three square panels share the same linear 0--400 second and
-0--1.1 normalized-covariance scales. The same-clock reference reduces combined
-RMSE from `0.066963` to `0.039719`, with standardized RMSE `0.455132` and full
-pointwise 95% normal-band coverage. No clock, coupling, boundary, normalization
-or simulation parameter is refitted.
+$\kappa=0.025\,\mathrm{s}^{-1}$. Figure 7(c) compares the combined simulation with the leading-order product
+$F(\lambda^{\rm clk}\Delta)F(\kappa\Delta)$ (black) and the stationary joint
+clock–coupling prediction (dashed grey). The latter accounts for observation
+clocks sampling the coupled process; it is not a fitted curve. All three square
+panels retain common linear axes and add log–log insets over 0.5–400 seconds.
+Shading shows pointwise 98% uncertainty in the mean from 512 independent
+paths, with clock replicas grouped within each path.
+
+The joint reduced prediction is linear at short lags, whereas the product is
+quadratic; increasing the ensemble size does not remove this distinction.
+The smallest coupling-only lags remain sensitive to the numerical time step.
+Nonpositive values are retained on the linear axes and omitted from the log–log
+insets. The supplementary material explains the joint prediction, normalization
+and paired grid-refinement check. No physical parameter is refitted.
 
 Paper-ready standalone square exports are provided for
 [Figure 7a (clock only)](figures/figure-07a-clock-only-epps-v2.png),
@@ -49,11 +53,10 @@ Paper-ready standalone square exports are provided for
 [Figure 7c (combined)](figures/figure-07c-combined-epps-v2.png). The combined
 three-panel image above is retained as the compact README overview.
 
-The [machine-readable curves](outputs/final-estimator-aware-epps-curves-v1.9.csv)
-and [summary statistics](outputs/final-estimator-aware-epps-summary-v1.9.csv)
-retain their frozen development identifiers.
+The updated [Figure 7 curves](outputs/figure-07-curves-v2.2.0.csv)
+accompany the supplementary material. The original v2.1.0 outputs remain available.
 
-## Current situation: v2.1.0
+## Current situation: v2.2.0
 
 The current bundle separates the model into three operations:
 
@@ -66,7 +69,7 @@ Calendar waiting intervals never enter the density recurrence. Calendar prices
 are previous-completed-state observations; no interpolation, extrapolation or
 nonuniform state update is used.
 
-The v2.1.0 bundle contains:
+The v2.2.0 bundle contains:
 
 - the six analytical figures and two publication tables retained from v1.0.0;
 - clock-only, translation-mode coupling-only and combined no-refit
@@ -123,14 +126,14 @@ meta-order sign runs as a declared, exogenous long-memory input. The four rows
 hold the completed operational paths fixed and change only the observation
 map: (1) operational, (2) Poisson previous refresh, (3) untempered
 Mittag--Leffler previous refresh with `beta=0.8`, and (4) its exponentially
-tempered counterpart. The top row is smoother and close to Gaussian because
-it is the directly observed operational process with Gaussian innovations.
-The lower rows hold prices between book-specific refreshes. Their zero-return
-fractions are 60.49%, 88.19% and 66.10%, respectively, producing the central
-spike, QQ plateau and leptokurtic appearance. These are observation-clock
-effects; the operational dynamics do not change. “Gaussian” describes the
-operational innovations, not a waiting-time distribution. The sign memory is
-an order-splitting input, not an endogenous result or empirical calibration.
+tempered counterpart. The operational innovations are Gaussian; this alone
+does not establish a Gaussian distribution of operational returns. The lower
+rows hold prices between book-specific refreshes. Their zero-return fractions
+are approximately 60.63%, 90.97% and 66.48%, respectively, producing the central
+spike and QQ plateau. The operational dynamics are held fixed across the four
+rows. Sign memory is an order-splitting input, not an endogenous result or
+empirical calibration. The updated diagnostics use 128 independent groups
+with explicit antithetic paths and longer records.
 
 ### Figure 14: clock-subordinated impact
 
@@ -145,8 +148,7 @@ paired model responses: an event not yet seen by a calendar clock contributes
 its actual zero paired response rather than being dropped. The signed
 raw-price-displacement routine in
 [`DerickDiana/InteractingLOBs.jl`](https://github.com/DerickDiana/InteractingLOBs.jl)
-was audited at commit `098f1807` as a methodological reference. The v2.1.0
-implementation does not port that routine: it uses the common-input
+was audited at commit `098f1807` as a methodological reference. The implementation does not port that routine: it uses the common-input
 shocked-minus-control estimator established for Figures 9 and 10. No impact
 law is fitted.
 
@@ -229,13 +231,13 @@ supplementary-materials/ Compiled computational supplement
 
 Scientific object versions such as `config-v1.7.7.json` and output suffixes
 such as `-v1.8.csv` are retained where they identify an accepted development
-object. The current documentation uses v2.1.0. The public v2.0.0
+object. The current documentation uses v2.2.0. The public v2.1.0
 tag and its release assets remain unchanged.
 
 ## Installation
 
-Python 3.12 is the controlled release environment. The complete route was also
-verified on Windows with Python 3.13. NumPy, Matplotlib and pypdf are pinned
+Python 3.12 is the controlled release environment. The v2.2.0 numerical
+candidate also passed the complete strict route on Windows with Python 3.13. NumPy, Matplotlib and pypdf are pinned
 exactly by `requirements.txt`.
 
 Tracked text files are normalized to LF by `.gitattributes`, including on
@@ -285,6 +287,12 @@ cross-platform byte identity.
 
 ## Verification status
 
+The updated scientific figures have been checked against their fixed-seed
+ensembles. Cloud verification passed 32 integration checks, 30 release checks
+and 276 regression tests. The numerical candidate passed the complete strict
+route on Windows with Python 3.13, including all 195 immutable-source checks.
+The final GitHub clone check remains pending.
+
 The frozen v2.0.0 candidate passed the complete strict route from a fresh
 extraction:
 
@@ -305,7 +313,7 @@ untempered and tempered Mittag--Leffler observation. Figure 14 adds paired
 clock-dependent impact. The frozen v2.0.0 tag and target-paper source remain
 unchanged.
 The retained v2.0.0 verifier checks that its frozen claims and Figures 1--11
-remain present; the v2.1.0 release audit verifies the exact current Figures
+remain present; the current release audit verifies the exact current Figures
 1--14 surface.
 
 ## Version-control policy
@@ -323,7 +331,7 @@ v3.0.0        incompatible model, interface or scientific-scope change
 The development lineage within v2 is retained in filenames, the changelog and
 Git history:
 
-| Version | Established or changed | Status in v2.1.0 |
+| Version | Established or changed | Status in v2.2.0 |
 |---|---|---|
 | `v1.2.x` | Julia-to-Python conversion and declared-input reconstruction | Retired executable; audit retained |
 | `v1.4.x--v1.5.x` | Uniform operational dynamics and explicit calendar subordination | Retained core |
@@ -333,15 +341,15 @@ Git history:
 | `v1.9.2` | Slim public payload and claim-equivalence gate | Accepted parent stage |
 | `v1.9.3` | Legacy executable retirement and final public evidence map | Accepted final gate |
 | `v2.0.0` | Public promotion of the accepted v1.9.3 scientific payload | Frozen public release |
-| `v2.1.0` | Fixed-time shock recovery, long-memory clock morphology and clock-subordinated impact | Current version |
+| `v2.1.0` | Fixed-time shock recovery, long-memory clock morphology and clock-subordinated impact | Frozen public release |
+| `v2.2.0` | Numerical resolution, figures and supplementary-material update | Current candidate |
 
-The release identifier and Git tag are `v2.1.0`. The corresponding GitHub
-Release title is **v2.1.0 — Recovery, long-memory clocks and impact
-extensions**, and the release asset is
-`correlation-emergence-reproducibility-v2.1.0.zip`.
+The planned release identifier and Git tag are `v2.2.0`. The corresponding
+GitHub Release title is **v2.2.0 — Numerical resolution update**, and the
+release asset is `correlation-emergence-reproducibility-v2.2.0.zip`.
 
-`CITATION.cff` identifies the software version as v2.1.0. This does not alter
-the frozen public v2.0.0 tag or release metadata.
+`CITATION.cff` identifies the software version as v2.2.0. This does not alter
+the frozen public v2.1.0 tag or release metadata.
 
 ## DOI, citation and license
 
@@ -355,7 +363,7 @@ Suggested paper citation:
 | Item | Value |
 |---|---|
 | Associated paper | [arXiv:2606.14182](https://arxiv.org/abs/2606.14182) |
-| Supplementary PDF | [SUPPLEMENTARY-MATERIAL-v2.1.0.pdf](supplementary-materials/SUPPLEMENTARY-MATERIAL-v2.1.0.pdf) |
+| Supplementary PDF | [SUPPLEMENTARY-MATERIAL-v2.2.0.pdf](supplementary-materials/SUPPLEMENTARY-MATERIAL-v2.2.0.pdf) |
 | GitHub repository | `https://github.com/timgebbie/correlation-emergence-reproducibility` |
 | ZivaHub/Figshare DOI | https://doi.org/10.25375/uct.33368986 |
 | Code license | MIT License |

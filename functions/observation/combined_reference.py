@@ -4,9 +4,8 @@ The operational process is the stationary symmetric two-price closure
 
 ``p1 = c + z/2`` and ``p2 = c - z/2``,
 
-where the pair centre is Brownian and the spread is Ornstein--Uhlenbeck.  The
-functions here condition on already-realised previous-refresh operational
-indices.  They own no clock, random number generator, interpolation or
+where the pair centre is Brownian and the spread is Ornstein--Uhlenbeck.  The conditional
+functions use already-realised previous-refresh operational indices.  They own no clock, random number generator, interpolation or
 operational dynamics.
 """
 
@@ -110,4 +109,35 @@ def symmetric_previous_refresh_expected_components(
     return components
 
 
-__all__ = ["symmetric_previous_refresh_expected_components"]
+
+def stationary_poisson_joint_attenuation(
+    lags_seconds: Sequence[float], *, clock_rate: float, response_rate: float
+) -> np.ndarray:
+    """Population cross covariance / (C*lag) for the stationary reduced model.
+
+    Observation clocks are independent equal-rate Poisson processes, independent
+    of the Brownian centre and OU spread. This is a continuum reduced reference,
+    not an identity for finite-grid density dynamics or a sample ratio estimator.
+    """
+    lag = np.asarray(lags_seconds, dtype=float)
+    if np.any(~np.isfinite(lag)) or np.any(lag < 0):
+        raise ValueError("lags must be finite and nonnegative")
+    lam = _positive("clock_rate", clock_rate)
+    kappa = _positive("response_rate", response_rate)
+
+    def factor(x: np.ndarray) -> np.ndarray:
+        with np.errstate(divide="ignore", invalid="ignore"):
+            exact = 1.0 + np.expm1(-x) / x
+        return np.where(abs(x) < 1e-4,
+                        x / 2 - x*x / 6 + x**3 / 24 - x**4 / 120, exact)
+
+    if lam == kappa:
+        x = kappa * lag
+        with np.errstate(divide="ignore", invalid="ignore"):
+            derivative = (1 - (1 + x) * np.exp(-x)) / x**2
+        derivative = np.where(x < 1e-4,
+                              .5 - x / 3 + x*x / 8 - x**3 / 30, derivative)
+        return factor(x) - x * derivative / 2
+    return (lam**2 * factor(kappa * lag) - kappa**2 * factor(lam * lag)) / (lam**2 - kappa**2)
+
+__all__ = ["symmetric_previous_refresh_expected_components", "stationary_poisson_joint_attenuation"]
